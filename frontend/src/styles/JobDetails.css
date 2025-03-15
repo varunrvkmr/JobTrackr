@@ -1,0 +1,138 @@
+/* JobDetails.css */
+
+/* General Styles */
+h2, h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Job Description */
+  textarea[readonly] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f7f7f7;
+    resize: vertical;
+  }
+  
+  /* Apply Now Button */
+  .apply-btn {
+    padding: 12px 18px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  
+  /* General Button Styles */
+  button {
+    padding: 12px 18px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Resume Comparison Section */
+  .comparison-section {
+    margin-top: 20px;
+  }
+  
+  .comparison-section h5 {
+    margin-bottom: 10px;
+  }
+  
+  .comparison-section ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .comparison-section li {
+    margin-bottom: 5px;
+  }
+  
+  /* Cover Letter Section */
+  .cover-letter-section {
+    margin-top: 30px;
+  }
+  
+  .cover-letter-section textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f7f7f7;
+    resize: vertical;
+  }
+  
+  .cover-letter-section label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #444;
+  }
+  
+  /* Custom Question Section */
+  .custom-question-section {
+    margin-top: 30px;
+  }
+  
+  .custom-question-section textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+  }
+  
+  .custom-question-section button {
+    margin-bottom: 10px;
+  }
+  
+  /* Section Separator */
+  hr {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+  }
+  
+  /* Error Message */
+  .error-message {
+    color: red;
+    font-style: italic;
+  }
+  
+  /* Resume Placeholder */
+  .resume-placeholder {
+    color: red;
+    font-style: italic;
+    text-align: center;
+  }
+  

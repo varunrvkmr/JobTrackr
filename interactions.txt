@@ -1,0 +1,42 @@
+xhost +localhost
+xhost +$(hostname)
+
+docker-compose down && docker-compose up -d --build
+
+docker-compose down
+docker-compose up -d --build
+
+
+rm -rf backend/migrations
+docker exec -it jobtrackr-backend-1 flask db init 
+docker exec -it jobtrackr-backend-1 flask db migrate -m "Reset migration"
+docker exec -it jobtrackr-backend-1 flask db upgrade
+
+docker exec -it jobtrackr-backend-1 flask db init 
+docker exec -it jobtrackr-backend-1 flask db migrate -m "Recreate missing tables"
+docker exec -it jobtrackr-backend-1 flask db upgrade
+
+psql -U postgres -d jobs_db
+
+reset frontend
+1. Stop and Remove the Frontend Container
+docker-compose stop frontend
+docker-compose rm -f frontend
+
+2. Remove the frontend image
+(run 'docker images' to make sure)
+docker rmi $(docker images -q jobtrackr-frontend)
+
+3. Rebuild the Frontend Without Cache
+docker-compose build --no-cache frontend
+
+4. Start the Frontend Container Again
+docker-compose up -d frontend
+
+
+docker-compose stop frontend
+docker-compose rm -f frontend
+docker rmi $(docker images -q jobtrackr-frontend)
+docker-compose build --no-cache frontend
+docker-compose up -d frontend
+

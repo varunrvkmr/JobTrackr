@@ -1,0 +1,14 @@
+WHAT DO I WANT FOR THINGS TO HAPPEN NEXT:
+- create a fully fleshed out job profile for a fake name (for testing purposes)
+- figure out how to dynamically fill in values for drop-downs
+- have a manual catch-all for user intervention for uploading resume as well as after 'x' many tries.
+	- Is this really needed if the browser window at the end never closes?
+- how does file uploads work if everything is within the docker container?
+	- can file be pulled down from DB and routed to job site through browser automation?
+		- check https://github.com/browser-use/browser-use/blob/main/examples/custom-functions/file_upload.py for file upload
+- verify that browser automation doesn't close the browser window by itself - user has to be the one to  close the browser window
+	- edited service.py in Agent class but changes not verified/run yet
+- send a notification that the process is done (https://github.com/browser-use/browser-use/blob/main/examples/custom-functions/notification.py)
+- add a field for manual link above browser automation button in JobDetails where the browser automation navigates to that link first. If there is no link in that field, then the link on the DB will be used. 
+- add a default case so things don't crash and burn if there is no link (browser-automation)
+- file retrieval logic needs to be updated to pull from DB based on ID

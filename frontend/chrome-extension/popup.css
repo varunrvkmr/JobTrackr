@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    width: 400px;
+    height: 600px;
+  }
+  
+  .container {
+    padding: 10px;
+  }
+  
+  h3 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card .keyword {
+    background-color: #8334eb;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+  }
+  
+  .card button {
+    padding: 5px 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .card button.edit-btn {
+    background-color: white;
+    color: purple;
+    border: 1px solid purple;
+  }
+  
+  .card button.delete-btn {
+    background-color: red;
+    color: white;
+  }
+  
+  /* Save Job Section */
+.save-job-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .save-button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .save-button:hover {
+    background-color: #45a049;
+  }
+  
+  .status-message {
+    margin-top: 10px;
+    color: #4caf50;
+    font-size: 14px;
+  }
+  

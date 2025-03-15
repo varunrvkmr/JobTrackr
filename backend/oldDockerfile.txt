@@ -1,0 +1,43 @@
+
+# Use official Python 3.11 image
+FROM python:3.11
+
+# Set working directory inside the container
+WORKDIR /app
+
+# Install system dependencies for Playwright and Xvfb
+RUN apt-get update && apt-get install -y \
+    xvfb \
+    xauth \
+    libnss3 \
+    libatk1.0-0 \
+    libx11-xcb1 \
+    libxcb-dri3-0 \
+    libgbm1 \
+    libxkbcommon-x11-0 \
+    libgtk-3-0 \
+    libasound2 \
+    fonts-liberation \
+    libxshmfence1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install Playwright and its dependencies
+RUN pip install playwright
+RUN playwright install --with-deps  # Installs browsers & dependencies
+
+# Copy backend source code
+COPY . .
+
+# Expose Flask port
+EXPOSE 5000
+
+# Start Flask with Gunicorn (WITHOUT launching Playwright)
+#CMD ["gunicorn", "-b", "0.0.0.0:5000", "wsgi:app", "--chdir", "/app", "--workers=2", "--timeout=120"]
+# Ensure Xvfb is running when launching Gunicorn (Flask)
+#CMD ["xvfb-run", "--auto-servernum", "--server-args=-screen 0 1920x1080x24", "gunicorn", "-b", "0.0.0.0:5000", "wsgi:app", "--chdir", "/app", "--workers=2", "--timeout=120"]
+#CMD bash -c "Xvfb :99 -screen 0 1920x1080x24 & export DISPLAY=:99 && gunicorn -b 0.0.0.0:5000 wsgi:app --chdir /app --workers=2 --timeout=120"
+ENTRYPOINT ["/bin/bash", "-c", "Xvfb :99 -screen 0 1920x1080x24 & export DISPLAY=:99 && exec gunicorn -b 0.0.0.0:5000 wsgi:app --chdir /app --workers=2 --timeout=120"]

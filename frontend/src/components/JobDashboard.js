@@ -1,0 +1,502 @@
+import React, { useEffect, useState } from 'react';
+import { fetchJobs, deleteJob, updateJobStatus, saveJob} from '../services/api';
+import { FaTrash } from 'react-icons/fa';
+
+function JobDashboard() {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filteredStatus, setFilteredStatus] = useState(null);
+  const [sortBy, setSortBy] = useState('');
+  const [originalJobs, setOriginalJobs] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [newJob, setNewJob] = useState({
+    company: '',
+    position: '',
+    location: '',
+    description: '', // New field
+    status: 'Saved',
+    date_applied: '',
+    link: '',
+  });
+  
+
+  useEffect(() => {
+    const loadJobs = async () => {
+      try {
+        const data = await fetchJobs();
+        setJobs(data);
+        setOriginalJobs(data);
+      } catch (err) {
+        setError('Failed to load jobs');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadJobs();
+  }, []);
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    if (query === '') {
+      setJobs(originalJobs);
+    } else {
+      const filtered = originalJobs.filter((job) =>
+        job.company.toLowerCase().includes(query) ||
+        job.position.toLowerCase().includes(query) ||
+        job.location.toLowerCase().includes(query)
+      );
+      setJobs(filtered);
+    }
+  };
+
+  const handleDeleteJob = async (jobId) => {
+    try {
+      await deleteJob(jobId);
+      setJobs(jobs.filter((job) => job.id !== jobId));
+      setOriginalJobs(originalJobs.filter((job) => job.id !== jobId));
+    } catch (err) {
+      alert(`Failed to delete job: ${err.message}`);
+    }
+  };
+
+  const handleStatusChange = async (jobId, newStatus) => {
+    try {
+      const updatedJob = await updateJobStatus(jobId, newStatus);
+      setJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job.id === jobId ? { ...job, status: updatedJob.status } : job
+        )
+      );
+    } catch (err) {
+      alert(`Failed to update job status: ${err.message}`);
+    }
+  };
+
+  const handleAddJob = async () => {
+    // Validation for required fields
+    if (!newJob.company || !newJob.position || !newJob.status) {
+      alert('Please fill out all required fields.');
+      return;
+    }
+  
+    try {
+      const result = await saveJob(newJob);
+  
+      if (!result || !result.job || !result.job.status) {
+        throw new Error('Invalid job data received from the backend.');
+      }
+  
+      // Update job list
+      setJobs((prevJobs) => [...prevJobs, result.job]);
+      setOriginalJobs((prevJobs) => [...prevJobs, result.job]);
+      setShowDialog(false); // Close modal
+    } catch (error) {
+      alert(error.message || 'An unexpected error occurred. Please try again.');
+    }
+  };
+  
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewJob((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const calculateJobCounts = () => {
+    const statusCounts = {
+      Saved: 0,
+      Applied: 0,
+      Interviewing: 0,
+      Accepted: 0,
+      Rejected: 0,
+    };
+  
+    jobs.forEach((job) => {
+      if (job && job.status && statusCounts[job.status] !== undefined) {
+        statusCounts[job.status] += 1;
+      }
+    });
+  
+    return statusCounts;
+  };
+  
+  const handleCloseDialog = () => {
+    // Reset modal state
+    setNewJob({
+      company: '',
+      position: '',
+      location: '',
+      status: 'Saved', // Default value
+      date_applied: '',
+      link: '',
+      description: '',
+    });
+  
+    // Close the dialog
+    setShowDialog(false);
+  };
+  
+
+  const handleSortChange = (e) => {
+    const sortKey = e.target.value;
+    setSortBy(sortKey);
+
+    if (sortKey === '') {
+      setJobs(originalJobs);
+      return;
+    }
+
+    const sortedJobs = [...jobs];
+    if (sortKey === 'date_applied_asc') {
+      sortedJobs.sort((a, b) => new Date(a.date_applied) - new Date(b.date_applied));
+    } else if (sortKey === 'date_applied_desc') {
+      sortedJobs.sort((a, b) => new Date(b.date_applied) - new Date(a.date_applied));
+    } else if (sortKey === 'status') {
+      sortedJobs.sort((a, b) => a.status.localeCompare(b.status));
+    }
+
+    setJobs(sortedJobs);
+  };
+
+  const handleFilterClick = (status) => {
+    setFilteredStatus((prevStatus) => (prevStatus === status ? null : status));
+  };
+
+  const filteredJobs = filteredStatus
+    ? jobs.filter((job) => job.status === filteredStatus)
+    : jobs;
+
+  const renderStatusSummary = () => {
+    const counts = calculateJobCounts();
+    const statuses = Object.keys(counts);
+
+    return (
+      <div style={{ display: 'flex', gap: '20px', margin: '20px 0' }}>
+        {statuses.map((status) => (
+          <div
+            key={status}
+            onClick={() => handleFilterClick(status)}
+            style={{
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              textAlign: 'center',
+              flex: '1',
+              backgroundColor: filteredStatus === status ? '#ddd' : '#fff',
+              cursor: 'pointer',
+            }}
+          >
+            <h4>{counts[status]}</h4>
+            <p>{status}</p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <h2>Dashboard</h2>
+      {renderStatusSummary()}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '20px 0', gap: '20px' }}>
+        <input
+          type="text"
+          placeholder="Search jobs..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          style={{
+            padding: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            width: '30%',
+            fontSize: '16px',
+          }}
+        />
+        <div>
+          <label htmlFor="sortBy" style={{ marginRight: '10px', fontWeight: 'bold' }}>
+            Sort By:
+          </label>
+          <select
+            id="sortBy"
+            value={sortBy}
+            onChange={handleSortChange}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '8px',
+              border: '1px solid #007BFF',
+              backgroundColor: '#f9f9f9',
+              color: '#333',
+              fontSize: '16px',
+              cursor: 'pointer',
+            }}
+          >
+            <option value="">None</option>
+            <option value="date_applied_asc">Date Applied (Oldest to Newest)</option>
+            <option value="date_applied_desc">Date Applied (Newest to Oldest)</option>
+            <option value="status">Status</option>
+          </select>
+        </div>
+        <button
+          onClick={() => setShowDialog(true)}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#007BFF',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          Add Job
+        </button>
+      </div>
+      {filteredJobs.length === 0 ? (
+        <p>No jobs found. Add a new job below!</p>
+      ) : (
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+          <thead>
+            <tr>
+              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Title</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Company</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Location</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Date Applied</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Status</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Link</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredJobs.map((job) => (
+              <tr key={job.id}>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.position}</td>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.company}</td>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.location}</td>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>
+                  {new Date(job.date_applied).toLocaleDateString()}
+                </td>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>
+                  <select
+                    value={job.status}
+                    onChange={(e) => handleStatusChange(job.id, e.target.value)}
+                    style={{
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid #007BFF',
+                      backgroundColor: '#f9f9f9',
+                      color: '#333',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      width: '100%',
+                    }}
+                  >
+                    <option value="Saved">Saved</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Interviewing">Interviewing</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </td>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>
+                  <a href={job.link} target="_blank" rel="noopener noreferrer">
+                    View Job
+                  </a>
+                </td>
+                <td style={{ border: '1px solid #ccc', padding: '10px', textAlign: 'center' }}>
+                  <FaTrash
+                    onClick={() => handleDeleteJob(job.id)}
+                    style={{ cursor: 'pointer', color: 'red' }}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {showDialog && (
+      <div>
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            padding: '40px',
+            backgroundColor: '#fff',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            zIndex: 1001,
+            width: '500px',
+          }}
+        >
+          <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>Add New Job</h3>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Company</label>
+            <input
+              type="text"
+              name="company"
+              value={newJob.company}
+              onChange={handleInputChange}
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Position</label>
+            <input
+              type="text"
+              name="position"
+              value={newJob.position}
+              onChange={handleInputChange}
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Location</label>
+            <input
+              type="text"
+              name="location"
+              value={newJob.location}
+              onChange={handleInputChange}
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Description</label>
+            <textarea
+              name="description"
+              value={newJob.description}
+              onChange={handleInputChange}
+              rows={5}
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+                resize: 'vertical', // Allow resizing vertically
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+              Status <span style={{ color: 'red' }}>*</span>
+            </label>
+            <select
+              name="status"
+              value={newJob.status}
+              onChange={handleInputChange}
+              required
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            >
+              <option value="">Select Status</option>
+              <option value="Saved">Saved</option>
+              <option value="Applied">Applied</option>
+              <option value="Interviewing">Interviewing</option>
+              <option value="Accepted">Accepted</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Date Applied</label>
+            <input
+              type="date"
+              name="date_applied"
+              value={newJob.date_applied}
+              onChange={handleInputChange}
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Link</label>
+            <input
+              type="url"
+              name="link"
+              value={newJob.link}
+              onChange={handleInputChange}
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </div>
+          <div style={{ textAlign: 'right' }}>
+              <button
+              onClick={handleCloseDialog}
+              style={{
+                marginRight: '10px',
+                padding: '10px 15px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+                backgroundColor: '#f5f5f5',
+                cursor: 'pointer',
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAddJob}
+              style={{
+                padding: '10px 15px',
+                borderRadius: '5px',
+                border: 'none',
+                backgroundColor: '#007BFF',
+                color: '#fff',
+                cursor: 'pointer',
+              }}
+            >
+              Save
+            </button>
+          </div>
+        </div>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowDialog(false)}
+        />
+      </div>
+    )}
+
+    </div>
+  );
+}
+
+export default JobDashboard;
