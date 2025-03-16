@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./UserProfile.css"; // Import CSS for styling
+import { createUserProfile } from "../services/api";
+
 
 const UserProfile = () => {
     const [formData, setFormData] = useState({
@@ -55,12 +57,46 @@ const UserProfile = () => {
     };
 
     // Handle form submission
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("User Profile Data:", formData);
-        alert("User profile saved! (Replace with API call)");
-        // Here, an API call will be made to save the user profile
+    
+        try {
+            // Prepare payload for the backend
+            const userData = {
+                first_name: formData.firstName,
+                last_name: formData.lastName,
+                email: formData.email,
+                phone: formData.phone,
+                city: formData.cityState.split(",")[0]?.trim(), // Extract city from input
+                state: formData.cityState.split(",")[1]?.trim(), // Extract state
+                //education: JSON.stringify(formData.education),
+                //work_experience: JSON.stringify(formData.workExperience),
+                skills: formData.skills,
+                gender: formData.gender,
+                race: formData.race,
+                ethnicity: formData.ethnicity,
+                disability_status: formData.disabilityStatus,
+                veteran_status: formData.veteranStatus,
+                linkedin: formData.linkedin,
+                github: formData.github,
+            };
+    
+            console.log("Submitting user profile:", userData);
+    
+            // Call API to create user profile
+            const response = await createUserProfile(userData);
+    
+            if (response && response.id) {
+                alert("User profile created successfully!");
+            } else {
+                throw new Error("Failed to create user profile.");
+            }
+        } catch (error) {
+            console.error("Error submitting user profile:", error.message);
+            alert("Failed to save user profile. Please try again.");
+        }
     };
+    
 
     return (
         <div className="user-profile-container">

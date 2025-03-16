@@ -14,7 +14,7 @@ const JOBS_URL = `${BASE_URL}/jobs`;  // ✅ Remove duplicate `/getJobs`
 const SNIPPET_URL = `${BASE_URL}/snippets`;
 const FILES_URL = `${BASE_URL}/files`;
 const LETTER_GENERATOR_URL = `${BASE_URL}/letter-generator`;
-const RESUME_URL = `${BASE_URL}/resume`;
+const USER_PROFILE_URL = `${BASE_URL}/user-profile`;
 
 
 // Fetch Backend Status
@@ -597,52 +597,103 @@ export const applyForJob = async (jobId) => {
   }
 };
 
-// ✅ Upload Resume and Extract Text
-export const uploadResume = async (file) => {
-  const url = `${RESUME_URL}/upload-resume`;
-
-  const formData = new FormData();
-  formData.append("file", file);
-
-  console.log("📤 Uploading Resume:", url);
-
+//Fetch All User Profiles
+export const fetchUserProfiles = async () => {
   try {
+    const url = `${USER_PROFILE_URL}/`;
+    console.log('Fetching User Profiles from:', url);
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch user profiles');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user profiles:', error.message);
+    return [];
+  }
+};
+
+//Fetch a Single User Profile by ID
+export const fetchUserProfileById = async (userId) => {
+  try {
+    const url = `${USER_PROFILE_URL}/${userId}`;
+    console.log(`Fetching User Profile ${userId} from:`, url);
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch user profile with ID ${userId}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user profile:', error.message);
+    throw error;
+  }
+};
+
+//Create a New User Profile
+export const createUserProfile = async (userData) => {
+  try {
+    const url = `${USER_PROFILE_URL}/newUser`;
+    console.log('Creating User Profile:', url);
+
     const response = await fetch(url, {
-      method: "POST",
-      body: formData,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to upload resume. Server responded with ${response.status}`);
+      throw new Error('Failed to create user profile');
     }
 
-    const data = await response.json();
-    console.log("✅ Resume Uploaded & Parsed:", data);
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("❌ Error uploading resume:", error.message);
+    console.error('Error creating user profile:', error.message);
     throw error;
   }
 };
 
-// ✅ Fetch Parsed Resume Data (if needed for future)
-export const fetchParsedResume = async (filename) => {
-  const url = `${RESUME_URL}/parsed/${filename}`;
-
-  console.log("📂 Fetching Parsed Resume:", url);
-
+//Update a User Profile
+export const updateUserProfile = async (userId, updatedData) => {
   try {
-    const response = await fetch(url);
+    const url = `${USER_PROFILE_URL}/${userId}`;
+    console.log(`Updating User Profile ${userId}:`, url);
+
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedData),
+    });
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch parsed resume. Server responded with ${response.status}`);
+      throw new Error(`Failed to update user profile with ID ${userId}`);
     }
 
-    const data = await response.json();
-    console.log("✅ Parsed Resume Data:", data);
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("❌ Error fetching parsed resume:", error.message);
+    console.error('Error updating user profile:', error.message);
     throw error;
   }
 };
 
+//Delete a User Profile
+export const deleteUserProfile = async (userId) => {
+  try {
+    const url = `${USER_PROFILE_URL}/${userId}`;
+    console.log(`Deleting User Profile ${userId}:`, url);
+
+    const response = await fetch(url, { method: 'DELETE' });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete user profile with ID ${userId}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting user profile:', error.message);
+    throw error;
+  }
+};

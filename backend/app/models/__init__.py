@@ -6,3 +6,4 @@ db = SQLAlchemy()
 # Import models after db is initialized
 from .JobDB import JobDB  # ✅ Ensure all models are imported
 from .FileDB import FileDB
+from .UserProfileDB import UserProfileDB

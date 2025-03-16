@@ -1,12 +1,13 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from config import Config
-from pdfminer.high_level import extract_text
 from app.extensions import db
 from flask_migrate import Migrate
 from app.routes.jobs_routes import job_bp
 from app.routes.fileManagerRoutes import file_manager_bp
 from app.routes.letter_generator import letter_generator_bp
+from app.routes.user_profiles_routes import user_profiles_routes_bp
+
 
 def create_app():
     """Factory function to create a Flask app instance."""
@@ -43,5 +44,6 @@ def create_app():
     app.register_blueprint(file_manager_bp, url_prefix="/api/files") 
     #app.register_blueprint(browser_bp, url_prefix="/api")
     app.register_blueprint(letter_generator_bp, url_prefix="/api/letter-generator")
+    app.register_blueprint(user_profiles_routes_bp, url_prefix="/api/user-profile")
 
     return app

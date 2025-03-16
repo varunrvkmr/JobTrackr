@@ -11,7 +11,7 @@ from functools import wraps
 from app.routes.fileManagerRoutes import file_manager_bp
 from app.routes.letter_generator import letter_generator_bp
 from app.routes.browser_automation import browser_bp
-from app.routes.resume_parser import resume_parser_bp
+from app.routes.user_profiles_routes import user_profiles_routes_bp
 from app.extensions import db
 from app.automation import apply_job
 
@@ -27,9 +27,8 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 app.register_blueprint(job_bp)
 app.register_blueprint(file_manager_bp, url_prefix="/api/files")
 app.register_blueprint(letter_generator_bp, url_prefix="/letter-generator")
-app.register_blueprint(resume_parser_bp, url_prefix="/resume-parser")
+app.register_blueprint(user_profiles_routes_bp, url_prefix="/user-profile")
 
-#app.register_blueprint(browser_bp, url_prefix='/api')
 
 # Database Configuration
 DATABASE_URL = os.getenv("DATABASE_URL")

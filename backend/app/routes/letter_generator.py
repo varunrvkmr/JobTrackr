@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import json
 import os
 import requests
-import subprocess
 from bs4 import BeautifulSoup
 from app.automation.apply_job import apply_for_job
 
