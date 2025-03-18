@@ -4,7 +4,6 @@ import { fetchBackendStatus } from './services/api';
 import Sidebar from './components/Sidebar';
 import JobDashboard from './components/JobDashboard';
 import FileManager from './components/FileManager';
-import TextSnippets from './components/TextSnippets';
 import LetterGenerator from './components/LetterGenerator';
 import JobDetails from './components/JobDetails';
 import JobParser from './components/JobParser';
@@ -29,7 +28,6 @@ function App() {
           <Routes>
             <Route path="/jobs" element={<JobDashboard/>} />
             <Route path="/files" element={<FileManager />} />
-            <Route path="/snippets" element={<TextSnippets />} />
             <Route path="/user-profile" element={<UserProfile />} />
             <Route path="/letter-generator" element={<LetterGenerator />} />
             <Route path="/letter-generator/:jobId" element={<JobDetails />} />

@@ -2,10 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { fetchJobs } from '../services/api';
 import { Link } from 'react-router-dom';
 
-function LetterGenerator() {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+interface Job {
+  id: string;
+  position: string;
+  company: string;
+  date_applied: string;
+  status: string;
+}
+
+const LetterGenerator: React.FC = () => {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -61,6 +69,6 @@ function LetterGenerator() {
       )}
     </div>
   );
-}
+};
 
 export default LetterGenerator;

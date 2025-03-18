@@ -4,12 +4,29 @@ import "./FileManager.css"; // Styles
 
 const BACKEND_URL_FILES = "http://localhost:5050/api/files"; // ✅ Ensure this matches backend routes
 
-function FileManager() {
-  const [files, setFiles] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
+interface FileData {
+  id: string;
+  name: string;
+  path: string;
+}
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+interface UploadResponse {
+  file_path: string;
+  status: string;
+}
+
+interface DeleteResponse {
+  message: string;
+}
+
+const FileManager: React.FC = () => {
+  const [files, setFiles] = useState<FileData[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+    }
   };
 
   const handleFileUpload = async () => {
@@ -19,7 +36,7 @@ function FileManager() {
     }
 
     try {
-      const response = await uploadFile(selectedFile);
+      const response: UploadResponse = await uploadFile(selectedFile);
 
       if (!response || !response.file_path || !response.status) {
         throw new Error(`File upload failed. Invalid response: ${JSON.stringify(response)}`);
@@ -29,20 +46,29 @@ function FileManager() {
       setSelectedFile(null);
       fetchFilesList(); // Refresh file list after upload
     } catch (err) {
-      console.error("❌ Error uploading file:", err.message);
-      alert(`Error uploading file: ${err.message}`);
+      if (err instanceof Error) {
+        console.error("❌ Error uploading file:", err.message);
+        alert(`Error uploading file: ${err.message}`);
+      } else {
+        console.error("❌ Unknown error uploading file:", err);
+        alert("An unknown error occurred while uploading the file.");
+      }
     }
   };
 
   const fetchFilesList = async () => {
     try {
-      const filesData = await fetchFiles();
+      const filesData: FileData[] = await fetchFiles();
       if (!Array.isArray(filesData)) {
         throw new Error(`Invalid response format: Expected an array, got ${JSON.stringify(filesData)}`);
       }
       setFiles(filesData); // ✅ Store objects [{ id, name, path }]
     } catch (err) {
-      console.error("❌ Error fetching files:", err.message);
+      if (err instanceof Error) {
+        console.error("❌ Error fetching files:", err.message);
+      } else {
+        console.error("❌ Unknown error fetching files:", err);
+      }
     }
   };
 
@@ -50,19 +76,24 @@ function FileManager() {
     fetchFilesList();
   }, []);
 
-  const handleFileClick = (file) => {
+  const handleFileClick = (file: FileData) => {
     const fileUrl = getFileURL(file.id);
     window.open(fileUrl, "_blank");
   };
 
-  const handleDeleteClick = async (fileId) => {
+  const handleDeleteClick = async (fileId: string) => {
     try {
-      const response = await deleteFile(fileId); // ✅ Using `file.id` instead of `file.name`
+      const response: DeleteResponse = await deleteFile(fileId); // ✅ Using `file.id` instead of `file.name`
       alert(response.message);
       fetchFilesList(); // Refresh list
     } catch (error) {
-      console.error("❌ Error deleting file:", error.message);
-      alert(`Error deleting file: ${error.message}`);
+      if (error instanceof Error) {
+        console.error("❌ Error deleting file:", error.message);
+        alert(`Error deleting file: ${error.message}`);
+      } else {
+        console.error("❌ Unknown error deleting file:", error);
+        alert("An unknown error occurred while deleting the file.");
+      }
     }
   };
 
@@ -108,6 +139,6 @@ function FileManager() {
       </div>
     </div>
   );
-}
+};
 
 export default FileManager;
