@@ -1,5 +1,6 @@
 // frontend/src/types.ts
 export interface Job {
+    id: string
     position: string;
     company: string;
     location: string;
@@ -14,13 +15,19 @@ export interface Job {
     missing_skills: string[];
     matched_experience: string[];
     missing_experience: string[];
+    match_percentage?: number
+    recommendation?: string
+    error?: string
   }
 
-  export interface ApiResponse {
+  export interface ApiResponse<T = undefined> {
     error?: string;
     message?: string;
+    data?: T | null; // ✅ Explicitly allow `null` or `undefined`
   }
 
+
+  
   interface Education {
     school: string;
     degree: string;
@@ -33,12 +40,14 @@ export interface Job {
     years: string;
   }
   
-  interface UserProfileFormData {
+  export interface UserProfileFormData {
+    id: string; // Ensure id is explicitly a string
     firstName: string;
     lastName: string;
     email: string;
     phone: string;
-    cityState: string;
+    city: string;
+    state: string;
     education: Education[];
     workExperience: WorkExperience[];
     skills: string;
@@ -51,7 +60,9 @@ export interface Job {
     github: string;
   }
   
-  interface UserProfilePayload {
+  
+  export interface UserProfilePayload {
+    id: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -67,3 +78,9 @@ export interface Job {
     linkedin: string;
     github: string;
   }
+
+  export type UserProfile = UserProfileFormData & {
+    id: string;
+  };
+  
+  

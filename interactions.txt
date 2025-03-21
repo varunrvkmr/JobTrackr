@@ -6,6 +6,8 @@ docker-compose down && docker-compose up -d --build
 docker-compose down
 docker-compose up -d --build
 
+docker-compose up -d --build frontend
+
 
 rm -rf backend/migrations
 docker exec -it jobtrackr-backend-1 flask db init 
