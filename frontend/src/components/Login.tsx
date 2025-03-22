@@ -3,10 +3,10 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Eye, EyeOff, ArrowRight, Mail, Lock, User } from "lucide-react"
+import { Eye, EyeOff, ArrowRight, Lock, User } from "lucide-react"
 import "./auth-page.css"
-import { loginUser, registerUser } from "../services/api" 
+import { loginUser, registerUser } from "../services/api"
+import { Link } from "react-router-dom"
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
@@ -14,7 +14,7 @@ export default function AuthPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    name: "",
+    name: ""
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,13 +24,14 @@ export default function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-  
+
     try {
       if (isLogin) {
         await loginUser(formData.email, formData.password)
         window.location.href = "/jobs" // or use navigate("/jobs")
       } else {
-        await registerUser(formData.email, formData.password)
+        // Pass the name along with email and password when registering
+        await registerUser(formData.email, formData.password, formData.name)
         alert("Registration successful! Please sign in.")
         setIsLogin(true)
       }
@@ -38,7 +39,6 @@ export default function AuthPage() {
       alert((err as Error).message)
     }
   }
-  
 
   return (
     <div className="auth-container">
@@ -132,14 +132,13 @@ export default function AuthPage() {
                 </label>
               </div>
               <div className="forgot-password">
-              <button
-                type="button"
-                onClick={() => alert("Forgot password functionality coming soon!")}
-                className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:underline transition ease-in-out duration-150"
-              >
-                Forgot your password?
-              </button>
-
+                <button
+                  type="button"
+                  onClick={() => alert("Forgot password functionality coming soon!")}
+                  className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:underline transition ease-in-out duration-150"
+                >
+                  Forgot your password?
+                </button>
               </div>
             </div>
           )}

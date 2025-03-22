@@ -1,7 +1,7 @@
 // Replace 'http://your-ec2-public-dns:8081' with your EC2 instance's address.
 // If the frontend is served from the same origin, you can use a relative path (e.g., '/api').
 //const BASE_URL = "https://jobtrackr.hopto.org/api/";
-import { Job, ApiResponse, UserProfile } from "@/types";
+import { Job, ApiResponse, UserProfile, AuthUser } from "@/types";
 
 //const BASE_URL = window.location.protocol + "//jobtrackr.hopto.org/api/";
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5050/api";
@@ -530,6 +530,28 @@ export const getUserProfileById = async (id: string): Promise<ApiResponse<UserPr
   return response.json();
 };
 
+const AUTH_USER_URL = "http://localhost:5050/api/auth/user"
+
+export const getAuthUserById = async (id: string): Promise<AuthUser> => {
+  const url = `${AUTH_USER_URL}/${Number(id)}`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  if (response.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    window.location.href = "/";
+    throw new Error("Unauthorized — please log in again.");
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user profile");
+  }
+
+  return response.json(); // ✅ response is AuthUser object, not wrapped
+};
 export const loginUser = async (email: string, password: string) => {
   const response = await fetch("http://localhost:5050/api/auth/login", {
     method: "POST",
@@ -550,11 +572,11 @@ export const loginUser = async (email: string, password: string) => {
   return data;
 };
 
-export const registerUser = async (email: string, password: string) => {
+export const registerUser = async (email: string, password: string, name: string) => {
   const response = await fetch("http://localhost:5050/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, name}),
   })
 
   const data = await response.json()

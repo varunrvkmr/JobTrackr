@@ -2,8 +2,9 @@ from app import db
 from flask_bcrypt import generate_password_hash, check_password_hash
 
 class UserAuth(db.Model):
-    __tablename__ = "auth_users"  # Or "auth_users" to avoid conflict with user profiles
+    __tablename__ = "auth_users" 
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False, server_default="Unknown")
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 

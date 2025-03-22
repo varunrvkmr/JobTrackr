@@ -4,27 +4,26 @@ from app import db
 from app.models.UserAuth import UserAuth
 
 auth_bp = Blueprint("auth", __name__)
-
 # 🔐 Register a new user
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
+    name = data.get("name")
     email = data.get("email")
     password = data.get("password")
 
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+    if not name or not email or not password:
+        return jsonify({"error": "Name, email, and password are required"}), 400
 
     if UserAuth.query.filter_by(email=email).first():
         return jsonify({"error": "Email already registered"}), 400
 
-    user = UserAuth(email=email)
+    user = UserAuth(name=name, email=email)
     user.set_password(password)
     db.session.add(user)
     db.session.commit()
 
     return jsonify({"message": "User registered successfully", "id": user.id}), 201
-
 
 # 🔑 Login route
 @auth_bp.route("/login", methods=["POST"])
@@ -42,8 +41,32 @@ def login():
         return jsonify({"error": "Invalid email or password"}), 401
 
     # ✅ Generate JWT token
-    access_token = create_access_token(identity=user.id)
+    #access_token = create_access_token(identity=user.id)
+    print("User ID type:", type(user.id))
+    print("Stringified ID type:", type(str(user.id)))
+    print("Stringified ID value:", str(user.id))
+    access_token = create_access_token(identity=str(user.id))
+
+    #access_token = create_access_token(identity=str(user.id))  # ✅ cast to string
     return jsonify({"token": access_token, "id": user.id}), 200
+
+
+# 👤 Get auth user info by ID
+@auth_bp.route("/user/<int:user_id>", methods=["GET"])
+@jwt_required()
+def get_auth_user(user_id):
+    current_user_id = get_jwt_identity()
+    print("Current user ID from token:", current_user_id)
+
+    user = UserAuth.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "id": user.id,
+        "email": user.email,
+        "name": user.name
+    }), 200
 
 
 # 🔐 Example of a protected route

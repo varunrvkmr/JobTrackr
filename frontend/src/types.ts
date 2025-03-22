@@ -83,4 +83,10 @@ export interface Job {
     id: string;
   };
   
+  export interface AuthUser {
+    id: number | string;
+    email: string;
+    name: string;
+    avatar?: string;
+  }
   

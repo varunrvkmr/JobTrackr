@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import "./user-profile.css"
-import { createUserProfile, updateUserProfile } from "src/services/api";
+import { createUserProfile, updateUserProfile, getUserProfileById } from "src/services/api";
 import type { UserProfile, UserProfileFormData, ApiResponse } from "@/types"
 
 interface Education {
@@ -45,6 +45,7 @@ const EnhancedUserProfile = () => {
   
 
   // Load profile data on component mount
+  /*PREVIOUSLY WORKING CODE 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -72,6 +73,39 @@ const EnhancedUserProfile = () => {
   
     fetchProfile();
   }, []);
+  */
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setIsLoading(true);
+  
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          setIsEditing(true);
+          setIsLoading(false);
+          return;
+        }
+  
+        const response = await getUserProfileById(userId); // Use your service layer
+        if (response && response.data) {
+          setFormData(response.data);
+          setHasProfile(true);
+          setIsEditing(false);
+        } else {
+          setIsEditing(true);
+        }
+      } catch (error) {
+        console.error("Error loading user profile:", error);
+        setIsEditing(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchProfile();
+  }, []);  
+  
   
 
   // Handle input changes
@@ -289,7 +323,6 @@ const EnhancedUserProfile = () => {
                 value={formData.phone}
                 onChange={handleChange}
                 disabled={!isEditing}
-                required
                 className={!isEditing ? "readonly-field" : ""}
               />
             </div>
@@ -305,7 +338,6 @@ const EnhancedUserProfile = () => {
               onChange={handleChange}
               placeholder="e.g. New York"
               disabled={!isEditing}
-              required
               className={!isEditing ? "readonly-field" : ""}
             />
           </div>
@@ -319,7 +351,6 @@ const EnhancedUserProfile = () => {
               onChange={handleChange}
               placeholder="e.g. NY"
               disabled={!isEditing}
-              required
               className={!isEditing ? "readonly-field" : ""}
             />
           </div>
@@ -348,7 +379,6 @@ const EnhancedUserProfile = () => {
                     value={edu.school}
                     onChange={(e) => handleChange(e, index, "education")}
                     disabled={!isEditing}
-                    required
                     className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
@@ -362,7 +392,6 @@ const EnhancedUserProfile = () => {
                     value={edu.degree}
                     onChange={(e) => handleChange(e, index, "education")}
                     disabled={!isEditing}
-                    required
                     className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
@@ -417,7 +446,6 @@ const EnhancedUserProfile = () => {
                     value={work.company}
                     onChange={(e) => handleChange(e, index, "workExperience")}
                     disabled={!isEditing}
-                    required
                     className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
@@ -431,7 +459,6 @@ const EnhancedUserProfile = () => {
                     value={work.position}
                     onChange={(e) => handleChange(e, index, "workExperience")}
                     disabled={!isEditing}
-                    required
                     className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>

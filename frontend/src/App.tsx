@@ -10,7 +10,7 @@ import JobParser from "./components/JobParser"
 import UserProfile from "./components/UserProfile";
 import "./App.css"
 import Login from "./components/Login"
-import Register from "./components/Register"
+//import Register from "./components/Register"
 import PrivateRoute from "./components/PrivateRoute"
 import { isAuthenticated } from "src/components/auth"
 
@@ -55,9 +55,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Route: Login */}
+        {/* Public Route: Login: <Route path="/register" element={<Register />} /> */}
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        
 
 
         {/* Redirect root to jobs or login */}
