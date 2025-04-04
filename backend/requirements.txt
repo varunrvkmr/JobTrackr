@@ -19,3 +19,5 @@ requests
 browser-use
 playwright
 langchain
+flask-bcrypt 
+flask-jwt-extended

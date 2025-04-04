@@ -55,6 +55,8 @@ services:
       - "3000:3000"
     env_file:
       - ./frontend/.env
+    volumes:
+      - ./frontend:/app
     depends_on:
       - backend
     networks:

@@ -6,10 +6,14 @@ docker-compose down && docker-compose up -d --build
 docker-compose down
 docker-compose up -d --build
 
+docker-compose up -d --build frontend
+
+
+docker exec -it postgres_db psql -U postgres -d jobs_db
 
 rm -rf backend/migrations
 docker exec -it jobtrackr-backend-1 flask db init 
-docker exec -it jobtrackr-backend-1 flask db migrate -m "Reset migration"
+docker exec -it jobtrackr-backend-1 flask db migrate -m "Add name to UserAuth"
 docker exec -it jobtrackr-backend-1 flask db upgrade
 
 docker exec -it jobtrackr-backend-1 flask db init 

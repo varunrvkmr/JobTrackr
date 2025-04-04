@@ -1,0 +1,77 @@
+backend
+/app
+	__init__.py  
+  __pycache__  
+  /automation  
+    __pycache__  
+    apply_job.py  
+  extensions.py  
+  /models  
+    __init__.py  
+    __pycache__  
+    FileDB.py  
+    JobDB.py  
+    SnippetDB.py  
+    UserProfileDB.py  
+  /routes  
+    __init__.py  
+    __pycache__  
+    browser_automation.py  
+    fileManagerRoutes.py  
+    jobs_routes.py  
+    letter_generator.py  
+    snippetsRoutes.py  
+    user_profiles_routes.py  
+    routes.py
+app.py
+config.py
+db-credentials.txt
+Dockerfile
+migrations
+oldDockerfile.txt
+requirements.txt
+test_browser_use.py
+test_browseruse2.py
+tests
+uploads
+wsgi.py
+
+frontend
+Here is the converted list for the third image:
+
+/build  
+/chrome-extension  
+Dockerfile  
+node_modules  
+package-lock.json  
+package.json  
+/public  
+/src  
+  App.css  
+  App.js  
+  App.test.js  
+  /components  
+    FileManager.css  
+    FileManager.js  
+    JobDashboard.js  
+    JobDetails.css  
+    JobDetails.js  
+    JobParser.js  
+    LetterGenerator.js  
+    old-LetterGenerator.js  
+    resume-form.tsx  
+    ResumeParser.css  
+    ResumeParser.js  
+    Sidebar.js  
+    TextSnippets.css  
+    TextSnippets.js  
+    UserProfile.css  
+    UserProfile.js  
+  index.css  
+  index.js  
+  logo.svg  
+  reportWebVitals.js  
+  /services  
+    api.js  
+  setupTests.js  
+/styles
