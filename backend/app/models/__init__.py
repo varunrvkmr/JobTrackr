@@ -1,9 +1,11 @@
-from flask_sqlalchemy import SQLAlchemy
+from app.extensions import db 
 
-# Create db instance globally
-db = SQLAlchemy()
-
-# Import models after db is initialized
-from .JobDB import JobDB  # ✅ Ensure all models are imported
-from .FileDB import FileDB
-from .UserProfileDB import UserProfileDB
+# Import model classes so Flask-Migrate can detect them
+from .User import User
+from .UserAuth import UserAuth
+from .Race import Race
+from .Gender import Gender
+from .JobPosting import JobPosting
+from .UserJob import UserJob
+from .UserEducation import UserEducation
+from .WorkExperience import WorkExperience

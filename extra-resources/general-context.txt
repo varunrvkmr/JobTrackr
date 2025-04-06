@@ -1,0 +1,14 @@
+general 
+I am working on an application where a user can track their job applications. This is a Flask/Python backend with a React/TypeScript UI. 
+I am running the backend from a docker container and the frontend out of a separate docker container.
+
+
+DB-specific
+I am working on an application where a user can track their job applications. I have a section in my application dedicated for the user 
+to manually put in their details. Once the user fills it out, the information gets stored on to a separate postgres DB docker container. 
+Right now, things are very one to one, in the sense that none of the tables in the DB communicate with each other, share any resources, 
+and a given functionality correlates to one table. I want to transition to a much better DB design now and save the work I would have to 
+do later. I have a migration framework set up but I'm worried about the upcoming subsequent changes that would be changed after changing 
+up the DB schema. This is a Flask/Python backend with a React/TypeScript UI. I am running the backend from a docker container and the 
+frontend out of a separate docker container. How would you plan out making these changes, especially when changes like this have a lot of 
+ripple effects across the codebase?

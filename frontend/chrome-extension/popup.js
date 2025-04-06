@@ -99,15 +99,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Extract job details based on the platform
     const jobData = {
-      position: platform === 'Otta'
-        ? document.querySelector(selectors.title)?.innerText.trim().split(', ')[0] || 'Unknown Position'
-        : document.querySelector(selectors.title)?.innerText.trim() || 'Unknown Position',
+      job_title: platform === 'Otta'
+        ? document.querySelector(selectors.title)?.innerText.trim().split(', ')[0] || 'Unknown Title'
+        : document.querySelector(selectors.title)?.innerText.trim() || 'Unknown Title',
+    
       company: platform === 'Otta'
         ? document.querySelector(selectors.title)?.innerText.trim().split(', ')[1] || 'No company'
         : document.querySelector(selectors.company)?.innerText.trim() || 'No company',
+    
       location: platform === 'Otta'
-        ? 'Not provided' // No location explicitly defined for Otta
+        ? 'Not provided'
         : document.querySelector(selectors.location)?.innerText.trim() || 'No location',
+    
       job_description:
         platform === 'Otta' || platform === 'Jobright'
           ? [
@@ -115,8 +118,13 @@ document.addEventListener('DOMContentLoaded', () => {
               extractAndMerge(selectors.required),
               extractAndMerge(selectors.preferred)
             ].join('\n\n')
-          : document.querySelector(selectors.job_description)?.innerText.trim() || 'No job description available'
+          : document.querySelector(selectors.job_description)?.innerText.trim() || 'No job description available',
+    
+      job_link: window.location.href,
+      country: 'Not specified',
+      posting_status: 'Saved'
     };
+    
   
     return jobData;
   }
@@ -131,17 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     
-    fetch('http://localhost:5050/api/jobs', {
+    fetch('http://localhost:5050/api/jobs/publicAddJob', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
-      body: JSON.stringify({
-        ...jobData,
-        status: 'Saved',
-        date_applied: new Date().toISOString().split('T')[0],
-      }),
-    })
+      body: JSON.stringify(jobData),
+      mode: 'cors',
+      credentials: 'omit'  // Ensures no cookies/session info are passed
+    })    
       .then((response) => {
         if (response.ok) {
           statusMessage.textContent = 'Job saved successfully!';
@@ -156,22 +163,5 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.textContent = 'Error saving job.';
       });
   }
-  
-  // Function to edit a snippet
-  function editSnippet(id) {
-    const newContent = prompt('Edit your snippet:');
-    if (newContent) {
-      fetch(`http://localhost:5050/api/snippets/edit/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newContent }),
-      })
-        .then((response) => response.json())
-        .then((updatedSnippet) => {
-          alert('Snippet updated!');
-          location.reload(); // Reload to show updated data
-        })
-        .catch((error) => console.error('Error editing snippet:', error));
-    }
-  }
+
   

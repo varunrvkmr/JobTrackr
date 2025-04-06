@@ -14,24 +14,28 @@ export default function AuthPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    name: ""
+    username: ""
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    console.log("Changing:", name, "to", value);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     try {
       if (isLogin) {
         await loginUser(formData.email, formData.password)
         window.location.href = "/jobs" // or use navigate("/jobs")
       } else {
         // Pass the name along with email and password when registering
-        await registerUser(formData.email, formData.password, formData.name)
+        console.log("formData at submit:", formData);
+        await registerUser(formData.email, formData.password, formData.username)
         alert("Registration successful! Please sign in.")
         setIsLogin(true)
       }
@@ -59,16 +63,16 @@ export default function AuthPage() {
             {!isLogin && (
               <div className="form-group">
                 <label htmlFor="name" className="form-label">
-                  Full Name
+                  Username
                 </label>
                 <div className="input-container">
                   <input
-                    id="name"
-                    name="name"
+                    id="username"
+                    name="username"
                     type="text"
-                    autoComplete="name"
+                    autoComplete="username"
                     required={!isLogin}
-                    value={formData.name}
+                    value={formData.username}
                     onChange={handleChange}
                     className="form-input"
                     placeholder="John Doe"

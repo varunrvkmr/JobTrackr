@@ -93,12 +93,21 @@ const getLinkedInApplyUrl = () => {
     company: platform === 'Otta'
       ? document.querySelector(selectors.company)?.innerText.trim().split(', ')[1] || 'No company'
       : document.querySelector(selectors.company)?.innerText.trim() || 'No company',
-    location: platform === 'Otta' ? 'Not provided' : document.querySelector(selectors.location)?.innerText.trim() || 'No location',
-    position: platform === 'Otta'
+      
+    job_title: platform === 'Otta'
       ? document.querySelector(selectors.title)?.innerText.trim().split(', ')[0] || 'Unknown Position'
       : document.querySelector(selectors.title)?.innerText.trim() || 'Unknown Position',
-    date_applied: formatDate(),
-    link: platform === 'LinkedIn' ? getLinkedInApplyUrl() || window.location.href : window.location.href, // Get LinkedIn apply link if available
+      
+    location: platform === 'Otta'
+      ? 'Not provided'
+      : document.querySelector(selectors.location)?.innerText.trim() || 'No location',
+  
+    country: 'Not specified', // You could improve this with Geo API in the future
+  
+    job_link: platform === 'LinkedIn'
+      ? getLinkedInApplyUrl() || window.location.href
+      : window.location.href,
+  
     job_description:
       (platform === 'Otta' || platform === 'Jobright'
         ? [
@@ -107,13 +116,15 @@ const getLinkedInApplyUrl = () => {
             extractAndMerge(selectors.preferred)
           ].join('\n\n')
         : document.querySelector(selectors.job_description)?.innerText.trim()) || 'No job description available',
-    status: 'Saved'
+  
+    posting_status: 'Saved'
   };
+  
 
   console.log('Extracted Job Data:', jobData);
 
   // Send job data to the backend
-  fetch('http://localhost:5050/api/jobs/addJob', {
+  fetch('http://localhost:5050/api/jobs/publicAddJob', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

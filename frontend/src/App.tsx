@@ -6,16 +6,12 @@ import { fetchBackendStatus } from "./services/api"
 import JobDashboard from "./components/JobDashboard"
 import LetterGenerator from "./components/LetterGenerator"
 import JobDetails from "./components/JobDetails"
-import JobParser from "./components/JobParser"
 import UserProfile from "./components/UserProfile";
 import "./App.css"
 import Login from "./components/Login"
 //import Register from "./components/Register"
 import PrivateRoute from "./components/PrivateRoute"
 import { isAuthenticated } from "src/components/auth"
-
-
-
 
 // Import the enhanced Sidebar
 import EnhancedSidebar from "./components/Sidebar"
@@ -31,9 +27,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     if (path === "/jobs") return "jobs"
     if (path.startsWith("/files")) return "files"
     if (path.startsWith("/user-profile")) return "user-profile"
-    if (path.startsWith("/snippets")) return "snippets"
     if (path.startsWith("/letter-generator")) return "letter-generator"
-    if (path.startsWith("/parse-job")) return "parse-job"
   
     return "jobs" // default to jobs if no match
   }
@@ -58,8 +52,6 @@ function App() {
         {/* Public Route: Login: <Route path="/register" element={<Register />} /> */}
         <Route path="/login" element={<Login />} />
         
-
-
         {/* Redirect root to jobs or login */}
         <Route
           path="/"
@@ -112,17 +104,6 @@ function App() {
             <PrivateRoute>
               <AppLayout>
                 <JobDetails />
-              </AppLayout>
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/parse-job"
-          element={
-            <PrivateRoute>
-              <AppLayout>
-                <JobParser />
               </AppLayout>
             </PrivateRoute>
           }

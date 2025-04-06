@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 from flask import send_file
 from app.models import FileDB
-from app import db 
+from app.extensions import db 
 
 file_manager_bp = Blueprint("file_manager", __name__)
 

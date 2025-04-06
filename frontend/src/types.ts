@@ -86,7 +86,7 @@ export interface Job {
   export interface AuthUser {
     id: number | string;
     email: string;
-    name: string;
+    username: string;
     avatar?: string;
   }
   

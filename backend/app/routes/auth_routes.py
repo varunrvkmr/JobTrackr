@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from app import db 
+from app.extensions import db 
 from app.models.UserAuth import UserAuth
 
 auth_bp = Blueprint("auth", __name__)
@@ -8,22 +8,34 @@ auth_bp = Blueprint("auth", __name__)
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
-    name = data.get("name")
+    print("Received payload:", data)
+
+    # Explicit field extraction
+    username = data.get("username")
     email = data.get("email")
     password = data.get("password")
 
-    if not name or not email or not password:
-        return jsonify({"error": "Name, email, and password are required"}), 400
+    print("Parsed username:", username)
+    print("Parsed email:", email)
+    print("Parsed password:", password)
+
+    if not username or not email or not password:
+        return jsonify({"error": "Username, email, and password are required"}), 400
 
     if UserAuth.query.filter_by(email=email).first():
         return jsonify({"error": "Email already registered"}), 400
 
-    user = UserAuth(name=name, email=email)
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
+    try:
+        user = UserAuth(username=username, email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+    except Exception as e:
+        print("Exception during user creation:", str(e))
+        return jsonify({"error": "Internal server error"}), 500
 
     return jsonify({"message": "User registered successfully", "id": user.id}), 201
+
 
 # 🔑 Login route
 @auth_bp.route("/login", methods=["POST"])
@@ -65,7 +77,7 @@ def get_auth_user(user_id):
     return jsonify({
         "id": user.id,
         "email": user.email,
-        "name": user.name
+        "username": user.username
     }), 200
 
 

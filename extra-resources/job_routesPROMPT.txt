@@ -1,0 +1,99 @@
+I recently changed my DB code for job postings from old DB code to new DB code. In doing so, I'm worried about also updating the backend interactions with the routes (jobs_routes.py) as well as the interactions with the api service layer (api.ts). Can you make any changes on how I can go about this?
+old DB code
+from . import db
+
+class JobDB(db.Model):
+    __tablename__ = 'jobs_table'
+    id = db.Column(db.Integer, primary_key=True)
+    company = db.Column(db.String(255), nullable=False)
+    position = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
+    date_applied = db.Column(db.Date, nullable=True)
+    link = db.Column(db.Text, nullable=True)
+    location = db.Column(db.String(255), nullable=True)
+    job_description = db.Column(db.Text, nullable=True)  # New column for job description
+    
+to new DB code. 
+from app.extensions import db
+
+class JobPosting(db.Model):
+    __tablename__ = "job_posting"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    company = db.Column(db.String(255), nullable=False)
+    job_title = db.Column(db.String(255), nullable=False)
+    job_description = db.Column(db.Text)
+    job_link = db.Column(db.Text)
+    location = db.Column(db.String(255))
+    country = db.Column(db.String(100))
+    posting_status = db.Column(db.String(100))
+
+    def __repr__(self):
+        return f"<JobPosting {self.company} - {self.job_title}>"
+
+
+//attach jobs_routes.py
+relevant code from api.ts
+export const fetchJobs = async (): Promise<Job[]> => {
+  try {
+    const response = await fetch(`${JOBS_URL}/getJobs`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch jobs");
+    }
+    const data: Job[] = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    return [];
+  }
+};
+
+export const updateJobStatus = async (jobId: string, newStatus: string): Promise<ApiResponse> => {
+  try {
+    const response = await fetch(`${BASE_URL}/updateJobStatus/${jobId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to update job status for ID ${jobId}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating job status:", error);
+    throw error;
+  }
+};
+
+export const saveJob = async (jobData: Partial<Job>): Promise<ApiResponse> => {
+  try {
+    const response = await fetch(`${BASE_URL}/jobs/addJob`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(jobData),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to save job");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error saving job:", error);
+    throw error;
+  }
+};
+
+export const deleteJob = async (jobId: string): Promise<ApiResponse> => {
+  try {
+    const response = await fetch(`${JOBS_URL}/deleteJob/${jobId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to delete job with ID ${jobId}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting job:", error);
+    throw error;
+  }
+};

@@ -6,17 +6,18 @@ import { Job, ApiResponse, UserProfile, AuthUser } from "@/types";
 //const BASE_URL = window.location.protocol + "//jobtrackr.hopto.org/api/";
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5050/api";
 
-
-//const SNIPPET_URL = `${BASE_URL}/snippets`;
-//const FILES_URL = `${BASE_URL}/files`;
-//const JOBS_URL = `${BASE_URL}/jobs`;
-//const LETTER_GENERATOR_URL = `${BASE_URL}/letter-generator`;
-const JOBS_URL = `${BASE_URL}/jobs`;  // ✅ Remove duplicate `/getJobs`
-const SNIPPET_URL = `${BASE_URL}/snippets`;
+const JOBS_URL = `${BASE_URL}/jobs`;  
 const FILES_URL = `${BASE_URL}/files`;
 const LETTER_GENERATOR_URL = `${BASE_URL}/letter-generator`;
 const USER_PROFILE_URL = `${BASE_URL}/user-profile`;
 
+export const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
 
 export const fetchBackendStatus = async (): Promise<ApiResponse> => {
   try {
@@ -33,10 +34,15 @@ export const fetchBackendStatus = async (): Promise<ApiResponse> => {
 
 export const fetchJobs = async (): Promise<Job[]> => {
   try {
-    const response = await fetch(`${JOBS_URL}/getJobs`);
+    const response = await fetch(`${JOBS_URL}/getJobs`, {
+      method: "GET",
+      headers: getAuthHeaders(), // ✅ now includes JWT
+    });
+
     if (!response.ok) {
       throw new Error("Failed to fetch jobs");
     }
+
     const data: Job[] = await response.json();
     return data;
   } catch (error) {
@@ -507,15 +513,6 @@ export const updateUserProfile = async (userId: string, updatedData: Partial<Use
 
 //PASSWORD AUTHENTICATION FUNCTIONS
 
-export const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
-
-
 export const getUserProfileById = async (id: string): Promise<ApiResponse<UserProfile>> => {
   const url = `${USER_PROFILE_URL}/${id}`;
   const response = await fetch(url, {
@@ -572,11 +569,11 @@ export const loginUser = async (email: string, password: string) => {
   return data;
 };
 
-export const registerUser = async (email: string, password: string, name: string) => {
+export const registerUser = async (email: string, password: string, username: string) => {
   const response = await fetch("http://localhost:5050/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, name}),
+    body: JSON.stringify({ email, password, username}),
   })
 
   const data = await response.json()

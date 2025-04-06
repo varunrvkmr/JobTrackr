@@ -13,13 +13,13 @@ function JobDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [newJob, setNewJob] = useState({
     company: '',
-    position: '',
+    job_title: '',
     location: '',
-    description: '', // New field
-    status: 'Saved',
-    date_applied: '',
-    link: '',
-  });
+    job_description: '',
+    posting_status: 'Saved',
+    job_link: '',
+    country: ''
+  });  
   
 
   useEffect(() => {
@@ -46,8 +46,8 @@ function JobDashboard() {
     } else {
       const filtered = originalJobs.filter((job) =>
         job.company.toLowerCase().includes(query) ||
-        job.position.toLowerCase().includes(query) ||
-        job.location.toLowerCase().includes(query)
+        job.job_title.toLowerCase().includes(query) ||
+        job.location?.toLowerCase().includes(query)
       );
       setJobs(filtered);
     }
@@ -68,17 +68,19 @@ function JobDashboard() {
       const updatedJob = await updateJobStatus(jobId, newStatus);
       setJobs((prevJobs) =>
         prevJobs.map((job) =>
-          job.id === jobId ? { ...job, status: updatedJob.status } : job
+          job.id === jobId
+            ? { ...job, posting_status: updatedJob.posting_status }  // ✅ updated
+            : job
         )
       );
     } catch (err) {
       alert(`Failed to update job status: ${err.message}`);
     }
   };
+  
 
   const handleAddJob = async () => {
-    // Validation for required fields
-    if (!newJob.company || !newJob.position || !newJob.status) {
+    if (!newJob.company || !newJob.job_title || !newJob.posting_status) {
       alert('Please fill out all required fields.');
       return;
     }
@@ -86,19 +88,17 @@ function JobDashboard() {
     try {
       const result = await saveJob(newJob);
   
-      if (!result || !result.job || !result.job.status) {
+      if (!result || !result.job || !result.job.posting_status) {
         throw new Error('Invalid job data received from the backend.');
       }
   
-      // Update job list
       setJobs((prevJobs) => [...prevJobs, result.job]);
       setOriginalJobs((prevJobs) => [...prevJobs, result.job]);
-      setShowDialog(false); // Close modal
+      setShowDialog(false);
     } catch (error) {
       alert(error.message || 'An unexpected error occurred. Please try again.');
     }
-  };
-  
+  };  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -115,49 +115,46 @@ function JobDashboard() {
     };
   
     jobs.forEach((job) => {
-      if (job && job.status && statusCounts[job.status] !== undefined) {
-        statusCounts[job.status] += 1;
+      if (job && job.posting_status && statusCounts[job.posting_status] !== undefined) {
+        statusCounts[job.posting_status] += 1;
       }
     });
   
     return statusCounts;
-  };
+  };  
   
   const handleCloseDialog = () => {
-    // Reset modal state
     setNewJob({
       company: '',
-      position: '',
+      job_title: '',
       location: '',
-      status: 'Saved', // Default value
-      date_applied: '',
-      link: '',
-      description: '',
+      posting_status: 'Saved', // default value
+      job_link: '',
+      job_description: '',
+      country: 'USA'
     });
   
-    // Close the dialog
     setShowDialog(false);
   };
   
-
   const handleSortChange = (e) => {
     const sortKey = e.target.value;
     setSortBy(sortKey);
-
+  
     if (sortKey === '') {
       setJobs(originalJobs);
       return;
     }
-
+  
     const sortedJobs = [...jobs];
-    if (sortKey === 'date_applied_asc') {
-      sortedJobs.sort((a, b) => new Date(a.date_applied) - new Date(b.date_applied));
-    } else if (sortKey === 'date_applied_desc') {
-      sortedJobs.sort((a, b) => new Date(b.date_applied) - new Date(a.date_applied));
-    } else if (sortKey === 'status') {
-      sortedJobs.sort((a, b) => a.status.localeCompare(b.status));
-    }
-
+    if (sortKey === 'posting_status') {
+      sortedJobs.sort((a, b) => a.posting_status.localeCompare(b.posting_status));
+    } else if (sortKey === 'company') {
+      sortedJobs.sort((a, b) => a.company.localeCompare(b.company));
+    } else if (sortKey === 'location') {
+      sortedJobs.sort((a, b) => a.location?.localeCompare(b.location));
+    }    
+  
     setJobs(sortedJobs);
   };
 
@@ -166,8 +163,8 @@ function JobDashboard() {
   };
 
   const filteredJobs = filteredStatus
-    ? jobs.filter((job) => job.status === filteredStatus)
-    : jobs;
+  ? jobs.filter((job) => job.posting_status === filteredStatus)
+  : jobs;
 
   const renderStatusSummary = () => {
     const counts = calculateJobCounts();
@@ -236,10 +233,9 @@ function JobDashboard() {
               cursor: 'pointer',
             }}
           >
-            <option value="">None</option>
-            <option value="date_applied_asc">Date Applied (Oldest to Newest)</option>
-            <option value="date_applied_desc">Date Applied (Newest to Oldest)</option>
-            <option value="status">Status</option>
+            <option value="posting_status">Status</option>
+            <option value="company">Company</option>
+            <option value="location">Location</option>
           </select>
         </div>
         <button
@@ -265,7 +261,6 @@ function JobDashboard() {
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Title</th>
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Company</th>
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Location</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Date Applied</th>
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Status</th>
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Link</th>
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Actions</th>
@@ -274,15 +269,12 @@ function JobDashboard() {
           <tbody>
             {filteredJobs.map((job) => (
               <tr key={job.id}>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.position}</td>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.job_title}</td>
                 <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.company}</td>
                 <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.location}</td>
                 <td style={{ border: '1px solid #ccc', padding: '10px' }}>
-                  {new Date(job.date_applied).toLocaleDateString()}
-                </td>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>
                   <select
-                    value={job.status}
+                    value={job.posting_status}
                     onChange={(e) => handleStatusChange(job.id, e.target.value)}
                     style={{
                       padding: '8px 12px',
@@ -303,7 +295,7 @@ function JobDashboard() {
                   </select>
                 </td>
                 <td style={{ border: '1px solid #ccc', padding: '10px' }}>
-                  <a href={job.link} target="_blank" rel="noopener noreferrer">
+                  <a href={job.job_link} target="_blank" rel="noopener noreferrer">
                     View Job
                   </a>
                 </td>
@@ -351,11 +343,11 @@ function JobDashboard() {
             />
           </div>
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Position</label>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Job Title</label>
             <input
               type="text"
-              name="position"
-              value={newJob.position}
+              name="job_title"
+              value={newJob.job_title}
               onChange={handleInputChange}
               style={{
                 width: '100%',
@@ -383,8 +375,8 @@ function JobDashboard() {
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Description</label>
             <textarea
-              name="description"
-              value={newJob.description}
+              name="job_description"
+              value={newJob.job_description}
               onChange={handleInputChange}
               rows={5}
               style={{
@@ -402,7 +394,7 @@ function JobDashboard() {
             </label>
             <select
               name="status"
-              value={newJob.status}
+              value={newJob.posting_status}
               onChange={handleInputChange}
               required
               style={{
@@ -420,28 +412,12 @@ function JobDashboard() {
               <option value="Rejected">Rejected</option>
             </select>
           </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Date Applied</label>
-            <input
-              type="date"
-              name="date_applied"
-              value={newJob.date_applied}
-              onChange={handleInputChange}
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-              }}
-            />
-          </div>
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Link</label>
             <input
               type="url"
-              name="link"
-              value={newJob.link}
+              name="job_link"
+              value={newJob.job_link}
               onChange={handleInputChange}
               style={{
                 width: '100%',

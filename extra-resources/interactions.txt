@@ -1,8 +1,6 @@
 xhost +localhost
 xhost +$(hostname)
 
-docker-compose down && docker-compose up -d --build
-
 docker-compose down
 docker-compose up -d --build
 
@@ -19,6 +17,14 @@ docker exec -it jobtrackr-backend-1 flask db upgrade
 docker exec -it jobtrackr-backend-1 flask db init 
 docker exec -it jobtrackr-backend-1 flask db migrate -m "Recreate missing tables"
 docker exec -it jobtrackr-backend-1 flask db upgrade
+
+docker exec -it jobtrackr-backend-1 flask db downgrade
+docker exec -it jobtrackr-backend-1 flask db migrate -m "Add user_auth_id as nullable to JobPosting"
+docker exec -it jobtrackr-backend-1 flask db upgrade
+docker exec -it jobtrackr-backend-1 flask db current
+
+
+
 
 psql -U postgres -d jobs_db
 

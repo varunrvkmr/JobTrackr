@@ -43,7 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   
         // ✅ res is the user object directly
         setUser({
-          name: res.name,
+          name: res.username,
           email: res.email,
           avatar: "", // optional placeholder
         });

@@ -9,7 +9,6 @@ from app.routes.letter_generator import letter_generator_bp
 from app.routes.user_profiles_routes import user_profiles_routes_bp
 from app.routes.auth_routes import auth_bp
 from flask_jwt_extended import JWTManager
-from dotenv import load_dotenv 
 import os
 
 jwt = JWTManager()
