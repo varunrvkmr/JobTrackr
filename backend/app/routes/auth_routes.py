@@ -52,15 +52,15 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({"error": "Invalid email or password"}), 401
 
-    # ✅ Generate JWT token
-    #access_token = create_access_token(identity=user.id)
-    print("User ID type:", type(user.id))
-    print("Stringified ID type:", type(str(user.id)))
-    print("Stringified ID value:", str(user.id))
-    access_token = create_access_token(identity=str(user.id))
+    # ✅ Generate JWT token using user.id as the identity
+    access_token = create_access_token(identity=user.id)  # No need to cast to string; JWT handles this
 
-    #access_token = create_access_token(identity=str(user.id))  # ✅ cast to string
-    return jsonify({"token": access_token, "id": user.id}), 200
+    # ✅ Return the token and user ID
+    return jsonify({
+        "message": "Login successful",
+        "token": access_token,
+        "id": user.id
+    }), 200
 
 
 # 👤 Get auth user info by ID

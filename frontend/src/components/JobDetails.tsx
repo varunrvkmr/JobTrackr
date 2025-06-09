@@ -33,12 +33,11 @@ const JobDetails: React.FC<JobDetailsProps> = ({ }) => {
         // For demo purposes, create mock data if API is not available
         const mockJob: Job = {
           id: "mock-job-123", // ✅ Add a mock ID
-          position: "Senior Frontend Developer",
+          job_title: "Senior Frontend Developer",
           company: "Tech Solutions Inc.",
           location: "San Francisco, CA",
-          status: "Applied",
-          date_applied: new Date().toISOString(),
-          link: "https://example.com/job",
+          posting_status: "Applied",
+          job_link: "https://example.com/job",
           job_description:
             "We are looking for a Senior Frontend Developer with experience in React, TypeScript, and modern web technologies. The ideal candidate will have 5+ years of experience building responsive web applications and a strong understanding of UI/UX principles.\n\nResponsibilities:\n- Develop new user-facing features\n- Build reusable components and libraries for future use\n- Translate designs and wireframes into high-quality code\n- Optimize applications for maximum speed and scalability\n\nRequirements:\n- Strong proficiency in JavaScript, including DOM manipulation and the JavaScript object model\n- Thorough understanding of React.js and its core principles\n- Experience with TypeScript, Redux, and modern frontend build pipelines\n- Familiarity with RESTful APIs and modern authorization mechanisms",
         };
@@ -212,19 +211,17 @@ I believe my combination of technical knowledge and practical experience makes m
     <div className="job-details-container">
       <div className="job-header">
         <div className="job-title-section">
-          <h1>{job.position}</h1>
+          <h1>{job.job_title}</h1>
           <div className="job-subtitle">
             <span className="company-name">{job.company}</span>
             <span className="location-dot">•</span>
             <span className="job-location">{job.location}</span>
           </div>
           <div className="job-meta">
-            <span className={`status-badge ${job.status.toLowerCase().replace(/\s+/g, "-")}`}>{job.status}</span>
-            <span className="date-applied">Applied: {new Date(job.date_applied).toLocaleDateString()}</span>
           </div>
         </div>
         <div className="job-actions">
-          <a href={job.link} target="_blank" rel="noopener noreferrer" className="view-posting-btn">
+          <a href={job.job_link} target="_blank" rel="noopener noreferrer" className="view-posting-btn">
             View Original Posting
           </a>
         </div>

@@ -251,7 +251,11 @@ export const fetchJobDetails = async (jobId: string): Promise<ApiResponse> => {
     const url = `${LETTER_GENERATOR_URL}/${jobId}`;
     console.log('🔍 Fetching Job Details from:', url); // Debug log
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: getAuthHeaders(), // ✅ Pass JWT token in headers
+    });
+
     console.log("📄 Raw Response Status:", response.status); // Debug log
 
     if (!response.ok) {
@@ -260,6 +264,7 @@ export const fetchJobDetails = async (jobId: string): Promise<ApiResponse> => {
 
     const data = await response.json();
     console.log("✅ Job Details Received:", data);
+
     return { data };
   } catch (error: unknown) {
     if (error instanceof Error) {

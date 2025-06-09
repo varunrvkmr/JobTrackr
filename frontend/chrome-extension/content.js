@@ -14,52 +14,38 @@
   const formatDate = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
 
-  // Function to extract the company application URL from LinkedIn job postings
-const getLinkedInApplyUrl = () => {
-  try {
-    // Find all hidden <code> elements
-    const codeBlocks = document.querySelectorAll('code[style*="display: none"]');
-
-    for (const codeBlock of codeBlocks) {
-      const jsonText = codeBlock.innerText.trim();
-
-      // Try parsing as JSON
-      try {
-        const jsonData = JSON.parse(jsonText);
-
-        // Check if applyMethod and companyApplyUrl exist
-        const companyApplyUrl = jsonData?.data?.applyMethod?.companyApplyUrl;
-        if (companyApplyUrl) {
-          console.log('✅ Found company application URL:', companyApplyUrl);
-          return companyApplyUrl;
-        }
-      } catch (innerError) {
-        // Ignore JSON parse errors for non-relevant <code> blocks
+  const getLinkedInApplyUrl = () => {
+    try {
+      const codeBlocks = document.querySelectorAll('code[style*="display: none"]');
+      for (const codeBlock of codeBlocks) {
+        const jsonText = codeBlock.innerText.trim();
+        try {
+          const jsonData = JSON.parse(jsonText);
+          const companyApplyUrl = jsonData?.data?.applyMethod?.companyApplyUrl;
+          if (companyApplyUrl) {
+            console.log('✅ Found company application URL:', companyApplyUrl);
+            return companyApplyUrl;
+          }
+        } catch {}
       }
+      console.warn('⚠️ No company application URL found.');
+      return null;
+    } catch (error) {
+      console.error('❌ Error extracting company application URL:', error);
+      return null;
     }
-    
-    console.warn('⚠️ No company application URL found.');
-    return null;
-  } catch (error) {
-    console.error('❌ Error extracting company application URL:', error);
-    return null;
-  }
-};
+  };
 
-
-  // Platform-specific Selectors
   const config = {
     LinkedIn: {
       title: 'h1.t-24.t-bold.inline',
       company: 'div.job-details-jobs-unified-top-card__company-name a',
       location: 'div.job-details-jobs-unified-top-card__primary-description-container div span.tvm__text',
-      position: 'h1.t-24.t-bold.inline',
-      link: getLinkedInApplyUrl() || window.location.href, // Prefer the actual application link
       job_description: 'h2.text-heading-large + div.mt4 p'
     },
     Otta: {
@@ -82,7 +68,6 @@ const getLinkedInApplyUrl = () => {
 
   const selectors = config[platform] || {};
 
-  // Helper function to extract and merge multiple content blocks
   const extractAndMerge = (selector) => {
     return Array.from(document.querySelectorAll(selector))
       .map((el) => el.innerText.trim())
@@ -93,21 +78,16 @@ const getLinkedInApplyUrl = () => {
     company: platform === 'Otta'
       ? document.querySelector(selectors.company)?.innerText.trim().split(', ')[1] || 'No company'
       : document.querySelector(selectors.company)?.innerText.trim() || 'No company',
-      
     job_title: platform === 'Otta'
       ? document.querySelector(selectors.title)?.innerText.trim().split(', ')[0] || 'Unknown Position'
       : document.querySelector(selectors.title)?.innerText.trim() || 'Unknown Position',
-      
     location: platform === 'Otta'
       ? 'Not provided'
       : document.querySelector(selectors.location)?.innerText.trim() || 'No location',
-  
-    country: 'Not specified', // You could improve this with Geo API in the future
-  
+    country: 'Not specified',
     job_link: platform === 'LinkedIn'
       ? getLinkedInApplyUrl() || window.location.href
       : window.location.href,
-  
     job_description:
       (platform === 'Otta' || platform === 'Jobright'
         ? [
@@ -116,36 +96,102 @@ const getLinkedInApplyUrl = () => {
             extractAndMerge(selectors.preferred)
           ].join('\n\n')
         : document.querySelector(selectors.job_description)?.innerText.trim()) || 'No job description available',
-  
     posting_status: 'Saved'
   };
-  
 
   console.log('Extracted Job Data:', jobData);
 
-  // Send job data to the backend
-  fetch('http://localhost:5050/api/jobs/publicAddJob', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(jobData),
-    mode: 'cors',
-    credentials: 'omit'
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
+  // Authenticated job save
+  chrome.storage.local.get('token', ({ token }) => {
+    if (!token) {
+      console.warn('⚠️ No auth token found, skipping job save.');
+      return;
+    }
+
+    fetch('http://localhost:5050/api/jobs/addJob', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(jobData)
     })
-    .then((data) => {
-      console.log('✅ Job saved:', data);
-      alert('🎉 Job details saved successfully!');
-    })
-    .catch((error) => {
-      console.error('❌ API Error:', error.message);
-      alert('⚠️ Failed to save job details. Check the console for more info.');
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        console.log('✅ Authenticated job saved:', data);
+        alert('🎉 Job details saved successfully!');
+      })
+      .catch((error) => {
+        console.error('❌ API Error:', error.message);
+        alert('⚠️ Failed to save job details. Check the console for more info.');
+      });
+  });
+
+  // Floating button for autofill
+  const createAutofillButton = () => {
+    const btn = document.createElement('button');
+    btn.innerText = 'Autofill from Profile';
+    Object.assign(btn.style, {
+      position: 'fixed',
+      bottom: '20px',
+      right: '20px',
+      zIndex: 9999,
+      padding: '10px',
+      backgroundColor: '#007bff',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer'
     });
+
+    btn.onclick = () => {
+      chrome.storage.local.get('token', ({ token }) => {
+        if (!token) {
+          alert('⚠️ Please login first.');
+          return;
+        }
+
+        fetch('http://localhost:5050/api/user_profiles/me', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error(`Failed to fetch profile: ${res.status}`);
+            return res.json();
+          })
+          .then((profile) => {
+            console.log('✅ Retrieved profile:', profile);
+            autofillForm(profile);
+          })
+          .catch((err) => console.error('❌ Error fetching profile:', err));
+      });
+    };
+
+    document.body.appendChild(btn);
+  };
+
+  const autofillForm = (profile) => {
+    const mapping = {
+      full_name: `${profile.first_name} ${profile.last_name}`,
+      email: profile.email,
+      phone: profile.phone,
+      linkedin: profile.linkedin,
+      github: profile.github,
+      bio: profile.bio
+    };
+
+    for (const [key, value] of Object.entries(mapping)) {
+      const input = document.querySelector(`input[name*="${key}"], textarea[name*="${key}"]`);
+      if (input) input.value = value;
+    }
+
+    alert('✅ Autofilled form from your profile!');
+  };
+
+  createAutofillButton();
 })();

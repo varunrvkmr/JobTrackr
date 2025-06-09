@@ -15,13 +15,6 @@ RUN npm install --save-dev typescript @types/react @types/react-dom
 
 RUN npm install typescript@4.9.5 --save-dev
 RUN npm install tailwindcss-animate class-variance-authority clsx tailwind-merge lucide-react
-RUN npm install @radix-ui/react-slot
-RUN npm install @radix-ui/react-label
-RUN npm install @radix-ui/react-select
-RUN npm install @radix-ui/react-checkbox
-RUN npm install @radix-ui/react-tabs
-RUN npm install @radix-ui/react-separator  
-
 
 
 # Copy the entire frontend source code into the container

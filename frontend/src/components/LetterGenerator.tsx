@@ -4,10 +4,13 @@ import { Link } from 'react-router-dom';
 
 interface Job {
   id: string;
-  position: string;
+  job_title: string;
   company: string;
-  date_applied: string;
-  status: string;
+  posting_status: string;
+  job_link: string;
+  location?: string;
+  country?: string;
+  job_description?: string;
 }
 
 const LetterGenerator: React.FC = () => {
@@ -42,8 +45,7 @@ const LetterGenerator: React.FC = () => {
           <thead>
             <tr>
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Title</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Company</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Date Applied</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Company</th>            
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Status</th>
               <th style={{ border: '1px solid #ccc', padding: '10px' }}>Actions</th>
             </tr>
@@ -51,12 +53,9 @@ const LetterGenerator: React.FC = () => {
           <tbody>
             {jobs.map((job) => (
               <tr key={job.id}>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.position}</td>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.job_title}</td>
                 <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.company}</td>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>
-                  {new Date(job.date_applied).toLocaleDateString()}
-                </td>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.status}</td>
+                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.posting_status}</td>
                 <td style={{ border: '1px solid #ccc', padding: '10px', textAlign: 'center' }}>
                   <Link to={`/letter-generator/${job.id}`}>
                     <button>View Details</button>

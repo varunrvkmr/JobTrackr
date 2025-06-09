@@ -26,8 +26,8 @@ def apply_for_job(job_data):
 
         # Define the automation task with placeholders instead of real sensitive values
         task = (
-            f"Go to {job_data['link']}, log in using x_email and x_password, "
-            f"fill out the job application form for {job_data['position']} at {job_data['company']} "
+            f"Go to {job_data['job_link']}, log in using x_email and x_password, "
+            f"fill out the job application form for {job_data['job_link']} at {job_data['company']} "
             f"using x_fullname, and submit it."
         )
 

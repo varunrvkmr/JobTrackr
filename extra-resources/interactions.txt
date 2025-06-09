@@ -23,12 +23,9 @@ docker exec -it jobtrackr-backend-1 flask db migrate -m "Add user_auth_id as nul
 docker exec -it jobtrackr-backend-1 flask db upgrade
 docker exec -it jobtrackr-backend-1 flask db current
 
-
-
-
 psql -U postgres -d jobs_db
 
-reset frontend
+steps to reset frontend
 1. Stop and Remove the Frontend Container
 docker-compose stop frontend
 docker-compose rm -f frontend

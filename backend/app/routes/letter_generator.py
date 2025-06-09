@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from app.models import JobDB, FileDB  # ✅ Import `Job` from `models.py`
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.models import JobPosting
 from openai import OpenAI
 from dotenv import load_dotenv
 import json
@@ -15,20 +16,23 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 @letter_generator_bp.route("/<int:job_id>", methods=["GET"])
+@jwt_required()
 def get_job_details(job_id):
-    """Fetch job details for the letter generator."""
-    job = JobDB.query.get(job_id)
-    
-    if not job:
-        return jsonify({"status": "error", "message": "Job not found"}), 404  # ✅ Handles invalid job IDs
+    """Fetch job details for the letter generator, authenticated."""
+    current_user_id = get_jwt_identity()
+
+    job = JobPosting.query.get(job_id)
+
+    # ✅ Ensure the job belongs to the current user
+    if not job or job.user_auth_id != int(current_user_id):
+        return jsonify({"status": "error", "message": "Job not found or unauthorized"}), 404
 
     return jsonify({
         "id": job.id,
         "company": job.company,
-        "position": job.position,
-        "status": job.status,
-        "date_applied": job.date_applied.strftime('%Y-%m-%d') if job.date_applied else None,
-        "link": job.link,
+        "job_title": job.job_title,
+        "posting_status": job.posting_status,
+        "job_link": job.job_link,
         "location": job.location,
         "job_description": job.job_description
     })
@@ -54,20 +58,29 @@ def fetch_job_description(job_link):
         return "Failed to fetch job description from the provided link."
 
 @letter_generator_bp.route('/parse-and-compare/<int:job_id>', methods=['POST'])
+@jwt_required()
 def parse_and_compare(job_id):
     """Parse the resume, fetch the job description, and compare skills using ChatGPT."""
     try:
+        # ✅ Get user ID from JWT
+        current_user_id = get_jwt_identity()
+
+        # ✅ Check resume file presence
         if 'resume' not in request.files:
             return jsonify({'error': 'Resume file is missing'}), 400
 
         resume_file = request.files['resume']
         resume_content = resume_file.read().decode('utf-8')
 
-        job = JobDB.query.get(job_id)
+        # ✅ Fetch job and confirm ownership
+        job = JobPosting.query.get(job_id)
         if not job:
             return jsonify({'error': 'Job not found'}), 404
-        
-        job_description = fetch_job_description(job.link)
+        if job.user_auth_id != current_user_id:
+            return jsonify({'error': 'Unauthorized access to this job'}), 403
+
+        # ✅ Fetch job description from link
+        job_description = fetch_job_description(job.job_link)
         if not job_description:
             return jsonify({'error': 'Job description not available'}), 404
 
@@ -76,7 +89,6 @@ def parse_and_compare(job_id):
     except Exception as e:
         print(f"Error in parse-and-compare: {e}")
         return jsonify({'error': 'An unexpected error occurred'}), 500
-
 def compare_with_chatgpt(resume_content, job_description):
     """Use ChatGPT to compare the resume content with the job description."""
     prompt = f"""
@@ -124,7 +136,7 @@ def generate_cover_letter():
     if not job_details or not resume:
         return jsonify({'error': 'Missing job details or resume'}), 400
 
-    job_description = fetch_job_description(job_details.get('link')) if job_details.get('link') else "Job description not provided."
+    job_description = fetch_job_description(job_details.get('job_link')) if job_details.get('job_link') else "Job description not provided."
 
     prompt = f"""
     Generate a professional and tailored cover letter based on:
@@ -160,7 +172,7 @@ def answer_custom_question(job_id):
     if not user_question:
         return jsonify({'error': 'Question is required'}), 400
 
-    job = JobDB.query.get(job_id)
+    job = JobPosting.query.get(job_id)
     if not job:
         return jsonify({'error': 'Job not found'}), 404
 
@@ -195,7 +207,7 @@ def apply_job(job_id):
     """
     Endpoint to trigger job application automation.
     """
-    job = JobDB.query.get(job_id)
+    job = JobPosting.query.get(job_id)
     if not job:
         return jsonify({"status": "error", "message": "Job not found"}), 404
 
@@ -203,8 +215,8 @@ def apply_job(job_id):
     job_data = {
         "id": job.id,
         "company": job.company,
-        "position": job.position,  # You might use 'title' instead if your DB uses that field
-        "link": job.link,  # ✅ Ensure we send the link to the browser automation
+        "job_title": job.job_title,  # You might use 'title' instead if your DB uses that field
+        "job_link": job.job_link,  # ✅ Ensure we send the job_link to the browser automation
         "location": job.location
     }
 

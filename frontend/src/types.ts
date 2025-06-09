@@ -1,12 +1,12 @@
 // frontend/src/types.ts
 export interface Job {
-    id: string
-    position: string;
+    id: string;
+    job_title: string;
     company: string;
-    location: string;
-    status: string;
-    date_applied: string;
-    link: string;
+    posting_status: string;
+    job_link: string;
+    location?: string;
+    country?: string;
     job_description?: string;
   }
   

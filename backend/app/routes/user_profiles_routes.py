@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import Session
 from app import db 
 from app.models import UserProfileDB 
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 # Create Blueprint
 user_profiles_routes_bp = Blueprint("user_profiles", __name__)
@@ -51,6 +52,37 @@ def get_user_profile(user_id):
         "disability_status": user.disability_status,
         "veteran_status": user.veteran_status
     }), 200
+
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+@user_profiles_routes_bp.route("/me", methods=["GET"])
+@jwt_required()
+def get_logged_in_user_profile():
+    user_auth_id = get_jwt_identity()
+    
+    user = UserProfileDB.query.filter_by(user_auth_id=user_auth_id).first()
+    
+    if not user:
+        return jsonify({"error": "Profile not found"}), 404
+
+    return jsonify({
+        "id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "phone": user.phone,
+        "city": user.city,
+        "state": user.state,
+        "bio": user.bio,
+        "linkedin": user.linkedin,
+        "github": user.github,
+        "race": user.race,
+        "ethnicity": user.ethnicity,
+        "gender": user.gender,
+        "disability_status": user.disability_status,
+        "veteran_status": user.veteran_status
+    }), 200
+
 
 # ✅ Create a new user profile
 @user_profiles_routes_bp.route("/newUser", methods=["POST"])

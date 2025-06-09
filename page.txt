@@ -1,0 +1,742 @@
+"use client"
+
+import { useState } from "react"
+import {
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  List,
+  Lightbulb,
+  GraduationCapIcon as Graduation,
+  Wrench,
+  Plus,
+  Search,
+} from "lucide-react"
+
+const getFontSizeClass = (text: string, base = "text-3xl") => {
+    const length = text?.length || 0;
+  
+    if (length > 60) return "text-xl";
+    if (length > 40) return "text-2xl";
+    return base;
+};
+
+const getParagraphFontSizeClass = (text: string, base = "text-base") => {
+    const length = text?.length || 0;
+  
+    if (length > 180) return "text-sm";
+    if (length > 120) return "text-base";
+    return base;
+};
+  
+export default function ResumePage() {
+  const [personalInfo, setPersonalInfo] = useState({
+    name: "Sal Khan",
+    objective: "Entrepreneur and educator obsessed with making education free for anyone",
+    email: "hello@khanacademy.org",
+    phone: "(123)456-7890",
+    website: "linkedin.com/in/khanacademy",
+    location: "NYC, NY",
+  })
+
+  const [workExperience, setWorkExperience] = useState([
+    {
+      company: "Khan Academy",
+      jobTitle: "Software Engineer",
+      date: "Jun 2022 - Present",
+      description: "",
+    },
+  ])
+
+  const [education, setEducation] = useState([
+    {
+      school: "Cornell University",
+      date: "May 2018",
+      degree: "Bachelor of Science in Computer Engineering",
+      gpa: "3.81",
+      additionalInfo: "",
+    },
+  ])
+
+  const [projects, setProjects] = useState([
+    {
+      name: "OpenResume",
+      date: "Winter 2022",
+      description: "",
+    },
+  ])
+
+  const [skills, setSkills] = useState({
+    list: "",
+    featured: [
+      { name: "Featured Skill 1", level: 5 },
+      { name: "Featured Skill 2", level: 5 },
+      { name: "Featured Skill 3", level: 5 },
+      { name: "Featured Skill 4", level: 5 },
+      { name: "Featured Skill 5", level: 5 },
+      { name: "Featured Skill 6", level: 5 },
+    ],
+  })
+
+  const [scale, setScale] = useState(67)
+  const [autoscale, setAutoscale] = useState(true)
+
+  const handlePersonalInfoChange = (e) => {
+    const { name, value } = e.target
+    setPersonalInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
+  const handleWorkExperienceChange = (index, field, value) => {
+    const updatedExperience = [...workExperience]
+    updatedExperience[index] = {
+      ...updatedExperience[index],
+      [field]: value,
+    }
+    setWorkExperience(updatedExperience)
+  }
+
+  const handleEducationChange = (index, field, value) => {
+    const updatedEducation = [...education]
+    updatedEducation[index] = {
+      ...updatedEducation[index],
+      [field]: value,
+    }
+    setEducation(updatedEducation)
+  }
+
+  const handleProjectChange = (index, field, value) => {
+    const updatedProjects = [...projects]
+    updatedProjects[index] = {
+      ...updatedProjects[index],
+      [field]: value,
+    }
+    setProjects(updatedProjects)
+  }
+
+  const handleSkillsListChange = (value) => {
+    setSkills((prev) => ({
+      ...prev,
+      list: value,
+    }))
+  }
+
+  const handleFeaturedSkillChange = (index, field, value) => {
+    const updatedFeaturedSkills = [...skills.featured]
+    if (field === "level") {
+      value = Number.parseInt(value)
+    }
+    updatedFeaturedSkills[index] = {
+      ...updatedFeaturedSkills[index],
+      [field]: value,
+    }
+    setSkills((prev) => ({
+      ...prev,
+      featured: updatedFeaturedSkills,
+    }))
+  }
+
+  const addJob = () => {
+    setWorkExperience([
+      ...workExperience,
+      {
+        company: "",
+        jobTitle: "",
+        date: "",
+        description: "",
+      },
+    ])
+  }
+
+  const addSchool = () => {
+    setEducation([
+      ...education,
+      {
+        school: "",
+        date: "",
+        degree: "",
+        gpa: "",
+        additionalInfo: "",
+      },
+    ])
+  }
+
+  const addProject = () => {
+    setProjects([
+      ...projects,
+      {
+        name: "",
+        date: "",
+        description: "",
+      },
+    ])
+  }
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <div className="flex flex-col w-full">
+        <div className="flex flex-1">
+          {/* Left side - Form */}
+          <div className="w-1/2 p-6 overflow-auto" style={{ maxHeight: "calc(100vh - 64px)" }}>
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <div className="mb-4">
+                <div className="mb-1 text-sm font-medium">Name</div>
+                <input
+                  type="text"
+                  name="name"
+                  value={personalInfo.name}
+                  onChange={handlePersonalInfoChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div className="mb-4">
+                <div className="mb-1 text-sm font-medium">Objective</div>
+                <input
+                  type="text"
+                  name="objective"
+                  value={personalInfo.objective}
+                  onChange={handlePersonalInfoChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <div className="mb-1 text-sm font-medium">Email</div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={personalInfo.email}
+                    onChange={handlePersonalInfoChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <div className="mb-1 text-sm font-medium">Phone</div>
+                  <input
+                    type="text"
+                    name="phone"
+                    value={personalInfo.phone}
+                    onChange={handlePersonalInfoChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="mb-1 text-sm font-medium">Website</div>
+                  <input
+                    type="text"
+                    name="website"
+                    value={personalInfo.website}
+                    onChange={handlePersonalInfoChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <div className="mb-1 text-sm font-medium">Location</div>
+                  <input
+                    type="text"
+                    name="location"
+                    value={personalInfo.location}
+                    onChange={handlePersonalInfoChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Work Experience Section */}
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <span className="inline-block mr-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-gray-700"
+                    >
+                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                    </svg>
+                  </span>
+                  <span className="font-bold text-lg">WORK EXPERIENCE</span>
+                </div>
+                <div className="flex items-center">
+                  <ChevronUp className="h-5 w-5 text-gray-500 mr-2" />
+                  <ChevronDown className="h-5 w-5 text-gray-500 mr-2" />
+                  <Eye className="h-5 w-5 text-gray-500" />
+                </div>
+              </div>
+
+              {workExperience.map((job, index) => (
+                <div key={index} className="mb-6">
+                  <div className="mb-4">
+                    <div className="mb-1 text-sm font-medium">Company</div>
+                    <input
+                      type="text"
+                      value={job.company}
+                      onChange={(e) => handleWorkExperienceChange(index, "company", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="mb-1 text-sm font-medium">Job Title</div>
+                      <input
+                        type="text"
+                        value={job.jobTitle}
+                        onChange={(e) => handleWorkExperienceChange(index, "jobTitle", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <div className="mb-1 text-sm font-medium">Date</div>
+                      <input
+                        type="text"
+                        value={job.date}
+                        onChange={(e) => handleWorkExperienceChange(index, "date", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="mb-1 text-sm font-medium">Description</div>
+                    <textarea
+                      value={job.description}
+                      onChange={(e) => handleWorkExperienceChange(index, "description", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md min-h-[80px]"
+                      placeholder="•"
+                    />
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex justify-end">
+                <button
+                  onClick={addJob}
+                  className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Job
+                </button>
+              </div>
+            </div>
+
+            {/* Education Section */}
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <Graduation className="h-5 w-5 mr-2 text-gray-700" />
+                  <span className="font-bold text-lg">EDUCATION</span>
+                </div>
+                <div className="flex items-center">
+                  <ChevronUp className="h-5 w-5 text-gray-500 mr-2" />
+                  <ChevronDown className="h-5 w-5 text-gray-500 mr-2" />
+                  <Eye className="h-5 w-5 text-gray-500" />
+                </div>
+              </div>
+
+              {education.map((edu, index) => (
+                <div key={index} className="mb-6">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="mb-1 text-sm font-medium">School</div>
+                      <input
+                        type="text"
+                        value={edu.school}
+                        onChange={(e) => handleEducationChange(index, "school", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <div className="mb-1 text-sm font-medium">Date</div>
+                      <input
+                        type="text"
+                        value={edu.date}
+                        onChange={(e) => handleEducationChange(index, "date", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="mb-1 text-sm font-medium">Degree & Major</div>
+                      <input
+                        type="text"
+                        value={edu.degree}
+                        onChange={(e) => handleEducationChange(index, "degree", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <div className="mb-1 text-sm font-medium">GPA</div>
+                      <input
+                        type="text"
+                        value={edu.gpa}
+                        onChange={(e) => handleEducationChange(index, "gpa", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="mb-1 text-sm font-medium flex items-center">
+                      Additional Information (Optional)
+                      <List className="h-4 w-4 ml-2 text-gray-500" />
+                    </div>
+                    <textarea
+                      value={edu.additionalInfo}
+                      onChange={(e) => handleEducationChange(index, "additionalInfo", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md min-h-[80px]"
+                      placeholder="•"
+                    />
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex justify-end">
+                <button
+                  onClick={addSchool}
+                  className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add School
+                </button>
+              </div>
+            </div>
+
+            {/* Project Section */}
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <Lightbulb className="h-5 w-5 mr-2 text-gray-700" />
+                  <span className="font-bold text-lg">PROJECT</span>
+                </div>
+                <div className="flex items-center">
+                  <ChevronUp className="h-5 w-5 text-gray-500 mr-2" />
+                  <ChevronDown className="h-5 w-5 text-gray-500 mr-2" />
+                  <Eye className="h-5 w-5 text-gray-500" />
+                </div>
+              </div>
+
+              {projects.map((project, index) => (
+                <div key={index} className="mb-6">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="mb-1 text-sm font-medium">Project Name</div>
+                      <input
+                        type="text"
+                        value={project.name}
+                        onChange={(e) => handleProjectChange(index, "name", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <div className="mb-1 text-sm font-medium">Date</div>
+                      <input
+                        type="text"
+                        value={project.date}
+                        onChange={(e) => handleProjectChange(index, "date", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="mb-1 text-sm font-medium">Description</div>
+                    <textarea
+                      value={project.description}
+                      onChange={(e) => handleProjectChange(index, "description", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md min-h-[80px]"
+                      placeholder="•"
+                    />
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex justify-end">
+                <button
+                  onClick={addProject}
+                  className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Project
+                </button>
+              </div>
+            </div>
+
+            {/* Skills Section */}
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <Wrench className="h-5 w-5 mr-2 text-gray-700" />
+                  <span className="font-bold text-lg">SKILLS</span>
+                </div>
+                <div className="flex items-center">
+                  <ChevronUp className="h-5 w-5 text-gray-500 mr-2" />
+                  <ChevronDown className="h-5 w-5 text-gray-500 mr-2" />
+                  <Eye className="h-5 w-5 text-gray-500" />
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <div className="mb-1 text-sm font-medium flex items-center">
+                  Skills List
+                  <List className="h-4 w-4 ml-2 text-gray-500" />
+                </div>
+                <textarea
+                  value={skills.list}
+                  onChange={(e) => handleSkillsListChange(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md min-h-[80px]"
+                  placeholder="•"
+                />
+              </div>
+
+              <div className="border-t border-dashed border-gray-200 my-6"></div>
+
+              <div>
+                <div className="mb-1 text-sm font-medium">Featured Skills (Optional)</div>
+                <p className="text-sm text-gray-500 mb-4">
+                  Featured skills is optional to highlight top skills, with more circles mean higher proficiency.
+                </p>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {skills.featured.map((skill, index) => (
+                    <div key={index} className="mb-4 flex items-center">
+                      <input
+                        type="text"
+                        value={skill.name}
+                        onChange={(e) => handleFeaturedSkillChange(index, "name", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md mr-2"
+                      />
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((level) => (
+                          <div
+                            key={level}
+                            className={`w-5 h-5 rounded-full mx-0.5 cursor-pointer ${
+                              level <= skill.level ? "bg-blue-400" : "bg-gray-200"
+                            }`}
+                            onClick={() => handleFeaturedSkillChange(index, "level", level)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Custom Section */}
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <Wrench className="h-5 w-5 mr-2 text-gray-700" />
+                  <span className="font-bold text-lg">CUSTOM SECTION</span>
+                </div>
+                <div className="flex items-center">
+                  <ChevronUp className="h-5 w-5 text-gray-500 mr-2" />
+                  <Eye className="h-5 w-5 text-gray-500" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right side - Preview */}
+          <div className="w-1/2 p-6 bg-gray-100 overflow-auto" style={{ maxHeight: "calc(100vh - 64px)" }}>
+            <div className="bg-white rounded-lg shadow h-full overflow-hidden">
+              <div className="bg-blue-500 h-8"></div>
+              <div className="p-8">
+                <h1 className={`${getFontSizeClass(personalInfo.name)} font-bold mb-2`}>
+                    {personalInfo.name}
+                </h1>
+                <p className={`text-gray-600 mb-4 ${getParagraphFontSizeClass(personalInfo.objective)}`}>
+                    {personalInfo.objective}
+                </p>
+                <div className="flex flex-wrap mb-6">
+                  {personalInfo.email && (
+                    <div className="mr-6 mb-2">
+                      <div className="text-sm text-gray-500">Email</div>
+                      <div>{personalInfo.email}</div>
+                    </div>
+                  )}
+                  {personalInfo.phone && (
+                    <div className="mr-6 mb-2">
+                      <div className="text-sm text-gray-500">Phone</div>
+                      <div>{personalInfo.phone}</div>
+                    </div>
+                  )}
+                  {personalInfo.website && (
+                    <div className="mr-6 mb-2">
+                      <div className="text-sm text-gray-500">Website</div>
+                      <div>{personalInfo.website}</div>
+                    </div>
+                  )}
+                  {personalInfo.location && (
+                    <div className="mb-2">
+                      <div className="text-sm text-gray-500">Location</div>
+                      <div>{personalInfo.location}</div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Work Experience Preview */}
+                <div className="mb-6">
+                  <div className="flex items-center mb-2">
+                    <div className="w-6 h-0.5 bg-blue-500 mr-2"></div>
+                    <h2 className="font-bold text-sm">WORK EXPERIENCE</h2>
+                  </div>
+                  {workExperience.map((job, index) => (
+                    <div key={index} className="mb-4">
+                      {job.company && <div className="font-semibold">{job.company}</div>}
+                      <div className="flex justify-between">
+                        {job.jobTitle && <div className="text-gray-700">{job.jobTitle}</div>}
+                        {job.date && <div className="text-gray-500 text-sm">{job.date}</div>}
+                      </div>
+                      {job.description && <div className="mt-1">{job.description}</div>}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Education Preview */}
+                <div className="mb-6">
+                  <div className="flex items-center mb-2">
+                    <div className="w-6 h-0.5 bg-blue-500 mr-2"></div>
+                    <h2 className="font-bold text-sm">EDUCATION</h2>
+                  </div>
+                  {education.map((edu, index) => (
+                    <div key={index} className="mb-4">
+                      <div className="flex justify-between">
+                        {edu.school && <div className="font-semibold">{edu.school}</div>}
+                        {edu.date && <div className="text-gray-500 text-sm">{edu.date}</div>}
+                      </div>
+                      <div className="flex justify-between">
+                        {edu.degree && <div className="text-gray-700">{edu.degree}</div>}
+                        {edu.gpa && <div className="text-gray-700">GPA: {edu.gpa}</div>}
+                      </div>
+                      {edu.additionalInfo && <div className="mt-1">{edu.additionalInfo}</div>}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Project Preview */}
+                <div className="mb-6">
+                  <div className="flex items-center mb-2">
+                    <div className="w-6 h-0.5 bg-blue-500 mr-2"></div>
+                    <h2 className="font-bold text-sm">PROJECT</h2>
+                  </div>
+                  {projects.map((project, index) => (
+                    <div key={index} className="mb-4">
+                      <div className="flex justify-between">
+                        {project.name && <div className="font-semibold">{project.name}</div>}
+                        {project.date && <div className="text-gray-500 text-sm">{project.date}</div>}
+                      </div>
+                      {project.description && <div className="mt-1">{project.description}</div>}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Skills Preview */}
+                <div>
+                  <div className="flex items-center mb-2">
+                    <div className="w-6 h-0.5 bg-blue-500 mr-2"></div>
+                    <h2 className="font-bold text-sm">SKILLS</h2>
+                  </div>
+                  {skills.list && <div className="mb-4">{skills.list}</div>}
+
+                  {skills.featured.some((skill) => skill.name) && (
+                    <div className="grid grid-cols-2 gap-4">
+                      {skills.featured
+                        .filter((skill) => skill.name)
+                        .map((skill, index) => (
+                          <div key={index} className="mb-2">
+                            <div className="flex items-center">
+                              <div className="font-medium mr-2">{skill.name}</div>
+                              <div className="flex">
+                                {[1, 2, 3, 4, 5].map((level) => (
+                                  <div
+                                    key={level}
+                                    className={`w-2 h-2 rounded-full mx-0.5 ${
+                                      level <= skill.level ? "bg-blue-400" : "bg-gray-200"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom controls */}
+        <div className="flex items-center justify-between p-4 border-t bg-white">
+          <div className="flex items-center">
+            <Search className="h-5 w-5 text-gray-500 mr-2" />
+            <div className="flex items-center w-48">
+              <input
+                type="range"
+                min="10"
+                max="100"
+                value={scale}
+                onChange={(e) => setScale(Number.parseInt(e.target.value))}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+              <span className="text-gray-700 ml-2">{scale}%</span>
+            </div>
+            <div className="flex items-center ml-4">
+              <input
+                type="checkbox"
+                id="autoscale"
+                checked={autoscale}
+                onChange={(e) => setAutoscale(e.target.checked)}
+                className="h-4 w-4 text-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="autoscale" className="ml-2 text-sm">
+                Autoscale
+              </label>
+            </div>
+          </div>
+          <button className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mr-2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Resume
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
