@@ -2,6 +2,9 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app.extensions import db 
 from app.models.UserAuth import UserAuth
+from flask import make_response
+from flask_jwt_extended import create_refresh_token
+from datetime import timedelta
 
 auth_bp = Blueprint("auth", __name__)
 # 🔐 Register a new user
@@ -53,7 +56,7 @@ def login():
         return jsonify({"error": "Invalid email or password"}), 401
 
     # ✅ Generate JWT token using user.id as the identity
-    access_token = create_access_token(identity=user.id)  # No need to cast to string; JWT handles this
+    access_token = create_access_token(identity=str(user.id))
 
     # ✅ Return the token and user ID
     return jsonify({

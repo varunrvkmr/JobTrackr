@@ -13,6 +13,7 @@ const USER_PROFILE_URL = `${BASE_URL}/user-profile`;
 
 export const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
+  console.log("Auth token:", token);
   return {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
@@ -202,49 +203,6 @@ export const uploadFile = async (file: File): Promise<UploadResponse> => {
   }
 };
 */
-
-// ✅ Fetch File List
-export const fetchFiles = async (): Promise<ApiResponse<File[]>> => {
-  const url = `${FILES_URL}/getFiles`;
-
-  try {
-    console.log("📂 Fetching file list from:", url);
-    const response = await fetch(url, { method: "GET" });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch files. Server responded with ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("❌ Error fetching files:", error);
-    throw error;
-  }
-};
-
-// ✅ Fetch File for Viewing (Opening in New Tab)
-export const getFileURL = (fileId: string): string => {
-  return `${FILES_URL}/${fileId}`;
-};
-
-// ✅ Delete File
-export const deleteFile = async (fileId: string): Promise<ApiResponse<{ deleted: boolean }>> => {
-  const url = `${FILES_URL}/delete/${fileId}`;
-  console.log("🗑️ DELETE FILE URL:", url);
-
-  try {
-    const response = await fetch(url, { method: "DELETE" });
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete file: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("❌ Error deleting file:", error);
-    throw error;
-  }
-};
 
 export const fetchJobDetails = async (jobId: string): Promise<ApiResponse> => {
   try {

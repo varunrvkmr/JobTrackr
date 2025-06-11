@@ -16,8 +16,8 @@ openai
 beautifulsoup4
 gunicorn
 requests
-browser-use
 playwright
 langchain
 flask-bcrypt 
 flask-jwt-extended
+langchain-openai

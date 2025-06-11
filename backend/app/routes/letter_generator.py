@@ -7,7 +7,6 @@ import json
 import os
 import requests
 from bs4 import BeautifulSoup
-from app.automation.apply_job import apply_for_job
 
 letter_generator_bp = Blueprint('letter_generator', __name__, url_prefix='/api/letter-generator')
 
@@ -89,6 +88,7 @@ def parse_and_compare(job_id):
     except Exception as e:
         print(f"Error in parse-and-compare: {e}")
         return jsonify({'error': 'An unexpected error occurred'}), 500
+
 def compare_with_chatgpt(resume_content, job_description):
     """Use ChatGPT to compare the resume content with the job description."""
     prompt = f"""
@@ -202,6 +202,7 @@ def answer_custom_question(job_id):
         print(f"Error answering question: {e}")
         return jsonify({'error': 'Failed to answer the question'}), 500
 
+'''
 @letter_generator_bp.route("/apply/<int:job_id>", methods=["POST"])
 def apply_job(job_id):
     """
@@ -223,7 +224,7 @@ def apply_job(job_id):
     result = apply_for_job(job_data)  # ✅ Send the entire job_data to `apply_job.py`
 
     return jsonify({"status": "success", "message": result})
-
+'''
 
 @letter_generator_bp.route("/apply/<int:job_id>", methods=["OPTIONS"])
 def handle_preflight(job_id):

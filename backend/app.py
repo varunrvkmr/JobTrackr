@@ -13,7 +13,6 @@ from app.routes.letter_generator import letter_generator_bp
 from app.routes.browser_automation import browser_bp
 from app.routes.user_profiles_routes import user_profiles_routes_bp
 from app.extensions import db
-from app.automation import apply_job
 
 # Load environment variables
 load_dotenv()
