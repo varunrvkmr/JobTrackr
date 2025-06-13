@@ -41,7 +41,10 @@ def create_app():
     # CORS for both /api and /proxy
     CORS(app, resources={
         r"/api/*": {
-            "origins": ["http://localhost:3000"],
+            "origins": [
+                "chrome-extension://micccolehgefkhdjlalncmomknlankaj",
+                "http://localhost:3000"
+            ],
             "supports_credentials": True
         },
         r"/proxy/*": {

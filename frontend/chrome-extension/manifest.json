@@ -6,8 +6,14 @@
     "default_popup": "popup.html",
     "default_title": "Save Job to JobTrackr"
   },
-  "permissions": ["activeTab", "scripting", "storage"],
-  "host_permissions": ["http://localhost:5050/*"], 
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:5050/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },

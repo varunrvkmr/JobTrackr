@@ -102,33 +102,27 @@
   console.log('Extracted Job Data:', jobData);
 
   // Authenticated job save
-  chrome.storage.local.get('token', ({ token }) => {
-    if (!token) {
-      console.warn('⚠️ No auth token found, skipping job save.');
-      return;
-    }
+  chrome.runtime.sendMessage(
+    {
+      type: 'SAVE_JOB',
+      jobData
+    },
+    (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('❌ Message send error:', chrome.runtime.lastError.message);
+        alert('⚠️ Failed to send job data to background. Check console.');
+        return;
+      }
 
-    fetch('http://localhost:5050/api/jobs/addJob', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(jobData)
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        return response.json();
-      })
-      .then((data) => {
-        console.log('✅ Authenticated job saved:', data);
+      if (response.success) {
+        console.log('🎉 Job saved successfully via background:', response.data);
         alert('🎉 Job details saved successfully!');
-      })
-      .catch((error) => {
-        console.error('❌ API Error:', error.message);
-        alert('⚠️ Failed to save job details. Check the console for more info.');
-      });
-  });
+      } else {
+        console.error('⚠️ Job save failed via background:', response.error);
+        alert('⚠️ Failed to save job details. Check console for details.');
+      }
+    }
+  );
 
   // Floating button for autofill
   const createAutofillButton = () => {
@@ -148,30 +142,23 @@
     });
 
     btn.onclick = () => {
-      chrome.storage.local.get('token', ({ token }) => {
-        if (!token) {
-          alert('⚠️ Please login first.');
-          return;
-        }
-
-        fetch('http://localhost:5050/api/user_profiles/me', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+      fetch('http://localhost:5050/api/user_profiles/me', {
+        method: 'GET',
+        credentials: 'include'  // ✅ send cookies with the request
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error(`Failed to fetch profile: ${res.status}`);
+          return res.json();
         })
-          .then((res) => {
-            if (!res.ok) throw new Error(`Failed to fetch profile: ${res.status}`);
-            return res.json();
-          })
-          .then((profile) => {
-            console.log('✅ Retrieved profile:', profile);
-            autofillForm(profile);
-          })
-          .catch((err) => console.error('❌ Error fetching profile:', err));
-      });
+        .then((profile) => {
+          console.log('✅ Retrieved profile:', profile);
+          autofillForm(profile);
+        })
+        .catch((err) => {
+          console.error('❌ Error fetching profile:', err);
+          alert('⚠️ Failed to fetch profile data. Please ensure you are logged in.');
+        });
     };
-
     document.body.appendChild(btn);
   };
 
