@@ -1,4 +1,4 @@
-from . import db  # Import the global db instance
+from app.extensions import db  # Import the global db instance
 
 class UserProfileDB(db.Model):
     __tablename__ = "user_profiles"  # ✅ Table name
@@ -8,8 +8,7 @@ class UserProfileDB(db.Model):
     last_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     phone = db.Column(db.String(50), nullable=True)
-    city = db.Column(db.String(100), nullable=True)
-    state = db.Column(db.String(100), nullable=True)
+    location = db.Column(db.String(100), nullable=True)
     bio = db.Column(db.Text, nullable=True)
     linkedin = db.Column(db.String(255), nullable=True)
     github = db.Column(db.String(255), nullable=True)
@@ -18,3 +17,4 @@ class UserProfileDB(db.Model):
     gender = db.Column(db.String(50), nullable=True)
     disability_status = db.Column(db.String(50), nullable=True)
     veteran_status = db.Column(db.String(50), nullable=True)
+    user_auth_id = db.Column(db.Integer, db.ForeignKey("auth_users.id"), nullable=False, unique=True)

@@ -15,6 +15,7 @@ import { isAuthenticated } from "src/components/auth"
 
 // Import the enhanced Sidebar
 import EnhancedSidebar from "./components/Sidebar"
+import AuthRedirect from "./components/AuthRedirect";
 
 // Create a layout component that wraps the sidebar and content
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
@@ -53,16 +54,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         {/* Redirect root to jobs or login */}
-        <Route
-          path="/"
-          element={
-            isAuthenticated() ? (
-              <Navigate to="/jobs" />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+        <Route path="/" element={<AuthRedirect />} />
 
         {/* Private Routes */}
         <Route

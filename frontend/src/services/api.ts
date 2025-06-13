@@ -7,18 +7,56 @@ import { Job, ApiResponse, UserProfile, AuthUser } from "@/types";
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5050/api";
 
 const JOBS_URL = `${BASE_URL}/jobs`;  
-const FILES_URL = `${BASE_URL}/files`;
+//const FILES_URL = `${BASE_URL}/files`;
 const LETTER_GENERATOR_URL = `${BASE_URL}/letter-generator`;
 const USER_PROFILE_URL = `${BASE_URL}/user-profile`;
 
-export const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
-  console.log("Auth token:", token);
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
+export async function fetchWithAutoRefresh<T>(
+  input: RequestInfo,
+  init: RequestInit = {},
+  retry = true
+): Promise<T> {
+  const response = await fetch(input, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(init.headers || {}),
+    },
+    credentials: "include",
+  });
+
+  if (response.status === 401 || response.status === 422) {
+    if (!retry) throw new Error("Unauthorized");
+
+    console.log("🔁 Access token expired, attempting refresh...");
+    const refreshResponse = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (refreshResponse.ok) {
+      // Retry the original request after successful refresh
+      return fetchWithAutoRefresh<T>(input, {
+        ...init,
+        headers: {
+          "Content-Type": "application/json",
+          ...(init.headers || {}),
+        },
+        credentials: "include",
+      }, false);
+    } else {
+      window.location.href = "/login";
+      throw new Error("Session expired, please log in again.");
+    }
+  }
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || "Request failed");
+  }
+
+  return response.json();
+}
 
 export const fetchBackendStatus = async (): Promise<ApiResponse> => {
   try {
@@ -35,17 +73,10 @@ export const fetchBackendStatus = async (): Promise<ApiResponse> => {
 
 export const fetchJobs = async (): Promise<Job[]> => {
   try {
-    const response = await fetch(`${JOBS_URL}/getJobs`, {
-      method: "GET",
-      headers: getAuthHeaders(), // ✅ now includes JWT
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch jobs");
-    }
-
-    const data: Job[] = await response.json();
-    return data;
+    return await fetchWithAutoRefresh<Job[]>(
+      `${JOBS_URL}/getJobs`,
+      { method: "GET" }
+    );
   } catch (error) {
     console.error("Error fetching jobs:", error);
     return [];
@@ -54,15 +85,14 @@ export const fetchJobs = async (): Promise<Job[]> => {
 
 export const updateJobStatus = async (jobId: string, newStatus: string): Promise<ApiResponse> => {
   try {
-    const response = await fetch(`${BASE_URL}/updateJobStatus/${jobId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: newStatus }),
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to update job status for ID ${jobId}`);
-    }
-    return await response.json();
+    return await fetchWithAutoRefresh<ApiResponse>(
+      `${BASE_URL}/updateJobStatus/${jobId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      }
+    );
   } catch (error) {
     console.error("Error updating job status:", error);
     throw error;
@@ -71,15 +101,14 @@ export const updateJobStatus = async (jobId: string, newStatus: string): Promise
 
 export const saveJob = async (jobData: Partial<Job>): Promise<ApiResponse> => {
   try {
-    const response = await fetch(`${BASE_URL}/jobs/addJob`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(jobData),
-    });
-    if (!response.ok) {
-      throw new Error("Failed to save job");
-    }
-    return await response.json();
+    return await fetchWithAutoRefresh<ApiResponse>(
+      `${BASE_URL}/jobs/addJob`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jobData),
+      }
+    );
   } catch (error) {
     console.error("Error saving job:", error);
     throw error;
@@ -88,19 +117,19 @@ export const saveJob = async (jobData: Partial<Job>): Promise<ApiResponse> => {
 
 export const deleteJob = async (jobId: string): Promise<ApiResponse> => {
   try {
-    const response = await fetch(`${JOBS_URL}/deleteJob/${jobId}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to delete job with ID ${jobId}`);
-    }
-    return await response.json();
+    return await fetchWithAutoRefresh<ApiResponse>(
+      `${JOBS_URL}/deleteJob/${jobId}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
     console.error("Error deleting job:", error);
     throw error;
   }
 };
+
 
 /*
 export const fetchSnippets = async () => {
@@ -211,7 +240,10 @@ export const fetchJobDetails = async (jobId: string): Promise<ApiResponse> => {
 
     const response = await fetch(url, {
       method: "GET",
-      headers: getAuthHeaders(), // ✅ Pass JWT token in headers
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // ✅ Send HttpOnly cookies
     });
 
     console.log("📄 Raw Response Status:", response.status); // Debug log
@@ -388,25 +420,56 @@ export const applyForJob = async (jobId: string): Promise<ApiResponse> => {
   }
 };
 
+//USER PROFILES FUNCTIONALITY - BEGIN
+
+/*
+export const fetchCurrentUserProfile = async (): Promise<UserProfile> => {
+  return await fetchWithAutoRefresh<UserProfile>(
+    `${USER_PROFILE_URL}/me`,
+    {
+      method: "GET",
+    }
+  );
+};
+*/
+export const fetchCurrentUserProfile = async (): Promise<UserProfile> => {
+  const data = await fetchWithAutoRefresh<any>( // get raw API data
+    `${USER_PROFILE_URL}/me`,
+    {
+      method: "GET",
+    }
+  );
+
+  // Transform snake_case fields to camelCase for UserProfile
+  const transformed: UserProfile = {
+    ...data,
+    firstName: data.first_name,
+    lastName: data.last_name,
+    disabilityStatus: data.disability_status,
+    veteranStatus: data.veteran_status,
+    // Remove snake_case if you want, or leave for now
+  };
+
+  return transformed;
+};
+
+
 //Fetch All User Profiles
 export const fetchUserProfiles = async (): Promise<ApiResponse<UserProfile[]>> => {
   try {
     const url = `${USER_PROFILE_URL}/`;
-    console.log('Fetching User Profiles from:', url);
+    console.log("Fetching User Profiles from:", url);
 
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch user profiles');
-    }
+    const data = await fetchWithAutoRefresh<UserProfile[]>(url, {
+      method: "GET"
+    });
 
-    const data = await response.json();
     return { data };
-  } catch (error: unknown) {
-    console.error('Error fetching user profiles:', error);
+  } catch (error) {
+    console.error("Error fetching user profiles:", error);
     return { data: [] };
   }
 };
-
 
 //Fetch a Single User Profile by ID
 export const fetchUserProfileById = async (userId: string): Promise<ApiResponse<UserProfile>> => {
@@ -414,14 +477,14 @@ export const fetchUserProfileById = async (userId: string): Promise<ApiResponse<
     const url = `${USER_PROFILE_URL}/${userId}`;
     console.log(`Fetching User Profile ${userId} from:`, url);
 
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch user profile with ID ${userId}`);
-    }
-
-    return await response.json();
-  } catch (error: unknown) {
-    console.error('Error fetching user profile:', (error instanceof Error ? error.message : 'An unknown error occurred'));
+    return await fetchWithAutoRefresh<ApiResponse<UserProfile>>(url, {
+      method: "GET"
+    });
+  } catch (error) {
+    console.error(
+      "Error fetching user profile:",
+      error instanceof Error ? error.message : "An unknown error occurred"
+    );
     throw error;
   }
 };
@@ -450,7 +513,6 @@ export const createUserProfile = async (userData: UserProfile): Promise<ApiRespo
   }
 };
 
-
 //Update a User Profile
 export const updateUserProfile = async (userId: string, updatedData: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> => {
   try {
@@ -473,25 +535,18 @@ export const updateUserProfile = async (userId: string, updatedData: Partial<Use
     throw error;
   }
 };
+//USER PROFILES FUNCTIONALITY - END
 
-//PASSWORD AUTHENTICATION FUNCTIONS
+//PASSWORD AUTHENTICATION FUNCTIONS - BEGIN
 
 export const getUserProfileById = async (id: string): Promise<ApiResponse<UserProfile>> => {
   const url = `${USER_PROFILE_URL}/${id}`;
-  const response = await fetch(url, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch user profile");
-  }
-
-  return response.json();
+  return fetchWithAutoRefresh<ApiResponse<UserProfile>>(url, { method: "GET" });
 };
 
 const AUTH_USER_URL = "http://localhost:5050/api/auth/user"
 
+/*
 export const getAuthUserById = async (id: string): Promise<AuthUser> => {
   const url = `${AUTH_USER_URL}/${Number(id)}`;
   const response = await fetch(url, {
@@ -512,38 +567,54 @@ export const getAuthUserById = async (id: string): Promise<AuthUser> => {
 
   return response.json(); // ✅ response is AuthUser object, not wrapped
 };
+*/
+
+export const getAuthUserById = async (id: string): Promise<AuthUser> => {
+  const url = `${AUTH_USER_URL}/${Number(id)}`;
+  return fetchWithAutoRefresh<AuthUser>(url, { method: "GET" });
+};
+
 export const loginUser = async (email: string, password: string) => {
   const response = await fetch("http://localhost:5050/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
+    credentials: "include",
   });
-
+  console.log(response)
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(data.error || "Login failed");
   }
 
-  // ✅ Store token and ID
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("userId", data.id);
-
   return data;
 };
 
-export const registerUser = async (email: string, password: string, username: string) => {
+export const registerUser = async (email: string, password: string, username: string, first_name: string, last_name: string, phone: string, location: string) => {
   const response = await fetch("http://localhost:5050/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, username}),
+    body: JSON.stringify({ email, password, username, first_name, last_name, phone, location}),
   })
-
   const data = await response.json()
-
+  
   if (!response.ok) {
     throw new Error(data.error || "Registration failed")
   }
-
+  
   return data
 }
+
+export const logoutUser = async (): Promise<void> => {
+  const res = await fetch(`${BASE_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include", // 🔑 required to send cookies
+  });
+
+  if (!res.ok) {
+    throw new Error("Logout failed");
+  }
+};
+
+//PASSWORD AUTHENTICATION FUNCTIONS - END 
