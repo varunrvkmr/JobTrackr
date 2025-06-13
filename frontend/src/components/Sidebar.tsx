@@ -2,9 +2,10 @@
 
 import type React from "react"
 import { NavLink } from "react-router-dom"
-import { getAuthUserById } from "../services/api"
+import { getAuthUserById, fetchCurrentUserProfile, logoutUser } from "../services/api"
 import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react"
+import { useNavigate } from "react-router-dom";
 import "./sidebar.css"
 
 
@@ -32,41 +33,47 @@ const Sidebar: React.FC<SidebarProps> = ({
   
   useEffect(() => {
     const fetchUser = async () => {
-      console.log("📡 Fetching user info...");
+      console.log("📡 Fetching user profile using cookie-auth...");
       try {
-        const userId = localStorage.getItem("userId");
-        console.log("🪪 userId from localStorage:", userId);
-        if (!userId) return;
-  
-        const res = await getAuthUserById(userId);
-        console.log("✅ user API response:", res);
-  
-        // ✅ res is the user object directly
+        const res = await fetchCurrentUserProfile();
+        console.log("✅ User profile:", res);
+
+        /*
         setUser({
-          name: res.username,
+          name: `${res.firstName} ${res.lastName}`,
           email: res.email,
-          avatar: "", // optional placeholder
+          avatar: "", // or use res.avatar if available
         });
-  
+        */
+       setUser({
+          name: `${res.firstName || ""} ${res.lastName || ""}`.trim(),
+          email: res.email,
+          avatar: "",
+        }); 
       } catch (err) {
         console.error("❌ Failed to fetch user profile:", err);
       }
     };
-  
+
     fetchUser();
   }, []);
-  
-  
-  
 
-  const handleLogout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
     if (showLogoutConfirm) {
-      onLogout()
-      setShowLogoutConfirm(false)
+      try {
+        await logoutUser();
+        setShowLogoutConfirm(false);
+        navigate("/login"); // ✅ return to login screen
+      } catch (err) {
+        console.error("Logout failed:", err);
+        alert("Failed to log out. Please try again.");
+      }
     } else {
-      setShowLogoutConfirm(true)
+      setShowLogoutConfirm(true);
     }
-  }
+  };
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed)

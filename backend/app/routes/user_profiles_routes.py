@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import Session
 from app import db 
-from app.models import UserProfileDB 
+from app.models.UserProfileDB import UserProfileDB 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 # Create Blueprint
@@ -17,8 +17,7 @@ def get_all_user_profiles():
         "last_name": user.last_name,
         "email": user.email,
         "phone": user.phone,
-        "city": user.city,
-        "state": user.state,
+        "location": user.location,
         "bio": user.bio,
         "linkedin": user.linkedin,
         "github": user.github,
@@ -41,8 +40,7 @@ def get_user_profile(user_id):
         "last_name": user.last_name,
         "email": user.email,
         "phone": user.phone,
-        "city": user.city,
-        "state": user.state,
+        "location": user.location,
         "bio": user.bio,
         "linkedin": user.linkedin,
         "github": user.github,
@@ -53,7 +51,7 @@ def get_user_profile(user_id):
         "veteran_status": user.veteran_status
     }), 200
 
-from flask_jwt_extended import jwt_required, get_jwt_identity
+
 
 @user_profiles_routes_bp.route("/me", methods=["GET"])
 @jwt_required()
@@ -71,8 +69,7 @@ def get_logged_in_user_profile():
         "last_name": user.last_name,
         "email": user.email,
         "phone": user.phone,
-        "city": user.city,
-        "state": user.state,
+        "location": user.location,
         "bio": user.bio,
         "linkedin": user.linkedin,
         "github": user.github,
@@ -97,7 +94,7 @@ def create_user_profile():
         last_name=data.get("last_name"),
         email=data.get("email"),
         phone=data.get("phone"),
-        city=data.get("city"),
+        location=data.get("location"),
         state=data.get("state"),
         bio=data.get("bio"),
         linkedin=data.get("linkedin"),

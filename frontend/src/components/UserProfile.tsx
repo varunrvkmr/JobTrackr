@@ -337,7 +337,7 @@ const EnhancedUserProfile = () => {
               value={formData.city}
               onChange={handleChange}
               placeholder="e.g. New York"
-              disabled={!isEditing}
+              //disabled={!isEditing}
               className={!isEditing ? "readonly-field" : ""}
             />
           </div>
@@ -350,7 +350,7 @@ const EnhancedUserProfile = () => {
               value={formData.city}
               onChange={handleChange}
               placeholder="e.g. NY"
-              disabled={!isEditing}
+              //disabled={!isEditing}
               className={!isEditing ? "readonly-field" : ""}
             />
           </div>
@@ -514,7 +514,7 @@ const EnhancedUserProfile = () => {
             <div className="form-group">
               <label htmlFor="linkedin">LinkedIn URL</label>
               <input
-                type="url"
+                type="text"
                 id="linkedin"
                 name="linkedin"
                 value={formData.linkedin}
@@ -528,7 +528,7 @@ const EnhancedUserProfile = () => {
             <div className="form-group">
               <label htmlFor="github">GitHub URL</label>
               <input
-                type="url"
+                type="text"
                 id="github"
                 name="github"
                 value={formData.github}

@@ -55,7 +55,16 @@ ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH="/usr/local/lib/python3.11/site-packages"
 
 
+#ENTRYPOINT ["/bin/sh", "-c", "\
+#    echo 'Running database migration...' && flask db upgrade && \
+#    echo 'Starting Gunicorn...' && exec gunicorn -b 0.0.0.0:5050 wsgi:app --chdir /app --workers=2 --timeout=120 --log-level=debug --capture-output\
+#"]
+
 ENTRYPOINT ["/bin/sh", "-c", "\
     echo 'Running database migration...' && flask db upgrade && \
-    echo 'Starting Gunicorn...' && exec gunicorn -b 0.0.0.0:5050 wsgi:app --chdir /app --workers=2 --timeout=120 --log-level=debug --capture-output\
+    echo 'Starting Gunicorn...' && exec gunicorn -b 0.0.0.0:5050 wsgi:app \
+    --chdir /app --workers=2 --timeout=120 \
+    --log-level=debug --capture-output \
+    --forwarded-allow-ips='*' \
 "]
+
