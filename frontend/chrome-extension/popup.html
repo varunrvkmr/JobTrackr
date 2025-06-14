@@ -1,24 +1,252 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Job Tools</title>
-    <link rel="stylesheet" href="popup.css">
-    <script src="popup.js" defer></script>
-  </head>
-  <body>
-    <div class="container">
-      <h3>Job Tools</h3>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Application Helper</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      <!-- Save Job Section -->
-      <div id="save-job-section" class="save-job-container">
-        <button id="save-job" class="save-button">Save Current Job</button>
-        <p id="status" class="status-message"></p>
-      </div>
+    body {
+      width: 320px;
+      min-height: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+    }
 
-      <!-- Autofill Application Section -->
-      <div id="autofill-section" class="autofill-container">
-        <button id="autofill-application" class="autofill-button">Autofill Application</button>
-      </div>
+    .container {
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: #fff;
+      border-radius: 12px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .title {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+    }
+
+    .tab-info {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.9);
+      text-align: center;
+    }
+
+    .tab-url {
+      font-family: monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      text-align: center;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .status.success {
+      background: rgba(34, 197, 94, 0.1);
+      color: #16a34a;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .status.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .status.loading {
+      background: rgba(59, 130, 246, 0.1);
+      color: #2563eb;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      padding: 14px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #667eea;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .loading-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: auto;
+      padding-top: 20px;
+    }
+
+    .settings-link {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s ease;
+    }
+
+    .settings-link:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">💼</div>
+      <div class="title">Job Application Helper</div>
+      <div class="subtitle">Save and autofill job applications</div>
     </div>
-  </body>
+
+    <div class="tab-info" id="tabInfo">
+      <div>Current page:</div>
+      <div class="tab-url" id="currentUrl">Loading...</div>
+    </div>
+
+    <div class="status" id="statusMessage"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="save-job">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17,21 17,13 7,13 7,21"/>
+          <polyline points="7,3 7,8 15,8"/>
+        </svg>
+        <span id="saveJobText">Save Job Application</span>
+        <div class="loading-spinner hidden" id="saveJobSpinner"></div>
+      </button>
+
+      <button class="btn btn-secondary" id="autofill-application">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14,2 14,8 20,8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10,9 9,9 8,9"/>
+        </svg>
+        <span id="autofillText">Autofill Application</span>
+        <div class="loading-spinner hidden" id="autofillSpinner"></div>
+      </button>
+    </div>
+
+    <div class="footer">
+      <a href="#" class="settings-link" id="settingsLink">
+        <svg style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+        </svg>
+        Settings & Preferences
+      </a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
 </html>
