@@ -5,7 +5,6 @@ from flask_jwt_extended import JWTManager
 from config import Config
 from app.extensions import db
 from app.routes.jobs_routes import job_bp
-from app.routes.fileManagerRoutes import file_manager_bp
 from app.routes.letter_generator import letter_generator_bp
 from app.routes.user_profiles_routes import user_profiles_routes_bp
 from app.routes.auth_routes import auth_bp
@@ -66,7 +65,6 @@ def create_app():
 
     # Register blueprints
     app.register_blueprint(job_bp, url_prefix="/api/jobs")
-    app.register_blueprint(file_manager_bp, url_prefix="/api/files")
     app.register_blueprint(letter_generator_bp, url_prefix="/api/letter-generator")
     app.register_blueprint(user_profiles_routes_bp, url_prefix="/api/user-profile")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")

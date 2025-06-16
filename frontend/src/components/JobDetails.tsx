@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { fetchJobDetails, applyForJob } from "src/services/api"
+import { fetchJobDetails } from "src/services/api"
 import { useParams } from "react-router-dom";
 
 import "./job-details.css"
@@ -162,13 +162,7 @@ I believe my combination of technical knowledge and practical experience makes m
       setAutomationMessage("Starting application process...");
 
       try {
-          const response = await applyForJob(jobId as string);
-
-          if (response.error) {
-              setAutomationMessage(`Error: ${response.error}`);
-          } else {
-              setAutomationMessage(response.message || "✅ Job application process started!");
-          }
+          setAutomationMessage("Connect chrome extension logic");
       } catch (error) {
           setAutomationMessage("❌ Failed to start job application.");
       } finally {
