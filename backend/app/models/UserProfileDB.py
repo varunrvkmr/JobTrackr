@@ -1,7 +1,7 @@
 from app.extensions import db  # Import the global db instance
 
 class UserProfileDB(db.Model):
-    __tablename__ = "user_profiles"  # ✅ Table name
+    __tablename__ = "user_profiles" 
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.String(100), nullable=False)

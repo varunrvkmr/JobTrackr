@@ -10,6 +10,7 @@ const JOBS_URL = `${BASE_URL}/jobs`;
 //const FILES_URL = `${BASE_URL}/files`;
 const LETTER_GENERATOR_URL = `${BASE_URL}/letter-generator`;
 const USER_PROFILE_URL = `${BASE_URL}/user-profile`;
+const AUTH_USER_URL = `${BASE_URL}/auth/user`;
 
 export async function fetchWithAutoRefresh<T>(
   input: RequestInfo,
@@ -129,109 +130,6 @@ export const deleteJob = async (jobId: string): Promise<ApiResponse> => {
     throw error;
   }
 };
-
-
-/*
-export const fetchSnippets = async () => {
-  try {
-    //const url = `${CORS_PROXY}${BACKEND_URL_SNIPPET}/all`;
-    const url = `${SNIPPET_URL}all`;
-    console.log('Fetch URL (Snippets):', url);
-
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch snippets');
-    }
-
-    const data = await response.json();
-    console.log('Fetched Snippets:', data);
-    return data;
-  } catch (error) {
-    console.error('Error fetching snippets:', error.message);
-    return [];
-  }
-};
-
-export const addSnippet = async (snippetContent) => {
-  try {
-    //const url = `${CORS_PROXY}${BACKEND_URL_SNIPPET}/add`;
-    const url = `${SNIPPET_URL}add`;
-    console.log('POST URL (Add Snippet):', url);
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ content: snippetContent }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to add snippet');
-    }
-
-    const data = await response.json();
-    console.log('Added Snippet:', data);
-    return data;
-  } catch (error) {
-    console.error('Error adding snippet:', error.message);
-    return null;
-  }
-};
-
-export const deleteSnippet = async (snippetId) => {
-  try {
-    //const url = `${CORS_PROXY}${BACKEND_URL_SNIPPET}/delete/${snippetId}`;
-    const url = `${SNIPPET_URL}/delete/${snippetId}`;
-    console.log('DELETE URL (Delete Snippet):', url);
-
-    const response = await fetch(url, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to delete snippet');
-    }
-
-    console.log(`Deleted Snippet ID: ${snippetId}`);
-    return true;
-  } catch (error) {
-    console.error('Error deleting snippet:', error.message);
-    return false;
-  }
-};
-*/
-
-
-
-/*
-// ✅ Upload File
-export const uploadFile = async (file: File): Promise<UploadResponse> => {
-  const url = `${FILES_URL}/upload`;
-  const formData = new FormData();
-  formData.append("file", file);
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to upload file. Server responded with ${response.status}`);
-    }
-
-    const data = await response.json();
-    return {
-      file_path: data.file_path || data.fileId || "", // Ensure valid file path
-      status: data.status || "success",
-    };
-  } catch (error) {
-    console.error("❌ Error uploading file:", error);
-    throw error;
-  }
-};
-*/
 
 export const fetchJobDetails = async (jobId: string): Promise<ApiResponse> => {
   try {
@@ -358,12 +256,13 @@ export const answerCustomQuestion = async (jobId: string, question: string): Pro
 };
 
 
-/**
+
+/*
  * Start Browser Automation for Job Application
  * @param {string} jobUrl - The URL of the job application page
  * @param {object} userInfo - The user information to autofill the form
  * @returns {Promise<object>}
- */
+ 
 export const startAutomation = async (jobId: string): Promise<ApiResponse> => {
   try {
     const url = `${LETTER_GENERATOR_URL}/apply/${jobId}`;
@@ -390,7 +289,9 @@ export const startAutomation = async (jobId: string): Promise<ApiResponse> => {
     return { error: `Automation failed for job ${jobId}` };
   }
 };
+*/
 
+/*
 export const applyForJob = async (jobId: string): Promise<ApiResponse> => {
   try {
     const url = `${LETTER_GENERATOR_URL}/apply/${jobId}`;
@@ -419,6 +320,7 @@ export const applyForJob = async (jobId: string): Promise<ApiResponse> => {
     return { error: `Application failed for job ${jobId}` };
   }
 };
+*/
 
 //USER PROFILES FUNCTIONALITY - BEGIN
 
@@ -544,7 +446,7 @@ export const getUserProfileById = async (id: string): Promise<ApiResponse<UserPr
   return fetchWithAutoRefresh<ApiResponse<UserProfile>>(url, { method: "GET" });
 };
 
-const AUTH_USER_URL = "http://localhost:5050/api/auth/user"
+
 
 /*
 export const getAuthUserById = async (id: string): Promise<AuthUser> => {
