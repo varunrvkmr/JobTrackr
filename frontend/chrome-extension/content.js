@@ -1,6 +1,150 @@
-(() => {
-  console.log('Content script loaded');
+// content.js - Updated to use background script for embeddings
+(async () => {
+  console.log('🔹 content.js loaded');
 
+  // Load canonical data
+  console.log('🔹 Fetching canonical.json…');
+  const canonical = await fetch(
+    chrome.runtime.getURL('canonical.json')
+  ).then(r => r.json());
+  console.log('✅ canonical loaded:', canonical);
+
+  // Helper function to compute embeddings via background script
+  const embedText = async (text) => {
+    const resp = await fetch('http://localhost:5050/api/embed', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texts: [text] })
+    });
+    if (!resp.ok) {
+      throw new Error(`Embed failed: ${resp.status}`);
+    }
+    const { embeddings } = await resp.json();
+    return embeddings[0];
+  };
+
+  // Cosine similarity function
+  const cosineSim = (a, b) => {
+    let dot = 0, normA = 0, normB = 0;
+    for (let i = 0; i < a.length; i++) {
+      dot += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+  };
+
+  // Extract form fields
+  const extractFields = () => {
+    const els = Array.from(document.querySelectorAll('input,textarea,select'));
+    return els.map(el => {
+      const raw = (document.querySelector(`label[for="${el.id}"]`)?.innerText
+                   || el.placeholder
+                   || el.getAttribute('aria-label')
+                   || '').trim().toLowerCase()
+                   .replace(/[^a-z0-9 ]/g, '');
+      return { el, label: raw };
+    });
+  };
+
+  // Precompute canonical embeddings
+  console.log('🔹 Computing canonical embeddings…');
+  const canonicalVecs = {};
+  for (const [key, examples] of Object.entries(canonical)) {
+    try {
+      canonicalVecs[key] = await embedText(examples[0]);
+      console.log(`✅ Embedded ${key}`);
+    } catch (error) {
+      console.error(`❌ Failed to embed ${key}:`, error);
+    }
+  }
+  console.log('✅ Canonical embeddings ready');
+
+  // Autofill form function
+  const autofillForm = async (profile) => {
+    try {
+      console.log('🔹 Starting autofill process...');
+      
+      // Extract and embed field labels
+      const fields = extractFields();
+      console.log(`🔹 Found ${fields.length} form fields`);
+      
+      for (const field of fields) {
+        if (field.label) {
+          try {
+            field.vec = await embedText(field.label);
+          } catch (error) {
+            console.warn(`⚠️ Failed to embed field "${field.label}":`, error);
+          }
+        }
+      }
+
+      // Match fields to canonical vectors
+      for (const field of fields) {
+        if (!field.vec) continue;
+        
+        let best = null;
+        for (const [key, cVec] of Object.entries(canonicalVecs)) {
+          const score = cosineSim(field.vec, cVec);
+          if (score > 0.7 && (!best || score > best.score)) {
+            best = { key, score };
+          }
+        }
+        if (best) {
+          field.match = best.key;
+          console.log(`🔹 Matched "${field.label}" to "${best.key}" (score: ${best.score.toFixed(3)})`);
+        }
+      }
+
+      // Fill matched fields
+      const filledCount = fields.filter(field => {
+        if (!field.match) return false;
+        
+        let value = profile[field.match];
+        if (field.match === 'full_name') {
+          value = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+        }
+        
+        if (value != null && value !== '') {
+          field.el.value = value;
+          field.el.dispatchEvent(new Event('input', { bubbles: true }));
+          field.el.dispatchEvent(new Event('change', { bubbles: true }));
+          return true;
+        }
+        return false;
+      }).length;
+
+      console.log(`✅ Autofilled ${filledCount} fields`);
+      alert(`✅ Autofilled ${filledCount} fields from your profile!`);
+      
+    } catch (error) {
+      console.error('❌ Autofill error:', error);
+      alert('⚠️ Autofill failed: ' + error.message);
+    }
+  };
+
+  //     - platform detection (LinkedIn/Otta/Jobright)
+  //     - selectors/config
+  //     - extractAndMerge helper
+  //     Code goes here:
+  //     function buildJobData() { ... }
+  /**
+ * buildJobData()
+ * Scrapes the current page for job details based on platform-specific selectors,
+ * then returns a structured jobData object ready to send to the background.
+ *
+ * @returns {{
+ *   company: string,
+ *   job_title: string,
+ *   location: string,
+ *   country: string,
+ *   job_link: string,
+ *   job_description: string,
+ *   posting_status: string
+ * }} jobData
+ */
+function buildJobData() {
   // Platform Detection
   const hostname = window.location.hostname;
   let platform = 'unknown';
@@ -100,85 +244,58 @@
   };
 
   console.log('Extracted Job Data:', jobData);
+}
 
-  // Authenticated job save
-  chrome.runtime.sendMessage(
-    {
-      type: 'SAVE_JOB',
-      jobData
-    },
-    (response) => {
-      if (chrome.runtime.lastError) {
-        console.error('❌ Message send error:', chrome.runtime.lastError.message);
-        alert('⚠️ Failed to send job data to background. Check console.');
-        return;
-      }
+  // Message handlers
+  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.type === 'SAVE_JOB') {
+      console.log('📥 [content] Received SAVE_JOB');
+      try {
+        const jobData = buildJobData();
+        console.log('🔹 [content] jobData:', jobData);
 
-      if (response.success) {
-        console.log('🎉 Job saved successfully via background:', response.data);
-        alert('🎉 Job details saved successfully!');
-      } else {
-        console.error('⚠️ Job save failed via background:', response.error);
-        alert('⚠️ Failed to save job details. Check console for details.');
+        chrome.runtime.sendMessage(
+          { type: 'SAVE_JOB', jobData },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              console.error('❌ [content] Error sending SAVE_JOB:', chrome.runtime.lastError);
+              sendResponse({ success: false, error: chrome.runtime.lastError.message });
+            } else {
+              console.log('📨 [content] Background response:', response);
+              sendResponse(response);
+            }
+          }
+        );
+      } catch (err) {
+        console.error('❌ [content] buildJobData error:', err);
+        sendResponse({ success: false, error: err.message });
       }
+      return true;
     }
-  );
 
-  // Floating button for autofill
-  const createAutofillButton = () => {
-    const btn = document.createElement('button');
-    btn.innerText = 'Autofill from Profile';
-    Object.assign(btn.style, {
-      position: 'fixed',
-      bottom: '20px',
-      right: '20px',
-      zIndex: 9999,
-      padding: '10px',
-      backgroundColor: '#007bff',
-      color: 'white',
-      border: 'none',
-      borderRadius: '5px',
-      cursor: 'pointer'
-    });
-
-    btn.onclick = () => {
+    if (msg.type === 'AUTOFILL') {
+      console.log('📥 [content] Received AUTOFILL');
+      
       fetch('http://localhost:5050/api/user_profiles/me', {
-        method: 'GET',
-        credentials: 'include'  // ✅ send cookies with the request
+        credentials: 'include'
       })
-        .then((res) => {
-          if (!res.ok) throw new Error(`Failed to fetch profile: ${res.status}`);
+        .then(res => {
+          console.log('🔹 [content] Profile fetch status:', res.status);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return res.json();
         })
-        .then((profile) => {
-          console.log('✅ Retrieved profile:', profile);
-          autofillForm(profile);
+        .then(profile => {
+          console.log('🔹 [content] Profile data:', profile);
+          return autofillForm(profile);
         })
-        .catch((err) => {
-          console.error('❌ Error fetching profile:', err);
-          alert('⚠️ Failed to fetch profile data. Please ensure you are logged in.');
+        .catch(err => {
+          console.error('❌ [content] AUTOFILL error:', err);
+          alert('⚠️ Failed to autofill: ' + err.message);
         });
-    };
-    document.body.appendChild(btn);
-  };
-
-  const autofillForm = (profile) => {
-    const mapping = {
-      full_name: `${profile.first_name} ${profile.last_name}`,
-      email: profile.email,
-      phone: profile.phone,
-      linkedin: profile.linkedin,
-      github: profile.github,
-      bio: profile.bio
-    };
-
-    for (const [key, value] of Object.entries(mapping)) {
-      const input = document.querySelector(`input[name*="${key}"], textarea[name*="${key}"]`);
-      if (input) input.value = value;
+      
+      return true;
     }
+  });
 
-    alert('✅ Autofilled form from your profile!');
-  };
-
-  createAutofillButton();
+  console.log('✅ content.js ready – waiting for SAVE_JOB or AUTOFILL');
 })();

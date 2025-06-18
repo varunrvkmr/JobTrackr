@@ -21,3 +21,5 @@ langchain
 flask-bcrypt 
 flask-jwt-extended
 langchain-openai
+tensorflow
+tensorflow-hub

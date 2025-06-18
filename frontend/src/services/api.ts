@@ -520,3 +520,16 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 //PASSWORD AUTHENTICATION FUNCTIONS - END 
+
+//EMBED ROUTES
+export async function embedText(text: string): Promise<number[]> {
+  const res = await fetch(`${BASE_URL}/api/embed`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ texts: [text] })
+  });
+  if (!res.ok) throw new Error(`Embed failed: ${res.status}`);
+  const { embeddings } = await res.json();
+  return embeddings[0];
+}

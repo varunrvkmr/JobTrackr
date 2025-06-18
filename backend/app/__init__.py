@@ -9,6 +9,7 @@ from app.routes.letter_generator import letter_generator_bp
 from app.routes.user_profiles_routes import user_profiles_routes_bp
 from app.routes.auth_routes import auth_bp
 from app.routes.proxy_routes import proxy_bp
+from app.routes.embed_routes import embed_bp
 from dotenv import load_dotenv
 import os
 
@@ -69,6 +70,7 @@ def create_app():
     app.register_blueprint(user_profiles_routes_bp, url_prefix="/api/user-profile")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(proxy_bp, url_prefix="/proxy")
+    app.register_blueprint(embed_bp, url_prefix="/api/embed")
 
     # Health check
     @app.route('/api/', methods=['GET'])

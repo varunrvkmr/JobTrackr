@@ -7,6 +7,7 @@ WORKDIR /app
 # Install Python dependencies globally
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install tensorflow tensorflow-hub
 
 # Copy backend source code
 COPY . .

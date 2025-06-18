@@ -4,7 +4,8 @@ xhost +$(hostname)
 docker-compose down
 docker-compose up -d --build
 
-docker-compose up -d --build frontend
+docker-compose down && docker-compose up -d --build frontend
+docker-compose down && docker-compose up -d --build backend
 
 
 docker exec -it postgres_db psql -U postgres -d jobs_db
