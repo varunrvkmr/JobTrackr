@@ -6,6 +6,21 @@ import os
 
 embed_bp = Blueprint('embed', __name__, url_prefix='/api/embed')
 
+@embed_bp.route('/health', methods=['GET'])
+def health_check():
+    """
+    Warm-up endpoint: triggers loading of the USE model.
+    Returns 200 OK once the model is loaded.
+    """
+    try:
+        # this will load the model if it isn’t already in memory
+        _ = get_embed_model()
+        return jsonify(status="ok", model_loaded=True), 200
+    except Exception as e:
+        current_app.logger.error(f"Embed health check failed: {e}")
+        return jsonify(status="error", message=str(e)), 500
+
+
 # Lazily load the model once per worker
 _model = None
 def get_embed_model():

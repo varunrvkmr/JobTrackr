@@ -1,0 +1,93 @@
+{
+  "first_name": [
+    "first name",
+    "given name",
+    "first",
+    "fname",
+    "forename"
+  ],
+  "last_name": [
+    "last name",
+    "surname",
+    "family name",
+    "last",
+    "lname"
+  ],
+  "email": [
+    "email",
+    "email address",
+    "e mail",
+    "work email",
+    "personal email"
+  ],
+  "phone": [
+    "phone",
+    "phone number",
+    "tel",
+    "telephone",
+    "mobile",
+    "cell",
+    "mobile number"
+  ],
+  "location": [
+    "location",
+    "current location",
+    "city",
+    "city town",
+    "current city",
+    "city and state",
+    "geographic location"
+  ],
+  "bio": [
+    "bio",
+    "about you",
+    "about yourself",
+    "personal bio",
+    "summary",
+    "introduction"
+  ],
+  "linkedin": [
+    "linkedin",
+    "linkedin profile",
+    "linkedin url",
+    "linkedin link",
+    "linkedin page"
+  ],
+  "github": [
+    "github",
+    "github profile",
+    "github url",
+    "github link",
+    "github username"
+  ],
+  "race": [
+    "race",
+    "racial identity",
+    "race ethnicity",
+    "race self identification"
+  ],
+  "ethnicity": [
+    "ethnicity",
+    "ethnic background",
+    "ethnic origin",
+    "ethnic group"
+  ],
+  "gender": [
+    "gender",
+    "gender identity",
+    "sex",
+    "gender optional"
+  ],
+  "disability_status": [
+    "disability status",
+    "disability",
+    "disabled",
+    "disability self identification"
+  ],
+  "veteran_status": [
+    "veteran status",
+    "veteran",
+    "military veteran",
+    "protected veteran status"
+  ]
+}

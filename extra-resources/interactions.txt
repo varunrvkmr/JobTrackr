@@ -1,6 +1,17 @@
 xhost +localhost
 xhost +$(hostname)
 
+Rebuild & restart backend (leaving your other containers running)
+docker-compose up -d --no-deps --build backend
+
+Tear everything down, then spin up only backend (+ its deps)
+docker-compose down && \
+docker-compose up -d --build backend
+
+Rebuild & restart backend (leaving your other containers running)
+docker-compose build backend
+docker-compose up -d backend
+
 docker-compose down
 docker-compose up -d --build
 

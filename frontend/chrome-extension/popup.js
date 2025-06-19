@@ -22,23 +22,28 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Autofill application when "Autofill Application" is clicked
+  // --- Autofill Application (new flow) ---
   autofillButton.addEventListener('click', () => {
     console.log('Autofill Application button clicked');
-
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      console.log('Active tab fetched:', tabs);
-
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        func: () => {
-          // Trigger the floating button click if it exists
-          const autofillBtn = document.querySelector('button');
-          if (autofillBtn && autofillBtn.innerText.includes('Autofill from Profile')) {
-            autofillBtn.click();
-          } else {
-            alert('⚠️ No autofill button found on the page.');
-          }
+      const tabId = tabs[0].id;
+      // Send a message to content.js to kick off runAutofillFlow()
+      chrome.tabs.sendMessage(tabId, { action: 'RUN_AUTOFILL' }, (response) => {
+        if (chrome.runtime.lastError) {
+          // content.js might not be injected yet
+          console.warn('Content script not found, injecting…');
+          chrome.scripting.executeScript({
+            target: { tabId },
+            files: ['content.js']
+          }, () => {
+            // retry after injection
+            chrome.tabs.sendMessage(tabId, { action: 'RUN_AUTOFILL' });
+          });
+        } else {
+          console.log('Autofill message sent:', response);
         }
+        statusMessage.textContent = 'Autofill triggered!';
+        setTimeout(() => statusMessage.textContent = '', 2000);
       });
     });
   });

@@ -521,7 +521,7 @@ export const logoutUser = async (): Promise<void> => {
 
 //PASSWORD AUTHENTICATION FUNCTIONS - END 
 
-//EMBED ROUTES
+//CHROME EXTENSION EMBED ROUTES
 export async function embedText(text: string): Promise<number[]> {
   const res = await fetch(`${BASE_URL}/api/embed`, {
     method: 'POST',

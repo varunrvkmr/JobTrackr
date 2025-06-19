@@ -35,19 +35,6 @@
     return dot / (Math.sqrt(normA) * Math.sqrt(normB));
   };
 
-  // Extract form fields
-  const extractFields = () => {
-    const els = Array.from(document.querySelectorAll('input,textarea,select'));
-    return els.map(el => {
-      const raw = (document.querySelector(`label[for="${el.id}"]`)?.innerText
-                   || el.placeholder
-                   || el.getAttribute('aria-label')
-                   || '').trim().toLowerCase()
-                   .replace(/[^a-z0-9 ]/g, '');
-      return { el, label: raw };
-    });
-  };
-
   // Precompute canonical embeddings
   console.log('🔹 Computing canonical embeddings…');
   const canonicalVecs = {};
@@ -123,6 +110,125 @@
       alert('⚠️ Autofill failed: ' + error.message);
     }
   };
+
+  /**
+   * Utility: Generate a (reasonably) unique CSS selector for an element.
+   * For best results, include a dedicated selector-generator library.
+   */
+  function uniqueCssSelector(el) {
+    if (el.id) return `#${el.id}`;
+    const path = [];
+    while (el && el.nodeType === Node.ELEMENT_NODE) {
+      let selector = el.nodeName.toLowerCase();
+      if (el.className) {
+        const classes = el.className.trim().split(/\s+/).join('.');
+        selector += `.${classes}`;
+      }
+      const parent = el.parentNode;
+      if (parent) {
+        const siblings = Array.from(parent.children).filter(c => c.nodeName === el.nodeName);
+        if (siblings.length > 1) {
+          const idx = siblings.indexOf(el) + 1;
+          selector += `:nth-of-type(${idx})`;
+        }
+      }
+      path.unshift(selector);
+      el = parent;
+    }
+    return path.join(' > ');
+  }
+
+  /**
+   * Utility: Get a human-readable label for an input element.
+   */
+  function getNearestLabelText(el) {
+    if (el.id) {
+      const lab = document.querySelector(`label[for="${el.id}"]`);
+      if (lab) return lab.innerText.trim();
+    }
+    if (el.getAttribute('aria-label')) return el.getAttribute('aria-label').trim();
+    if (el.placeholder) return el.placeholder.trim();
+    const prev = el.previousElementSibling;
+    if (prev && prev.tagName === 'LABEL') return prev.innerText.trim();
+    return '';
+  }
+
+  /**
+   * Extract all form fields on the page for classification.
+   * Returns: [{ selector, label, placeholder }]
+   */
+  function extractFields() {
+    return Array.from(document.querySelectorAll('input,textarea,select')).map(el => ({
+      selector: uniqueCssSelector(el),
+      label: getNearestLabelText(el),
+      placeholder: el.placeholder || ''
+    }));
+  }
+
+  /**
+   * Inject fill values into the DOM.
+   */
+  function injectValues(fills) {
+    for (const { selector, value } of fills) {
+      const el = document.querySelector(selector);
+      if (!el) continue;
+      if (el.tagName === 'SELECT') {
+        const opt = [...el.options].find(o => o.textContent.trim() === value);
+        if (opt) opt.selected = true;
+      } else {
+        el.value = value;
+        el.dispatchEvent(new Event('input',  { bubbles: true }));
+        el.dispatchEvent(new Event('change',{ bubbles: true }));
+      }
+    }
+  }
+
+   /**
+   * Main autofill flow: classify fields, fetch fills, inject.
+   */
+  async function runAutofillFlow() {
+    try {
+      console.log('🔹 Starting autofill flow');
+
+      const fields = extractFields();
+      console.log(`🔹 Extracted ${fields.length} fields`);
+
+      // 1) Classify
+      const classifyRes = await fetch('http://localhost:5050/api/autofill/classify', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields })
+      });
+      if (!classifyRes.ok) throw new Error(`Classify failed: ${classifyRes.status}`);
+      const { matches } = await classifyRes.json();
+      console.log('🔹 Classification matches:', matches);
+      if (!matches.length) {
+        return alert('⚠️ No form fields confidently matched.');
+      }
+
+      // OPTIONAL: Preview & edit step could go here
+
+      // 2) Fill
+      const fillRes = await fetch('http://localhost:5050/api/autofill/fill', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ matches })
+      });
+      if (!fillRes.ok) throw new Error(`Fill failed: ${fillRes.status}`);
+      const { fills } = await fillRes.json();
+      console.log('🔹 Received fills:', fills);
+
+      // 3) Inject into the page
+      injectValues(fills);
+      alert(`✅ Autofilled ${fills.length}/${matches.length} fields`);
+
+    } catch (err) {
+      console.error('❌ Autofill error:', err);
+      alert('⚠️ Autofill failed: ' + err.message);
+    }
+  }
 
   //     - platform detection (LinkedIn/Otta/Jobright)
   //     - selectors/config
@@ -249,53 +355,23 @@ function buildJobData() {
   // Message handlers
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === 'SAVE_JOB') {
-      console.log('📥 [content] Received SAVE_JOB');
+      console.log('📥 [content] SAVE_JOB');
       try {
         const jobData = buildJobData();
-        console.log('🔹 [content] jobData:', jobData);
-
-        chrome.runtime.sendMessage(
-          { type: 'SAVE_JOB', jobData },
-          (response) => {
-            if (chrome.runtime.lastError) {
-              console.error('❌ [content] Error sending SAVE_JOB:', chrome.runtime.lastError);
-              sendResponse({ success: false, error: chrome.runtime.lastError.message });
-            } else {
-              console.log('📨 [content] Background response:', response);
-              sendResponse(response);
-            }
-          }
-        );
+        chrome.runtime.sendMessage({ type: 'SAVE_JOB', jobData }, sendResponse);
       } catch (err) {
-        console.error('❌ [content] buildJobData error:', err);
         sendResponse({ success: false, error: err.message });
       }
       return true;
     }
 
-    if (msg.type === 'AUTOFILL') {
-      console.log('📥 [content] Received AUTOFILL');
-      
-      fetch('http://localhost:5050/api/user_profiles/me', {
-        credentials: 'include'
-      })
-        .then(res => {
-          console.log('🔹 [content] Profile fetch status:', res.status);
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(profile => {
-          console.log('🔹 [content] Profile data:', profile);
-          return autofillForm(profile);
-        })
-        .catch(err => {
-          console.error('❌ [content] AUTOFILL error:', err);
-          alert('⚠️ Failed to autofill: ' + err.message);
-        });
-      
+    if (msg.action === 'RUN_AUTOFILL') {
+      console.log('📥 [content] RUN_AUTOFILL');
+      runAutofillFlow();
+      sendResponse({ status: 'started' });
       return true;
     }
   });
 
-  console.log('✅ content.js ready – waiting for SAVE_JOB or AUTOFILL');
+  console.log('✅ content.js ready');
 })();
