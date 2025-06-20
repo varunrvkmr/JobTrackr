@@ -1,7 +1,7 @@
 // Replace 'http://your-ec2-public-dns:8081' with your EC2 instance's address.
 // If the frontend is served from the same origin, you can use a relative path (e.g., '/api').
 //const BASE_URL = "https://jobtrackr.hopto.org/api/";
-import { Job, ApiResponse, UserProfile, AuthUser } from "@/types";
+import { Job, ApiResponse, UserProfile, AuthUser, FieldInput, Match, Fill } from "@/types";
 
 //const BASE_URL = window.location.protocol + "//jobtrackr.hopto.org/api/";
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5050/api";
@@ -519,8 +519,6 @@ export const logoutUser = async (): Promise<void> => {
   }
 };
 
-//PASSWORD AUTHENTICATION FUNCTIONS - END 
-
 //CHROME EXTENSION EMBED ROUTES
 export async function embedText(text: string): Promise<number[]> {
   const res = await fetch(`${BASE_URL}/api/embed`, {
@@ -532,4 +530,35 @@ export async function embedText(text: string): Promise<number[]> {
   if (!res.ok) throw new Error(`Embed failed: ${res.status}`);
   const { embeddings } = await res.json();
   return embeddings[0];
+}
+
+//AUTOFILL FUNCTIONS
+
+/**
+ * Classify a batch of form‐field descriptors into canonical fields.
+ */
+export async function classifyFields(fields: FieldInput[]): Promise<Match[]> {
+  // fetchWithAutoRefresh auto‐adds JSON headers + credentials for you
+  const { matches } = await fetchWithAutoRefresh<{ matches: Match[] }>(
+    `${BASE_URL}/autofill/classify`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ fields }),
+    }
+  );
+  return matches;
+}
+
+/**
+ * Given a list of classifier matches, return the user‐specific fill values.
+ */
+export async function getFieldFills(matches: Match[]): Promise<Fill[]> {
+  const { fills } = await fetchWithAutoRefresh<{ fills: Fill[] }>(
+    `${BASE_URL}/autofill/fill`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ matches }),
+    }
+  );
+  return fills;
 }

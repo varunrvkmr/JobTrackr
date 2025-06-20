@@ -1,0 +1,52 @@
+timestamp,route,selector,label,placeholder,predicted,score
+2025-06-19T19:46:56.856102,/classify,#first-name,First name,,first_name,0.7782
+2025-06-19T19:46:56.856523,/classify,#last-name,Last name,,last_name,0.7844
+2025-06-19T19:46:56.856830,/classify,#email-field,,Enter your email address,email,0.4127
+2025-06-19T19:46:56.857133,/classify,#phone-field,Phone number,,phone,0.6913
+2025-06-19T19:47:06.846200,/fill,#first-name,first_name,0.7782,JOhn
+2025-06-19T19:47:06.846277,/fill,#last-name,last_name,0.7844,Doe
+2025-06-19T19:47:06.846290,/fill,#phone-field,phone,0.6913,1232343254325
+2025-06-20T09:43:06.812999,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(1),,,bio,0.3876
+2025-06-20T09:43:06.813453,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(2),,,bio,0.3876
+2025-06-20T09:43:06.813784,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(3),,,bio,0.3876
+2025-06-20T09:43:06.814111,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(4),,,bio,0.3876
+2025-06-20T09:43:06.814445,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(5),,,bio,0.3876
+2025-06-20T09:43:06.814772,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(6),,,bio,0.3876
+2025-06-20T09:43:06.815097,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(1) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.rFrNMe.k3kHxc.RdH0ib.yqQS1.zKHdkd > div.aCsJod.oJeWuf:nth-of-type(1) > div.aXBtI.Wic03c > div.Xb9hP:nth-of-type(1) > input.whsOnd.zHQkBf,,,bio,0.3876
+2025-06-20T09:43:06.815452,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(2) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.rFrNMe.k3kHxc.RdH0ib.yqQS1.zKHdkd > div.aCsJod.oJeWuf:nth-of-type(1) > div.aXBtI.Wic03c > div.Xb9hP:nth-of-type(1) > input.whsOnd.zHQkBf,,,bio,0.3876
+2025-06-20T09:43:06.815780,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(3) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.rFrNMe.k3kHxc.RdH0ib.yqQS1.Z02LAf.zKHdkd > div.aCsJod.oJeWuf:nth-of-type(1) > div.aXBtI.Wic03c > div.Xb9hP:nth-of-type(1) > input.whsOnd.zHQkBf,,,bio,0.3876
+2025-06-20T09:43:06.816120,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(4) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.edhGSc.zKHdkd.kRy7qc.RdH0ib.yqQS1 > div.RpC4Ne.oJeWuf:nth-of-type(1) > div.Pc9Gce.Wic03c:nth-of-type(2) > textarea.KHxj8b.tL9Q4c,Your answer,,location,0.3013
+2025-06-20T09:43:06.816462,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(5) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.rFrNMe.k3kHxc.RdH0ib.yqQS1.zKHdkd > div.aCsJod.oJeWuf:nth-of-type(1) > div.aXBtI.Wic03c > div.Xb9hP:nth-of-type(1) > input.whsOnd.zHQkBf,,,bio,0.3876
+2025-06-20T09:43:06.816801,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(6) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.edhGSc.zKHdkd.kRy7qc.RdH0ib.yqQS1 > div.RpC4Ne.oJeWuf:nth-of-type(1) > div.Pc9Gce.Wic03c:nth-of-type(2) > textarea.KHxj8b.tL9Q4c,Your answer,,location,0.3013
+2025-06-20T09:43:06.817128,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(1),,,bio,0.3876
+2025-06-20T09:43:06.817458,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(2),,,bio,0.3876
+2025-06-20T09:43:06.817782,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(3),,,bio,0.3876
+2025-06-20T09:43:06.818104,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(4),,,bio,0.3876
+2025-06-20T09:43:06.818434,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(5),,,bio,0.3876
+2025-06-20T09:43:06.818759,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(6),,,bio,0.3876
+2025-06-20T09:45:06.167267,/classify,#first_name,First Name*,,first_name,0.7782
+2025-06-20T09:45:06.167711,/classify,#last_name,Last Name*,,last_name,0.7844
+2025-06-20T09:45:06.168037,/classify,#email,Email*,,email,1.0
+2025-06-20T09:45:06.168367,/classify,#phone,Phone*,,phone,1.0
+2025-06-20T09:45:06.168690,/classify,#resume,Attach,,email,0.4777
+2025-06-20T09:45:06.169013,/classify,#question_8569686007,Current company,,location,0.293
+2025-06-20T09:45:06.169341,/classify,#question_8569687007,Current title,,location,0.3292
+2025-06-20T09:45:06.169674,/classify,#question_8569688007,LinkedIn Profile,,linkedin,0.8305
+2025-06-20T09:45:06.169997,/classify,#question_8569689007,X Profile,,ethnicity,0.2958
+2025-06-20T09:45:06.170327,/classify,#question_8569690007,GitHub Profile,,github,0.8283
+2025-06-20T09:45:06.170649,/classify,#question_8569691007,Google Scholar,,github,0.316
+2025-06-20T09:45:06.170974,/classify,#question_8742969007,What exceptional work have you done?*,,linkedin,0.1509
+2025-06-20T09:45:06.171305,/classify,#question_8831365007,"Will you now, or in the future, require sponsorship for employment visa status (e.g., H-1B visa) to legally work for X.AI LLC in the U.S.?*",,linkedin,0.1607
+2025-06-20T09:45:06.171630,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(8) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T09:45:06.171958,/classify,#gender,Gender,,gender,1.0
+2025-06-20T09:45:06.172287,/classify,#hispanic_ethnicity,Are you Hispanic/Latino?,,ethnicity,0.3461
+2025-06-20T09:45:06.172612,/classify,#veteran_status,Veteran Status,,ethnicity,0.2176
+2025-06-20T09:45:06.172936,/classify,#disability_status,Disability Status,,ethnicity,0.2731
+2025-06-20T09:45:06.173264,/classify,#g-recaptcha-response-100000,,,bio,0.3876
+2025-06-20T09:45:06.230290,/fill,#first_name,first_name,0.7782,JOhn
+2025-06-20T09:45:06.230315,/fill,#last_name,last_name,0.7844,Doe
+2025-06-20T09:45:06.230328,/fill,#email,email,1,johndoe@email.com
+2025-06-20T09:45:06.230366,/fill,#phone,phone,1,1232343254325
+2025-06-20T09:45:06.230380,/fill,#question_8569688007,linkedin,0.8305,
+2025-06-20T09:45:06.230389,/fill,#question_8569690007,github,0.8283,
+2025-06-20T09:45:06.230393,/fill,#gender,gender,1,

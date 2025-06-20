@@ -9,31 +9,6 @@
   ).then(r => r.json());
   console.log('✅ canonical loaded:', canonical);
 
-  // Helper function to compute embeddings via background script
-  const embedText = async (text) => {
-    const resp = await fetch('http://localhost:5050/api/embed', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ texts: [text] })
-    });
-    if (!resp.ok) {
-      throw new Error(`Embed failed: ${resp.status}`);
-    }
-    const { embeddings } = await resp.json();
-    return embeddings[0];
-  };
-
-  // Cosine similarity function
-  const cosineSim = (a, b) => {
-    let dot = 0, normA = 0, normB = 0;
-    for (let i = 0; i < a.length; i++) {
-      dot += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
-    }
-    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
-  };
 
   // Precompute canonical embeddings
   console.log('🔹 Computing canonical embeddings…');
@@ -48,68 +23,24 @@
   }
   console.log('✅ Canonical embeddings ready');
 
-  // Autofill form function
-  const autofillForm = async (profile) => {
-    try {
-      console.log('🔹 Starting autofill process...');
-      
-      // Extract and embed field labels
-      const fields = extractFields();
-      console.log(`🔹 Found ${fields.length} form fields`);
-      
-      for (const field of fields) {
-        if (field.label) {
-          try {
-            field.vec = await embedText(field.label);
-          } catch (error) {
-            console.warn(`⚠️ Failed to embed field "${field.label}":`, error);
-          }
+  function proxyFetch(url, init) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(
+      { type: 'CORS_FETCH', url, init },
+      response => {
+        if (!response) {
+          return reject(new Error('No response from background'));
         }
+        if (!response.ok) {
+          return reject(new Error(
+            response.error || `Server returned ${response.status}`
+          ));
+        }
+        resolve(response.data);
       }
-
-      // Match fields to canonical vectors
-      for (const field of fields) {
-        if (!field.vec) continue;
-        
-        let best = null;
-        for (const [key, cVec] of Object.entries(canonicalVecs)) {
-          const score = cosineSim(field.vec, cVec);
-          if (score > 0.7 && (!best || score > best.score)) {
-            best = { key, score };
-          }
-        }
-        if (best) {
-          field.match = best.key;
-          console.log(`🔹 Matched "${field.label}" to "${best.key}" (score: ${best.score.toFixed(3)})`);
-        }
-      }
-
-      // Fill matched fields
-      const filledCount = fields.filter(field => {
-        if (!field.match) return false;
-        
-        let value = profile[field.match];
-        if (field.match === 'full_name') {
-          value = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
-        }
-        
-        if (value != null && value !== '') {
-          field.el.value = value;
-          field.el.dispatchEvent(new Event('input', { bubbles: true }));
-          field.el.dispatchEvent(new Event('change', { bubbles: true }));
-          return true;
-        }
-        return false;
-      }).length;
-
-      console.log(`✅ Autofilled ${filledCount} fields`);
-      alert(`✅ Autofilled ${filledCount} fields from your profile!`);
-      
-    } catch (error) {
-      console.error('❌ Autofill error:', error);
-      alert('⚠️ Autofill failed: ' + error.message);
-    }
-  };
+    );
+  });
+}
 
   /**
    * Utility: Generate a (reasonably) unique CSS selector for an element.
@@ -137,6 +68,22 @@
     }
     return path.join(' > ');
   }
+
+  // Helper function to compute embeddings via background script
+  const embedText = async (text) => {
+    const resp = await fetch('http://localhost:5050/api/embed', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texts: [text] })
+    });
+    if (!resp.ok) {
+      throw new Error(`Embed failed: ${resp.status}`);
+    }
+    const { embeddings } = await resp.json();
+    return embeddings[0];
+  };
+
 
   /**
    * Utility: Get a human-readable label for an input element.
@@ -183,52 +130,101 @@
     }
   }
 
-   /**
+  function notifyPage(msg, isError = false) {
+    const div = document.createElement('div');
+    div.textContent = msg;
+    Object.assign(div.style, {
+      position: 'fixed',
+      top: '10px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      padding: '8px 12px',
+      background: isError ? 'crimson' : 'seagreen',
+      color: 'white',
+      zIndex: 99999,
+      borderRadius: '4px'
+    });
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 3000);
+  }
+ 
+  /**
    * Main autofill flow: classify fields, fetch fills, inject.
    */
   async function runAutofillFlow() {
-    try {
-      console.log('🔹 Starting autofill flow');
+    console.log('🔹 runAutofillFlow start');
+    const fields = extractFields();
+    console.log(`🔹 extractFields → found ${fields.length} fields`);
 
-      const fields = extractFields();
-      console.log(`🔹 Extracted ${fields.length} fields`);
+    if (fields.length === 0) {
+      console.warn('⚠️ No fields found—aborting');
+      notifyPage('No inputs to classify', true);
+      return;
+    }
 
-      // 1) Classify
-      const classifyRes = await fetch('http://localhost:5050/api/autofill/classify', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields })
-      });
-      if (!classifyRes.ok) throw new Error(`Classify failed: ${classifyRes.status}`);
-      const { matches } = await classifyRes.json();
-      console.log('🔹 Classification matches:', matches);
+    // 1) Classify
+    console.log('🔹 proxyFetch classify…', fields);
+    const classifyPayload = await proxyFetch(
+        'http://localhost:5050/api/autofill/classify',
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields })
+        }
+      );
+      const matches = classifyPayload.matches || [];
+      console.log(`🔹 classifyPayload → matches:`, matches);
       if (!matches.length) {
-        return alert('⚠️ No form fields confidently matched.');
+        notifyPage('⚠️ No fields matched.', true);
+        return { filled: 0, total: 0 };
       }
 
-      // OPTIONAL: Preview & edit step could go here
-
       // 2) Fill
-      const fillRes = await fetch('http://localhost:5050/api/autofill/fill', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ matches })
-      });
-      if (!fillRes.ok) throw new Error(`Fill failed: ${fillRes.status}`);
-      const { fills } = await fillRes.json();
-      console.log('🔹 Received fills:', fills);
+      console.log('🔹 proxyFetch fill…', matches);
+      const fillPayload = await proxyFetch(
+        'http://localhost:5050/api/autofill/fill',
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ matches })
+        }
+      );
+      const fills = fillPayload.fills || [];
+      console.log(`🔹 fillPayload → fills:`, fills);
 
-      // 3) Inject into the page
-      injectValues(fills);
-      alert(`✅ Autofilled ${fills.length}/${matches.length} fields`);
+      // 3) Inject into page
+      console.log('🔹 injectValues…');
+      let count = 0;
+      for (const { selector, value } of fills) {
+        const el = document.querySelector(selector);
+        if (!el) continue;
 
-    } catch (err) {
-      console.error('❌ Autofill error:', err);
-      alert('⚠️ Autofill failed: ' + err.message);
-    }
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus();
+
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = Boolean(value);
+        } else if (el.isContentEditable) {
+          el.textContent = value;
+        } else if (el.tagName === 'SELECT') {
+          const opt = [...el.options].find(o => o.textContent.trim() === value);
+          if (opt) opt.selected = true;
+        } else {
+          el.value = value;
+        }
+
+        el.dispatchEvent(new Event('input',  { bubbles: true }));
+        el.dispatchEvent(new Event('change',{ bubbles: true }));
+        count++;
+      }
+
+    notifyPage(`✅ Autofilled ${count}/${fills.length} fields`);
+    return { filled: count, total: fills.length };
   }
+
+
 
   //     - platform detection (LinkedIn/Otta/Jobright)
   //     - selectors/config
@@ -354,24 +350,45 @@ function buildJobData() {
 
   // Message handlers
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.type === 'SAVE_JOB') {
-      console.log('📥 [content] SAVE_JOB');
-      try {
-        const jobData = buildJobData();
-        chrome.runtime.sendMessage({ type: 'SAVE_JOB', jobData }, sendResponse);
-      } catch (err) {
-        sendResponse({ success: false, error: err.message });
-      }
+  // --- SAVE JOB ---
+  if (msg.action === 'SAVE_JOB') {
+    console.log('📥 [content] SAVE_JOB');
+    let jobData;
+    try {
+      jobData = buildJobData();
+    } catch (err) {
+      sendResponse({ success: false, error: err.message });
       return true;
     }
 
+    // forward to background.js (or wherever you're persisting)
+    chrome.runtime.sendMessage(
+      { action: 'SAVE_JOB', jobData },
+      (backgroundResponse) => {
+        // bubble the result back to the popup
+        if (chrome.runtime.lastError) {
+          sendResponse({ success: false, error: chrome.runtime.lastError.message });
+        } else {
+          sendResponse(backgroundResponse);
+        }
+      }
+    );
+
+    // indicate we'll call sendResponse asynchronously
+    return true;
+    }
+
+    // --- AUTOFILL APPLICATION ---
     if (msg.action === 'RUN_AUTOFILL') {
       console.log('📥 [content] RUN_AUTOFILL');
-      runAutofillFlow();
-      sendResponse({ status: 'started' });
-      return true;
+      runAutofillFlow()
+        .then(() => sendResponse({ status: 'ok' }))
+        .catch(err => sendResponse({ status: 'error', error: err.message }));
+
+      return true;  // because we’ll sendResponse later
     }
   });
+
 
   console.log('✅ content.js ready');
 })();

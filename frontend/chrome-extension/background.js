@@ -1,7 +1,9 @@
 // background.js
+
 let offscreenDocumentId = null;
 
-// Create offscreen document for TensorFlow processing
+// — Offscreen TF.js setup for embeddings —————————————————————————
+
 async function createOffscreenDocument() {
   if (offscreenDocumentId) {
     return offscreenDocumentId;
@@ -14,48 +16,35 @@ async function createOffscreenDocument() {
       reasons: ['WORKERS'],
       justification: 'Use TensorFlow.js for semantic text embeddings'
     });
-    
     offscreenDocumentId = 'offscreen-tensorflow';
     console.log('✅ Offscreen document created');
-    
-    // Wait a bit for the document to fully load
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    // give it a moment to load
+    await new Promise(r => setTimeout(r, 1000));
     return offscreenDocumentId;
-  } catch (error) {
-    console.error('❌ Failed to create offscreen document:', error);
-    throw error;
+  } catch (err) {
+    console.error('❌ Failed to create offscreen document:', err);
+    throw err;
   }
 }
 
-// Handle embedding requests
 async function handleEmbedding(text) {
   await createOffscreenDocument();
-  
+
   return new Promise((resolve, reject) => {
     const id = Math.random().toString(36).slice(2);
-    
-    const messageHandler = (message, sender) => {
+
+    function messageHandler(message, sender) {
       if (message.type === 'EMBEDDING_RESULT' && message.id === id) {
         chrome.runtime.onMessage.removeListener(messageHandler);
-        if (message.error) {
-          reject(new Error(message.error));
-        } else {
-          resolve(message.embedding);
-        }
+        if (message.error) reject(new Error(message.error));
+        else resolve(message.embedding);
       }
-    };
-    
+    }
+
     chrome.runtime.onMessage.addListener(messageHandler);
-    
-    // Send embedding request to offscreen document
-    chrome.runtime.sendMessage({
-      type: 'COMPUTE_EMBEDDING',
-      id,
-      text
-    });
-    
-    // Timeout after 30 seconds
+    chrome.runtime.sendMessage({ type: 'COMPUTE_EMBEDDING', id, text });
+
+    // Timeout guard
     setTimeout(() => {
       chrome.runtime.onMessage.removeListener(messageHandler);
       reject(new Error('Embedding computation timed out'));
@@ -63,53 +52,56 @@ async function handleEmbedding(text) {
   });
 }
 
-// Handle messages from content script
+// — Background message router ——————————————————————————————————
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('📥 [background] Received message:', message.type);
-  
-  if (message.type === 'COMPUTE_EMBEDDING') {
-    console.log('🔹 [background] Processing embedding request for:', message.text?.substring(0, 50) + '...');
-    handleEmbedding(message.text)
-      .then(embedding => {
-        console.log('✅ [background] Embedding computed, length:', embedding?.length);
-        sendResponse({ success: true, embedding });
+  console.log('📥 [background] Message:', message.type);
+
+  // 1) Proxy arbitrary fetches to avoid CORS in the page
+  if (message.type === 'CORS_FETCH') {
+    const { url, init } = message;
+    fetch(url, init)
+      .then(async response => {
+        const data = await response.json().catch(() => ({}));
+        sendResponse({
+          ok:      response.ok,
+          status:  response.status,
+          data,
+        });
       })
-      .catch(error => {
-        console.error('❌ [background] Embedding error:', error);
-        sendResponse({ success: false, error: error.message });
-      });
-    
-    return true; // Keep message channel open for async response
+      .catch(err => sendResponse({ ok: false, error: err.message }));
+    return true;  // keep channel open
   }
-  
+
+  // 2) Embedding requests from offscreen script
+  if (message.type === 'COMPUTE_EMBEDDING') {
+    console.log('🔹 [background] COMPUTE_EMBEDDING:', message.text?.slice(0, 50) + '…');
+    handleEmbedding(message.text)
+      .then(emb => sendResponse({ success: true, embedding: emb, id: message.id }))
+      .catch(err  => sendResponse({ success: false, error: err.message, id: message.id }));
+    return true;
+  }
+
+  // 3) Save job requests
   if (message.type === 'SAVE_JOB') {
-    // Your existing SAVE_JOB logic here
-    console.log('📥 [background] Received SAVE_JOB:', message.jobData);
-    
-    // Example: Save to your backend
+    console.log('🔹 [background] SAVE_JOB:', message.jobData);
     fetch('http://localhost:5050/api/jobs', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(message.jobData)
     })
-    .then(response => response.json())
-    .then(result => {
-      console.log('✅ Job saved:', result);
-      sendResponse({ success: true, result });
-    })
-    .catch(error => {
-      console.error('❌ Save job error:', error);
-      sendResponse({ success: false, error: error.message });
-    });
-    
+      .then(r => r.json())
+      .then(result => sendResponse({ success: true, result }))
+      .catch(err    => sendResponse({ success: false, error: err.message }));
     return true;
   }
+
+  // 4) (Optional) handle other message types here…
+
 });
 
-// Clean up offscreen document when extension is disabled/reloaded
+// Clean up offscreen document when extension is suspended/reloaded
 chrome.runtime.onSuspend.addListener(() => {
   if (offscreenDocumentId) {
     chrome.offscreen.closeDocument();

@@ -19,5 +19,9 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "chrome-extension/**/*",
+    "src/services/**/*"
+  ]
 }

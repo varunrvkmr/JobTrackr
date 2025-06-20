@@ -90,3 +90,22 @@ export interface Job {
     avatar?: string;
   }
   
+  /** Descriptor for a form field on the page */
+  export interface FieldInput {
+    selector:    string;  // CSS selector of the element
+    label:       string;  // visible label text (or empty string)
+    placeholder: string;  // placeholder text (or empty string)
+  }
+
+  /** What the classifier returns for each field */
+  export interface Match {
+    selector:  string;  // same selector back
+    canonical: string;  // e.g. "first_name", "email", etc.
+    score:     number;  // similarity score [0–1]
+  }
+
+  /** What the fill endpoint returns for each matched field */
+  export interface Fill {
+    selector: string;  // which element to fill
+    value:    string;  // the value to put into that element
+  }

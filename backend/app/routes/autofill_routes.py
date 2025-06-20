@@ -3,12 +3,36 @@ import json
 import numpy as np
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
+import csv
+from datetime import datetime
 
 from app.routes.embed_routes import get_embed_model
 from app.models.UserProfileDB import UserProfileDB  # adjust import according to your project structure
 
 # Blueprint for autofill functionality
 autofill_bp = Blueprint('autofill', __name__, url_prefix='/api/autofill')
+
+# —————— CSV LOG SETUP ——————
+# Ensure logs/ exists alongside this file
+LOG_DIR = os.path.join(os.path.dirname(__file__), '..', 'logs')
+os.makedirs(LOG_DIR, exist_ok=True)
+
+CSV_PATH = os.path.join(LOG_DIR, 'model_calls.csv')
+# Open CSV in append mode
+_log_file = open(CSV_PATH, 'a', newline='', encoding='utf-8')
+_csv_writer = csv.writer(_log_file)
+# If new file, write header
+if _log_file.tell() == 0:
+    _csv_writer.writerow([
+        'timestamp',
+        'route',
+        'selector',
+        'label',
+        'placeholder',
+        'predicted',
+        'score'
+    ])
+# —————————————————————————
 
 # Load precomputed canonical embeddings once at import
 data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'canonical_embeddings.json')
@@ -81,6 +105,18 @@ def classify_fields():
                 "canonical": best_match,
                 "score": round(best_score, 4)
             })
+        # —————— LOG EACH DECISION ——————
+        _csv_writer.writerow([
+            datetime.utcnow().isoformat(),
+            '/classify',
+            field.get('selector'),
+            field.get('label'),
+            field.get('placeholder'),
+            best_match or 'none',
+            round(best_score, 4)
+        ])
+    _log_file.flush()
+    # ————————————————————————
 
     return jsonify(matches=matches), 200
 
@@ -120,9 +156,24 @@ def fill_fields():
 
     fills = []
     for m in matches:
+        selector    = m.get('selector')
         canon_field = m.get('canonical')
-        value = getattr(profile, canon_field, None)
+        score       = m.get('score')  # confidence score from classify
+        value       = getattr(profile, canon_field, None)
+
         if value is not None:
-            fills.append({"selector": m.get('selector'), "value": value})
+            fills.append({ "selector": selector, "value": value })
+
+        # —————— LOG EACH FILL DECISION ——————
+        _csv_writer.writerow([
+            datetime.utcnow().isoformat(),
+            '/fill',
+            selector,
+            canon_field,
+            round(score, 4) if isinstance(score, (float, int)) else '',
+            value or ''
+        ])
+    _log_file.flush()
+    # ————————————————————————————————
 
     return jsonify(fills=fills), 200
