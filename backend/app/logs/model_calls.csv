@@ -50,3 +50,173 @@ timestamp,route,selector,label,placeholder,predicted,score
 2025-06-20T09:45:06.230380,/fill,#question_8569688007,linkedin,0.8305,
 2025-06-20T09:45:06.230389,/fill,#question_8569690007,github,0.8283,
 2025-06-20T09:45:06.230393,/fill,#gender,gender,1,
+2025-06-20T10:04:36.042130,/classify,html > body > div:nth-of-type(1) > div._container_ud4nd_29:nth-of-type(2) > div._content_ud4nd_71._details_14ib5_422:nth-of-type(2) > div.ashby-job-posting-right-pane:nth-of-type(2) > div > div._autofillPane_14ib5_453.ashby-application-form-autofill-pane._container_101oc_29:nth-of-type(1) > div._root_xd2v0_1.ashby-application-form-autofill-input-root > input,,,bio,0.3876
+2025-06-20T10:04:36.042388,/classify,#_systemfield_name,Name,Type here...,last_name,0.6421
+2025-06-20T10:04:36.042605,/classify,#_systemfield_email,Email,hello@example.com...,email,1.0
+2025-06-20T10:04:36.042815,/classify,#_systemfield_resume,Resume,,last_name,0.3851
+2025-06-20T10:04:36.043025,/classify,#573b4f00-cb83-4378-ac40-37e54f8fcf95,LinkedIn Profile,Type here...,linkedin,0.8305
+2025-06-20T10:04:36.043244,/classify,#9ce11d04-ef4f-4082-ab5a-9d3afddb6d26,Why do you want to work for Cartesia AI?,Type here...,github,0.1437
+2025-06-20T10:04:36.043455,/classify,#g-recaptcha-response-100000,,,bio,0.3876
+2025-06-20T10:04:36.055608,/fill,#_systemfield_name,last_name,0.6421,Doe
+2025-06-20T10:04:36.055618,/fill,#_systemfield_email,email,1,johndoe@email.com
+2025-06-20T10:04:36.055622,/fill,#573b4f00-cb83-4378-ac40-37e54f8fcf95,linkedin,0.8305,
+2025-06-20T18:21:39.739919,/classify,#resume-upload-input,,,bio,0.3876
+2025-06-20T18:21:39.740143,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(1) > ul > li.application-question:nth-of-type(2) > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:21:39.740370,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(1) > ul > li.application-question:nth-of-type(3) > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:21:39.740582,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(1) > ul > li.application-question:nth-of-type(4) > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:21:39.740796,/classify,#location-input,,,bio,0.3876
+2025-06-20T18:21:39.741006,/classify,#selected-location,,,bio,0.3876
+2025-06-20T18:21:39.741215,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(1) > ul > li.application-question:nth-of-type(6) > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:21:39.741436,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(2) > ul > li.application-question > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:21:39.741647,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(3) > input,,,bio,0.3876
+2025-06-20T18:21:39.741861,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(3) > ul > li.application-question.custom-question:nth-of-type(1) > div > div.application-field.full-width.required-field:nth-of-type(2) > input.card-field-input,Type your response,Type your response,email,0.2207
+2025-06-20T18:21:39.742078,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(3) > ul > li.application-question.custom-question:nth-of-type(2) > div > div.application-field.full-width.required-field:nth-of-type(2) > textarea.card-field-input,,,bio,0.3876
+2025-06-20T18:21:39.742291,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(3) > ul > li.application-question.custom-question:nth-of-type(3) > div > div.application-field.full-width.required-field:nth-of-type(2) > textarea.card-field-input,,,bio,0.3876
+2025-06-20T18:21:39.742507,/classify,#additional-information,ADDITIONAL INFORMATION,Add a cover letter or anything else you want to share.,email,0.3123
+2025-06-20T18:21:39.742717,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(1),,,bio,0.3876
+2025-06-20T18:21:39.742927,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(2),,,bio,0.3876
+2025-06-20T18:21:39.743136,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(3),,,bio,0.3876
+2025-06-20T18:21:39.743346,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(4),,,bio,0.3876
+2025-06-20T18:21:39.743576,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(5),,,bio,0.3876
+2025-06-20T18:21:39.743788,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(6),,,bio,0.3876
+2025-06-20T18:21:39.743999,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(7),,,bio,0.3876
+2025-06-20T18:21:39.744209,/classify,#hcaptchaResponseInput,,,bio,0.3876
+2025-06-20T18:21:39.744426,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(9),,,bio,0.3876
+2025-06-20T18:22:08.328416,/classify,#first_name,First Name*,,first_name,0.7782
+2025-06-20T18:22:08.328638,/classify,#last_name,Last Name*,,last_name,0.7844
+2025-06-20T18:22:08.328850,/classify,#email,Email*,,email,1.0
+2025-06-20T18:22:08.329069,/classify,#phone,Phone,,phone,1.0
+2025-06-20T18:22:08.329278,/classify,#resume,Attach,,email,0.4777
+2025-06-20T18:22:08.329494,/classify,#cover_letter,Attach,,email,0.4777
+2025-06-20T18:22:08.329705,/classify,#school--0,School*,,phone,0.3915
+2025-06-20T18:22:08.329923,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.education--container:nth-of-type(2) > div.education--form > div.select:nth-of-type(2) > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:22:08.330146,/classify,#degree--0,Degree,,bio,0.3999
+2025-06-20T18:22:08.330362,/classify,#discipline--0,Discipline,,race,0.2833
+2025-06-20T18:22:08.330581,/classify,#start-month--0,Start date month,,ethnicity,0.1595
+2025-06-20T18:22:08.330800,/classify,#start-year--0,Start date year,,ethnicity,0.1775
+2025-06-20T18:22:08.331018,/classify,#end-month--0,End date month,,race,0.1822
+2025-06-20T18:22:08.331245,/classify,#end-year--0,End date year,,race,0.1684
+2025-06-20T18:22:08.331486,/classify,#question_4962408007,LinkedIn Profile,,linkedin,0.8305
+2025-06-20T18:22:08.331706,/classify,#question_4962409007,Website,,location,0.5172
+2025-06-20T18:22:08.331947,/classify,#question_7738674007,Are you able to commute to our Palo Alto office?*,,linkedin,0.1577
+2025-06-20T18:22:08.332177,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(3) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:22:08.332388,/classify,#question_7749164007,Will you now or in the future require sponsorship for employment in the United States?*,,bio,0.1063
+2025-06-20T18:22:08.332599,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(4) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:22:08.332811,/classify,#question_7749166007,Do you have authorization to work for any employer in the US?*,,linkedin,0.1065
+2025-06-20T18:22:08.333021,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(5) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:22:08.333260,/classify,#question_7749167007,"(For those outside of Palo Alto, CA) Are you willing to relocate?",,location,0.1297
+2025-06-20T18:22:08.333470,/classify,#g-recaptcha-response-100000,,,bio,0.3876
+2025-06-20T18:22:08.340918,/fill,#first_name,first_name,0.7782,JOhn
+2025-06-20T18:22:08.340922,/fill,#last_name,last_name,0.7844,Doe
+2025-06-20T18:22:08.340925,/fill,#email,email,1,johndoe@email.com
+2025-06-20T18:22:08.340927,/fill,#phone,phone,1,1232343254325
+2025-06-20T18:22:08.340929,/fill,#question_4962408007,linkedin,0.8305,
+2025-06-20T18:22:28.330980,/classify,#first_name,First Name*,,first_name,0.7782
+2025-06-20T18:22:28.331551,/classify,#last_name,Last Name*,,last_name,0.7844
+2025-06-20T18:22:28.332096,/classify,#email,Email*,,email,1.0
+2025-06-20T18:22:28.332655,/classify,#phone,Phone,,phone,1.0
+2025-06-20T18:22:28.333109,/classify,#resume,Attach,,email,0.4777
+2025-06-20T18:22:28.333664,/classify,#cover_letter,Attach,,email,0.4777
+2025-06-20T18:22:28.334141,/classify,#school--0,School*,,phone,0.3915
+2025-06-20T18:22:28.334654,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.education--container:nth-of-type(2) > div.education--form > div.select:nth-of-type(2) > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:22:28.335123,/classify,#degree--0,Degree,,bio,0.3999
+2025-06-20T18:22:28.335576,/classify,#discipline--0,Discipline,,race,0.2833
+2025-06-20T18:22:28.336041,/classify,#start-month--0,Start date month,,ethnicity,0.1595
+2025-06-20T18:22:28.336502,/classify,#start-year--0,Start date year,,ethnicity,0.1775
+2025-06-20T18:22:28.336980,/classify,#end-month--0,End date month,,race,0.1822
+2025-06-20T18:22:28.337445,/classify,#end-year--0,End date year,,race,0.1684
+2025-06-20T18:22:28.337925,/classify,#question_4962408007,LinkedIn Profile,,linkedin,0.8305
+2025-06-20T18:22:28.338390,/classify,#question_4962409007,Website,,location,0.5172
+2025-06-20T18:22:28.338832,/classify,#question_7738674007,Are you able to commute to our Palo Alto office?*,,linkedin,0.1577
+2025-06-20T18:22:28.339245,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(3) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:22:28.339673,/classify,#question_7749164007,Will you now or in the future require sponsorship for employment in the United States?*,,bio,0.1063
+2025-06-20T18:22:28.340074,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(4) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:22:28.340488,/classify,#question_7749166007,Do you have authorization to work for any employer in the US?*,,linkedin,0.1065
+2025-06-20T18:22:28.340906,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(5) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:22:28.341309,/classify,#question_7749167007,"(For those outside of Palo Alto, CA) Are you willing to relocate?",,location,0.1297
+2025-06-20T18:22:28.341748,/classify,#g-recaptcha-response-100000,,,bio,0.3876
+2025-06-20T18:22:28.351465,/fill,#first_name,first_name,0.7782,JOhn
+2025-06-20T18:22:28.351485,/fill,#last_name,last_name,0.7844,Doe
+2025-06-20T18:22:28.351490,/fill,#email,email,1,johndoe@email.com
+2025-06-20T18:22:28.351501,/fill,#phone,phone,1,1232343254325
+2025-06-20T18:22:28.351504,/fill,#question_4962408007,linkedin,0.8305,
+2025-06-20T18:22:54.614680,/classify,#resume-upload-input,,,bio,0.3876
+2025-06-20T18:22:54.615153,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(1) > ul > li.application-question:nth-of-type(2) > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:22:54.615634,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(1) > ul > li.application-question:nth-of-type(3) > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:22:54.616046,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(1) > ul > li.application-question:nth-of-type(4) > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:22:54.616513,/classify,#location-input,,,bio,0.3876
+2025-06-20T18:22:54.616929,/classify,#selected-location,,,bio,0.3876
+2025-06-20T18:22:54.617380,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(1) > ul > li.application-question:nth-of-type(6) > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:22:54.617797,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(2) > ul > li.application-question > label > div.application-field:nth-of-type(2) > input,,,bio,0.3876
+2025-06-20T18:22:54.618228,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(3) > input,,,bio,0.3876
+2025-06-20T18:22:54.618665,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(3) > ul > li.application-question.custom-question:nth-of-type(1) > div > div.application-field.full-width.required-field:nth-of-type(2) > input.card-field-input,Type your response,Type your response,email,0.2207
+2025-06-20T18:22:54.619072,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(3) > ul > li.application-question.custom-question:nth-of-type(2) > div > div.application-field.full-width.required-field:nth-of-type(2) > textarea.card-field-input,,,bio,0.3876
+2025-06-20T18:22:54.619500,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > div.section.page-centered.application-form:nth-of-type(3) > ul > li.application-question.custom-question:nth-of-type(3) > div > div.application-field.full-width.required-field:nth-of-type(2) > textarea.card-field-input,,,bio,0.3876
+2025-06-20T18:22:54.619903,/classify,#additional-information,ADDITIONAL INFORMATION,Add a cover letter or anything else you want to share.,email,0.3123
+2025-06-20T18:22:54.620315,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(1),,,bio,0.3876
+2025-06-20T18:22:54.620723,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(2),,,bio,0.3876
+2025-06-20T18:22:54.621126,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(3),,,bio,0.3876
+2025-06-20T18:22:54.621547,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(4),,,bio,0.3876
+2025-06-20T18:22:54.621910,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(5),,,bio,0.3876
+2025-06-20T18:22:54.622315,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(6),,,bio,0.3876
+2025-06-20T18:22:54.622673,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(7),,,bio,0.3876
+2025-06-20T18:22:54.623042,/classify,#hcaptchaResponseInput,,,bio,0.3876
+2025-06-20T18:22:54.623412,/classify,html > body.application.header-compact > div.content-wrapper.application-page:nth-of-type(2) > div.content > div.section-wrapper.page-full-width:nth-of-type(2) > form > input:nth-of-type(9),,,bio,0.3876
+2025-06-20T18:30:02.030752,/classify,#first_name,First Name*,,first_name,0.7782
+2025-06-20T18:30:02.031204,/classify,#last_name,Last Name*,,last_name,0.7844
+2025-06-20T18:30:02.031609,/classify,#email,Email*,,email,1.0
+2025-06-20T18:30:02.032083,/classify,#phone,Phone,,phone,1.0
+2025-06-20T18:30:02.032486,/classify,#resume,Attach,,email,0.4777
+2025-06-20T18:30:02.032901,/classify,#cover_letter,Attach,,email,0.4777
+2025-06-20T18:30:02.033305,/classify,#school--0,School*,,phone,0.3915
+2025-06-20T18:30:02.033718,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.education--container:nth-of-type(2) > div.education--form > div.select:nth-of-type(2) > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:30:02.034162,/classify,#degree--0,Degree,,bio,0.3999
+2025-06-20T18:30:02.034566,/classify,#discipline--0,Discipline,,race,0.2833
+2025-06-20T18:30:02.034980,/classify,#start-month--0,Start date month,,ethnicity,0.1595
+2025-06-20T18:30:02.035458,/classify,#start-year--0,Start date year,,ethnicity,0.1775
+2025-06-20T18:30:02.035924,/classify,#end-month--0,End date month,,race,0.1822
+2025-06-20T18:30:02.036365,/classify,#end-year--0,End date year,,race,0.1684
+2025-06-20T18:30:02.036787,/classify,#question_4962408007,LinkedIn Profile,,linkedin,0.8305
+2025-06-20T18:30:02.037165,/classify,#question_4962409007,Website,,location,0.5172
+2025-06-20T18:30:02.037548,/classify,#question_7738674007,Are you able to commute to our Palo Alto office?*,,linkedin,0.1577
+2025-06-20T18:30:02.037938,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(3) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:30:02.038318,/classify,#question_7749164007,Will you now or in the future require sponsorship for employment in the United States?*,,bio,0.1063
+2025-06-20T18:30:02.038709,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(4) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:30:02.039102,/classify,#question_7749166007,Do you have authorization to work for any employer in the US?*,,linkedin,0.1065
+2025-06-20T18:30:02.039478,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(5) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:30:02.039867,/classify,#question_7749167007,"(For those outside of Palo Alto, CA) Are you willing to relocate?",,location,0.1297
+2025-06-20T18:30:02.040279,/classify,#g-recaptcha-response-100000,,,bio,0.3876
+2025-06-20T18:30:02.047438,/fill,#first_name,first_name,0.7782,JOhn
+2025-06-20T18:30:02.047449,/fill,#last_name,last_name,0.7844,Doe
+2025-06-20T18:30:02.047453,/fill,#email,email,1,johndoe@email.com
+2025-06-20T18:30:02.047457,/fill,#phone,phone,1,1232343254325
+2025-06-20T18:30:02.047460,/fill,#question_4962408007,linkedin,0.8305,
+2025-06-20T18:33:22.344006,/classify,#first_name,First Name*,,first_name,0.7782
+2025-06-20T18:33:22.344617,/classify,#last_name,Last Name*,,last_name,0.7844
+2025-06-20T18:33:22.345183,/classify,#email,Email*,,email,1.0
+2025-06-20T18:33:22.345748,/classify,#phone,Phone,,phone,1.0
+2025-06-20T18:33:22.346409,/classify,#resume,Attach,,email,0.4777
+2025-06-20T18:33:22.347003,/classify,#cover_letter,Attach,,email,0.4777
+2025-06-20T18:33:22.347539,/classify,#school--0,School*,,phone,0.3915
+2025-06-20T18:33:22.348086,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.education--container:nth-of-type(2) > div.education--form > div.select:nth-of-type(2) > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:33:22.348644,/classify,#degree--0,Degree,,bio,0.3999
+2025-06-20T18:33:22.349207,/classify,#discipline--0,Discipline,,race,0.2833
+2025-06-20T18:33:22.349772,/classify,#start-month--0,Start date month,,ethnicity,0.1595
+2025-06-20T18:33:22.350293,/classify,#start-year--0,Start date year,,ethnicity,0.1775
+2025-06-20T18:33:22.350763,/classify,#end-month--0,End date month,,race,0.1822
+2025-06-20T18:33:22.351224,/classify,#end-year--0,End date year,,race,0.1684
+2025-06-20T18:33:22.351721,/classify,#question_4962408007,LinkedIn Profile,,linkedin,0.8305
+2025-06-20T18:33:22.352201,/classify,#question_4962409007,Website,,location,0.5172
+2025-06-20T18:33:22.352734,/classify,#question_7738674007,Are you able to commute to our Palo Alto office?*,,linkedin,0.1577
+2025-06-20T18:33:22.353215,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(3) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:33:22.353688,/classify,#question_7749164007,Will you now or in the future require sponsorship for employment in the United States?*,,bio,0.1063
+2025-06-20T18:33:22.354150,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(4) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:33:22.354611,/classify,#question_7749166007,Do you have authorization to work for any employer in the US?*,,linkedin,0.1065
+2025-06-20T18:33:22.355097,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(5) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-20T18:33:22.355559,/classify,#question_7749167007,"(For those outside of Palo Alto, CA) Are you willing to relocate?",,location,0.1297
+2025-06-20T18:33:22.356043,/classify,#g-recaptcha-response-100000,,,bio,0.3876
+2025-06-20T18:33:22.362943,/fill,#first_name,first_name,0.7782,JOhn
+2025-06-20T18:33:22.362960,/fill,#last_name,last_name,0.7844,Doe
+2025-06-20T18:33:22.362966,/fill,#email,email,1,johndoe@email.com
+2025-06-20T18:33:22.362970,/fill,#phone,phone,1,1232343254325
+2025-06-20T18:33:22.362973,/fill,#question_4962408007,linkedin,0.8305,
