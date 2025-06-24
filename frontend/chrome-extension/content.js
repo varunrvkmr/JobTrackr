@@ -2,27 +2,6 @@
 (async () => {
   console.log('🔹 content.js loaded');
 
-  // Load canonical data
-  console.log('🔹 Fetching canonical.json…');
-  const canonical = await fetch(
-    chrome.runtime.getURL('canonical.json')
-  ).then(r => r.json());
-  console.log('✅ canonical loaded:', canonical);
-
-
-  // Precompute canonical embeddings
-  console.log('🔹 Computing canonical embeddings…');
-  const canonicalVecs = {};
-  for (const [key, examples] of Object.entries(canonical)) {
-    try {
-      canonicalVecs[key] = await embedText(examples[0]);
-      console.log(`✅ Embedded ${key}`);
-    } catch (error) {
-      console.error(`❌ Failed to embed ${key}:`, error);
-    }
-  }
-  console.log('✅ Canonical embeddings ready');
-
   function proxyFetch(url, init) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(
@@ -69,22 +48,6 @@
     return path.join(' > ');
   }
 
-  // Helper function to compute embeddings via background script
-  const embedText = async (text) => {
-    const resp = await fetch('http://localhost:5050/api/embed', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ texts: [text] })
-    });
-    if (!resp.ok) {
-      throw new Error(`Embed failed: ${resp.status}`);
-    }
-    const { embeddings } = await resp.json();
-    return embeddings[0];
-  };
-
-
   /**
    * Utility: Get a human-readable label for an input element.
    */
@@ -110,24 +73,6 @@
       label: getNearestLabelText(el),
       placeholder: el.placeholder || ''
     }));
-  }
-
-  /**
-   * Inject fill values into the DOM.
-   */
-  function injectValues(fills) {
-    for (const { selector, value } of fills) {
-      const el = document.querySelector(selector);
-      if (!el) continue;
-      if (el.tagName === 'SELECT') {
-        const opt = [...el.options].find(o => o.textContent.trim() === value);
-        if (opt) opt.selected = true;
-      } else {
-        el.value = value;
-        el.dispatchEvent(new Event('input',  { bubbles: true }));
-        el.dispatchEvent(new Event('change',{ bubbles: true }));
-      }
-    }
   }
 
   function notifyPage(msg, isError = false) {
@@ -344,50 +289,52 @@ function buildJobData() {
         : document.querySelector(selectors.job_description)?.innerText.trim()) || 'No job description available',
     posting_status: 'Saved'
   };
-
   console.log('Extracted Job Data:', jobData);
+  return jobData;
 }
 
   // Message handlers
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  // --- SAVE JOB ---
-  if (msg.action === 'SAVE_JOB') {
-    console.log('📥 [content] SAVE_JOB');
-    let jobData;
-    try {
-      jobData = buildJobData();
-    } catch (err) {
-      sendResponse({ success: false, error: err.message });
-      return true;
-    }
-
-    // forward to background.js (or wherever you're persisting)
-    chrome.runtime.sendMessage(
-      { action: 'SAVE_JOB', jobData },
-      (backgroundResponse) => {
-        // bubble the result back to the popup
-        if (chrome.runtime.lastError) {
-          sendResponse({ success: false, error: chrome.runtime.lastError.message });
-        } else {
-          sendResponse(backgroundResponse);
-        }
+    // --- SAVE JOB ---
+    console.log('in addListener for save job');
+    console.log(msg.type);
+    if (msg.type === 'SAVE_JOB') {
+      console.log('📥 [content] SAVE_JOB');
+      let jobData;
+      try {
+        jobData = buildJobData();
+      } catch (err) {
+        sendResponse({ success: false, error: err.message });
+        return true;
       }
-    );
 
-    // indicate we'll call sendResponse asynchronously
-    return true;
-    }
+      // forward to background.js (or wherever you're persisting)
+      chrome.runtime.sendMessage(
+        { type: 'SAVE_JOB', jobData },
+        (backgroundResponse) => {
+          // bubble the result back to the popup
+          if (chrome.runtime.lastError) {
+            sendResponse({ success: false, error: chrome.runtime.lastError.message });
+          } else {
+            sendResponse(backgroundResponse);
+          }
+        }
+      );
 
-    // --- AUTOFILL APPLICATION ---
-    if (msg.action === 'RUN_AUTOFILL') {
-      console.log('📥 [content] RUN_AUTOFILL');
-      runAutofillFlow()
-        .then(() => sendResponse({ status: 'ok' }))
-        .catch(err => sendResponse({ status: 'error', error: err.message }));
+      // indicate we'll call sendResponse asynchronously
+      return true;
+      }
 
-      return true;  // because we’ll sendResponse later
-    }
-  });
+      // --- AUTOFILL APPLICATION ---
+      if (msg.type === 'RUN_AUTOFILL') {
+        console.log('📥 [content] RUN_AUTOFILL');
+        runAutofillFlow()
+          .then(() => sendResponse({ status: 'ok' }))
+          .catch(err => sendResponse({ status: 'error', error: err.message }));
+
+        return true;  // because we’ll sendResponse later
+      }
+    });
 
 
   console.log('✅ content.js ready');

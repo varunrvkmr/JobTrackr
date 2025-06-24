@@ -85,7 +85,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // 3) Save job requests
   if (message.type === 'SAVE_JOB') {
     console.log('🔹 [background] SAVE_JOB:', message.jobData);
-    fetch('http://localhost:5050/api/jobs', {
+    fetch('http://localhost:5050/api/jobs/addJob', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -96,8 +96,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .catch(err    => sendResponse({ success: false, error: err.message }));
     return true;
   }
-
-  // 4) (Optional) handle other message types here…
 
 });
 

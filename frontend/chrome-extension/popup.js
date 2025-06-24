@@ -1,22 +1,35 @@
+
 document.addEventListener('DOMContentLoaded', () => {
   const saveJobButton = document.getElementById('save-job');
   const autofillButton = document.getElementById('autofill-application');
-  const statusMessage = document.getElementById('status');
+  const statusMessage = document.getElementById('statusMessage');
 
   // Save job when "Save Current Job" is clicked
   saveJobButton.addEventListener('click', () => {
-    console.log('Save Job button clicked');
+    console.log('popup.js - in saveJobButton addEventListener');
+    saveJobButton.disabled = true;
+    statusMessage.textContent = 'Saving…';
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      console.log('Active tab fetched:', tabs);
+      const tabId = tabs[0].id;
 
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        files: ['content.js']
-      }, () => {
-        console.log('Content script executed for saving job');
-        statusMessage.textContent = 'Job save triggered!';
-        setTimeout(() => (statusMessage.textContent = ''), 2000);
+      // Since content.js is already loaded on all pages, just message it:
+      chrome.tabs.sendMessage(tabId, { type: 'SAVE_JOB' }, response => {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError);
+          statusMessage.textContent = 'Error: no listener';
+          console.log('Error: no listener');
+        } else if (response?.success) {
+          statusMessage.textContent = 'Job saved!';
+          console.log('Job saved!');
+        } else {
+          statusMessage.textContent = `Error: ${response?.error || 'unknown'}`;
+        }
+
+        setTimeout(() => {
+          statusMessage.textContent = '';
+          saveJobButton.disabled = false;
+        }, 2000);
       });
     });
   });
@@ -42,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           console.log('Autofill message sent:', response);
         }
-        statusMessage.textContent = 'Autofill triggered!';
-        setTimeout(() => statusMessage.textContent = '', 2000);
+        //statusMessage.textContent = 'Autofill triggered!';
+        //setTimeout(() => statusMessage.textContent = '', 2000);
       });
     });
   });
