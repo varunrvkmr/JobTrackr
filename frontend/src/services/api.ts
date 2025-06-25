@@ -326,6 +326,7 @@ export const fetchCurrentUserProfile = async (): Promise<UserProfile> => {
   );
 };
 */
+/*
 export const fetchCurrentUserProfile = async (): Promise<UserProfile> => {
   const data = await fetchWithAutoRefresh<any>( // get raw API data
     `${USER_PROFILE_URL}/me`,
@@ -347,87 +348,65 @@ export const fetchCurrentUserProfile = async (): Promise<UserProfile> => {
   return transformed;
 };
 
-
-//Fetch All User Profiles
-export const fetchUserProfiles = async (): Promise<ApiResponse<UserProfile[]>> => {
-  try {
-    const url = `${USER_PROFILE_URL}/`;
-    console.log("Fetching User Profiles from:", url);
-
-    const data = await fetchWithAutoRefresh<UserProfile[]>(url, {
-      method: "GET"
-    });
-
-    return { data };
-  } catch (error) {
-    console.error("Error fetching user profiles:", error);
-    return { data: [] };
-  }
-};
-
-//Fetch a Single User Profile by ID
-export const fetchUserProfileById = async (userId: string): Promise<ApiResponse<UserProfile>> => {
-  try {
-    const url = `${USER_PROFILE_URL}/${userId}`;
-    console.log(`Fetching User Profile ${userId} from:`, url);
-
-    return await fetchWithAutoRefresh<ApiResponse<UserProfile>>(url, {
-      method: "GET"
-    });
-  } catch (error) {
-    console.error(
-      "Error fetching user profile:",
-      error instanceof Error ? error.message : "An unknown error occurred"
-    );
-    throw error;
-  }
-};
-
-//Create a New User Profile
-export const createUserProfile = async (userData: UserProfile): Promise<ApiResponse<UserProfile>> => {
-  try {
-    const url = `${USER_PROFILE_URL}/newUser`;
-    console.log('Creating User Profile:', url);
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create user profile');
-    }
-
-    const result: ApiResponse<UserProfile> = await response.json();
-    return result;
-  } catch (error: unknown) {
-    console.error('Error creating user profile:', (error instanceof Error ? error.message : 'An unknown error occurred'));
-    throw error;
-  }
-};
-
 //Update a User Profile
-export const updateUserProfile = async (userId: string, updatedData: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> => {
-  try {
-    const url = `${USER_PROFILE_URL}/${userId}`;
-    console.log(`Updating User Profile ${userId}:`, url);
-
-    const response = await fetch(url, {
+export const updateCurrentUserProfile = async (payload: any) => {
+  return fetchWithAutoRefresh<ApiResponse<any>>(
+    `${USER_PROFILE_URL}/me`,
+    {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to update user profile with ID ${userId}`);
+      body: JSON.stringify(payload),
     }
+  );
+};
+*/
+const normalize = (api: any): UserProfile => ({
+  id:                String(api.id),
+  firstName:         api.first_name,
+  lastName:          api.last_name,
+  email:             api.email,
+  phone:             api.phone    ?? "",
+  location:          api.location ?? "",
+  state:             api.state    ?? "",
+  bio:               api.bio      ?? "",
+  linkedin:          api.linkedin ?? "",
+  github:            api.github   ?? "",
+  race:              api.race     ?? "",
+  ethnicity:         api.ethnicity?? "",
+  gender:            api.gender   ?? "",
+  disabilityStatus:  api.disability_status ?? "",
+  veteranStatus:     api.veteran_status    ?? "",
+  // if you’ve re-added these to UserProfile:
+  education:         api.education        ?? [],
+  workExperience:    api.work_experience  ?? [],
+});
 
-    return await response.json();
-  } catch (error: unknown) {
-    console.error('Error updating user profile:', (error instanceof Error ? error.message : 'An unknown error occurred'));
-    throw error;
-  }
+export const fetchCurrentUserProfile = async (): Promise<UserProfile> => {
+  // calls GET /api/user/me and returns the raw JSON object
+  const api = await fetchWithAutoRefresh<UserProfile>(
+    `${USER_PROFILE_URL}/me`,
+    { method: "GET" }
+  );
+  // if your fetchWithAutoRefresh wraps in { data } strip that off:
+  // const api = (await fetchWithAutoRefresh<{ profile: any }>(…)).profile;
+
+  return normalize(api);
+};
+
+export const updateCurrentUserProfile = async (
+  payload: Record<string, any>
+): Promise<UserProfile> => {
+  // calls PUT /api/user/me, sending snake_case, returns raw JSON
+  const api = await fetchWithAutoRefresh<UserProfile>(
+    `${USER_PROFILE_URL}/me`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  // again, if wrapped in { profile }, do .profile here.
+
+  return normalize(api);
 };
 //USER PROFILES FUNCTIONALITY - END
 

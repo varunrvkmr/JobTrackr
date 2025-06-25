@@ -28,30 +28,6 @@ def get_all_user_profiles():
         "veteran_status": user.veteran_status
     } for user in users]), 200
 
-# ✅ Get a single user profile by ID
-@user_profiles_routes_bp.route("/<int:user_id>", methods=["GET"])
-def get_user_profile(user_id):
-    user = UserProfileDB.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User profile not found"}), 404
-    return jsonify({
-        "id": user.id,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "email": user.email,
-        "phone": user.phone,
-        "location": user.location,
-        "bio": user.bio,
-        "linkedin": user.linkedin,
-        "github": user.github,
-        "race": user.race,
-        "ethnicity": user.ethnicity,
-        "gender": user.gender,
-        "disability_status": user.disability_status,
-        "veteran_status": user.veteran_status
-    }), 200
-
-
 
 @user_profiles_routes_bp.route("/me", methods=["GET"])
 @jwt_required()
@@ -79,6 +55,29 @@ def get_logged_in_user_profile():
         "disability_status": user.disability_status,
         "veteran_status": user.veteran_status
     }), 200
+
+@user_profiles_routes_bp.route("/me", methods=["PUT"])
+@jwt_required()
+def update_my_profile():
+    user_auth_id = get_jwt_identity()
+    profile = UserProfileDB.query.filter_by(user_auth_id=user_auth_id).first_or_404()
+
+    data = request.get_json() or {}
+    if "email" in data and data["email"] != profile.email:
+        return jsonify({"error": "Cannot change email"}), 400
+
+    updatable = {
+        "first_name","last_name","phone","location","state",
+        "bio","linkedin","github","race","ethnicity",
+        "gender","disability_status","veteran_status"
+    }
+    for field in updatable:
+        if field in data:
+            setattr(profile, field, data[field])
+
+    db.session.commit()
+    return jsonify({"message":"Profile updated successfully"}), 200
+
 
 
 # ✅ Create a new user profile
@@ -110,18 +109,3 @@ def create_user_profile():
     db.session.commit()
     
     return jsonify({"message": "User profile created successfully", "id": new_user.id}), 201
-
-# ✅ Update an existing user profile
-@user_profiles_routes_bp.route("/<int:user_id>", methods=["PUT"])
-def update_user_profile(user_id):
-    user = UserProfileDB.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User profile not found"}), 404
-
-    data = request.get_json()
-    for key, value in data.items():
-        if hasattr(user, key):
-            setattr(user, key, value)
-
-    db.session.commit()
-    return jsonify({"message": "User profile updated successfully"}), 200

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tabId = tabs[0].id;
       // Send a message to content.js to kick off runAutofillFlow()
-      chrome.tabs.sendMessage(tabId, { action: 'RUN_AUTOFILL' }, (response) => {
+      chrome.tabs.sendMessage(tabId, { type: 'RUN_AUTOFILL' }, (response) => {
         if (chrome.runtime.lastError) {
           // content.js might not be injected yet
           console.warn('Content script not found, injecting…');

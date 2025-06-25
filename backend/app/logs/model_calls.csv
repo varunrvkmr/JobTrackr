@@ -117,3 +117,34 @@ timestamp,route,selector,label,placeholder,predicted,score
 2025-06-24T07:15:40.050626,/fill,#question_6529379005,github,1,
 2025-06-24T07:15:40.050628,/fill,#question_6900019005,linkedin,0.8305,
 2025-06-24T07:15:40.050630,/fill,#gender,gender,1,
+2025-06-25T07:33:43.328243,/classify,#first_name,First Name*,,first_name,0.7782
+2025-06-25T07:33:43.328499,/classify,#last_name,Last Name*,,last_name,0.7844
+2025-06-25T07:33:43.328711,/classify,#email,Email*,,email,1.0
+2025-06-25T07:33:43.328921,/classify,#phone,Phone,,phone,1.0
+2025-06-25T07:33:43.329138,/classify,#resume,Attach,,email,0.4777
+2025-06-25T07:33:43.329347,/classify,#cover_letter,Attach,,email,0.4777
+2025-06-25T07:33:43.329557,/classify,#question_51543502,LinkedIn Profile,,linkedin,0.8305
+2025-06-25T07:33:43.329766,/classify,#question_51543503,Website,,location,0.5172
+2025-06-25T07:33:43.329976,/classify,#question_54987976,How did you hear about this job?*,,last_name,0.0241
+2025-06-25T07:33:43.330204,/classify,#question_54987977,Are you authorized to be employed in the US?*,,github,0.0676
+2025-06-25T07:33:43.330419,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(4) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-25T07:33:43.330633,/classify,#question_54987978,Do you need visa sponsorship now or in the future?*,,linkedin,0.1474
+2025-06-25T07:33:43.330843,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(5) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-25T07:33:43.331068,/classify,#question_54987979,What is your state/province of residence?*,,location,0.1955
+2025-06-25T07:33:43.331314,/classify,#question_54987980,Do you currently live within 50 miles/80km of the San Francisco hub? *,,ethnicity,0.0769
+2025-06-25T07:33:43.331546,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(7) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-25T07:33:43.331756,/classify,#question_54987981,"If you don't currently live within 50 miles/80 km of the San Francisco hub, are you willing to relocate? *",,location,0.153
+2025-06-25T07:33:43.331966,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(8) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-25T07:33:43.332185,/classify,#question_54987982,How many years of professional experience do you have as a Software Engineer?*,,linkedin,0.1721
+2025-06-25T07:33:43.332432,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(9) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
+2025-06-25T07:33:43.332674,/classify,#gender,Gender,,gender,1.0
+2025-06-25T07:33:43.332888,/classify,#hispanic_ethnicity,Are you Hispanic/Latino?,,ethnicity,0.3461
+2025-06-25T07:33:43.333101,/classify,#veteran_status,Veteran Status,,ethnicity,0.2176
+2025-06-25T07:33:43.333321,/classify,#disability_status,Disability Status,,ethnicity,0.2731
+2025-06-25T07:33:43.333530,/classify,#g-recaptcha-response-100000,,,bio,0.3876
+2025-06-25T07:33:43.361478,/fill,#first_name,first_name,0.7782,JOhn
+2025-06-25T07:33:43.361503,/fill,#last_name,last_name,0.7844,Doe
+2025-06-25T07:33:43.361507,/fill,#email,email,1,johndoe@email.com
+2025-06-25T07:33:43.361520,/fill,#phone,phone,1,3413134412
+2025-06-25T07:33:43.361523,/fill,#question_51543502,linkedin,0.8305,linkedin.com/johndoe
+2025-06-25T07:33:43.361526,/fill,#gender,gender,1,male

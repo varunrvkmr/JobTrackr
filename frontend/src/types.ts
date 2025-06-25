@@ -27,69 +27,60 @@ export interface Job {
     data?: T | null; // ✅ Explicitly allow `null` or `undefined`
   }
 
-
-  
-  interface Education {
+  export interface Education {
     school: string;
     degree: string;
     year: string;
   }
   
-  interface WorkExperience {
+  export interface WorkExperience {
     company: string;
     position: string;
     years: string;
   }
   
-  export interface UserProfileFormData {
-    id: string; // Ensure id is explicitly a string
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    city: string;
-    state: string;
-    education: Education[];
-    workExperience: WorkExperience[];
-    skills: string;
-    gender: string;
-    race: string;
-    ethnicity: string;
-    disabilityStatus: string;
-    veteranStatus: string;
-    linkedin: string;
-    github: string;
-  }
-  
-  
-  export interface UserProfilePayload {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string;
-    city: string;
-    state: string;
-    skills: string;
-    gender: string;
-    race: string;
-    ethnicity: string;
-    disability_status: string;
-    veteran_status: string;
-    linkedin: string;
-    github: string;
+  export interface UserProfile {
+    id:              string; // or number if you prefer
+    firstName:       string;
+    lastName:        string;
+    email:           string;
+    phone?:          string;
+    location?:       string;  // formerly “city”
+    state?:          string;
+    bio?:            string;
+    linkedin?:       string;
+    github?:         string;
+    race?:           string;
+    ethnicity?:      string;
+    gender?:         string;
+    disabilityStatus?: string;
+    veteranStatus?:    string;
+    education?:       Education[]
+    workExperience?:  WorkExperience[]
   }
 
-  export type UserProfile = UserProfileFormData & {
-    id: string;
-  };
-  
-  export interface AuthUser {
-    id: number | string;
-    email: string;
-    username: string;
-    avatar?: string;
+  /** The payload we send to PUT /api/user/me — snake_case */
+  export interface UserProfilePayload {
+    first_name?:       string;
+    last_name?:        string;
+    phone?:            string;
+    location?:         string;
+    state?:            string;
+    bio?:              string;
+    linkedin?:         string;
+    github?:           string;
+    race?:             string;
+    ethnicity?:        string;
+    gender?:           string;
+    disability_status?: string;
+    veteran_status?:    string;
   }
+    export interface AuthUser {
+      id: number | string;
+      email: string;
+      username: string;
+      avatar?: string;
+    }
   
   /** Descriptor for a form field on the page */
   export interface FieldInput {

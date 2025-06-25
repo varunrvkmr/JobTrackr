@@ -295,6 +295,11 @@ function buildJobData() {
 
   // Message handlers
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    console.log("📥 [content] incoming message:", msg);
+    if (!msg || !msg.type) {
+      // skip anything that isn’t a well-formed SAVE_JOB or RUN_AUTOFILL
+      return;
+    }
     // --- SAVE JOB ---
     console.log('in addListener for save job');
     console.log(msg.type);

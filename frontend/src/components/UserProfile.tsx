@@ -1,39 +1,24 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import "./user-profile.css"
-import { createUserProfile, updateUserProfile, getUserProfileById } from "src/services/api";
-import type { UserProfile, UserProfileFormData, ApiResponse } from "@/types"
+// Remove this import:
+import { fetchCurrentUserProfile, updateCurrentUserProfile } from "src/services/api";
+import type { UserProfile, Education, WorkExperience } from "@/types"
 
-interface Education {
-  school: string
-  degree: string
-  year: string
-}
-
-interface WorkExperience {
-  company: string
-  position: string
-  years: string
-}
 
 const EnhancedUserProfile = () => {
-  const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [hasProfile, setHasProfile] = useState(false)
-  const [formData, setFormData] = useState<UserProfileFormData>({
-    id: "", // Ensure id is initialized
+  const [formData, setFormData] = useState<UserProfile>({
+    id: "",
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    city: "",  // Change from cityState to separate fields
-    state: "",
+    location: "",
     education: [{ school: "", degree: "", year: "" }],
     workExperience: [{ company: "", position: "", years: "" }],
-    skills: "",
     gender: "",
     race: "",
     ethnicity: "",
@@ -41,78 +26,29 @@ const EnhancedUserProfile = () => {
     veteranStatus: "",
     linkedin: "",
     github: "",
-  });
-  
+  })
 
   // Load profile data on component mount
-  /*PREVIOUSLY WORKING CODE 
   useEffect(() => {
-    const fetchProfile = async () => {
+    ;(async () => {
+      setIsLoading(true)
       try {
-        setIsLoading(true);
-        
-        // Using API service layer instead of direct fetch
-        const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5050/api";
-        const USER_PROFILE_URL = `${BASE_URL}/user-profile`;
-
-        const response = await fetch(`${USER_PROFILE_URL}/profile?email=${formData.email}`);
-        if (response.ok) {
-          const data = await response.json();
-          setFormData(data);
-          setHasProfile(true);
-          setIsEditing(false);
-        } else {
-          setIsEditing(true);
-        }
-      } catch (error) {
-        console.error("Error loading user profile:", error);
+        const profile = await fetchCurrentUserProfile()
+        setFormData(profile)
+      } catch {
+        // no profile yet—keep default empty state
+        console.log("No existing profile found, starting with empty form")
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-  
-    fetchProfile();
-  }, []);
-  */
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setIsLoading(true);
-  
-        const userId = localStorage.getItem("userId");
-        if (!userId) {
-          setIsEditing(true);
-          setIsLoading(false);
-          return;
-        }
-  
-        const response = await getUserProfileById(userId); // Use your service layer
-        if (response && response.data) {
-          setFormData(response.data);
-          setHasProfile(true);
-          setIsEditing(false);
-        } else {
-          setIsEditing(true);
-        }
-      } catch (error) {
-        console.error("Error loading user profile:", error);
-        setIsEditing(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-  
-    fetchProfile();
-  }, []);  
-  
-  
+    })()
+  }, [])
 
   // Handle input changes
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     index: number | null = null,
-    section: keyof UserProfileFormData | null = null,
+    section: keyof UserProfile | null = null,
   ) => {
     const { name, value } = event.target
 
@@ -133,9 +69,7 @@ const EnhancedUserProfile = () => {
   }
 
   // Add education/work experience
-  const addField = (section: keyof UserProfileFormData) => {
-    if (!isEditing) return
-
+  const addField = (section: keyof UserProfile) => {
     const sectionData = formData[section]
     if (Array.isArray(sectionData)) {
       const newField =
@@ -148,9 +82,7 @@ const EnhancedUserProfile = () => {
   }
 
   // Remove education/work experience
-  const removeField = (section: keyof UserProfileFormData, index: number) => {
-    if (!isEditing) return
-
+  const removeField = (section: keyof UserProfile, index: number) => {
     const sectionData = formData[section]
     if (Array.isArray(sectionData)) {
       const updatedSection = (sectionData as Array<Education | WorkExperience>).filter((_, i) => i !== index)
@@ -161,89 +93,43 @@ const EnhancedUserProfile = () => {
     }
   }
 
-  // Handle form submission
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const saveBtn = document.getElementById("saveButton") as HTMLButtonElement | null;
-  
-    try {
-      if (saveBtn) {
-        saveBtn.textContent = "Saving...";
-        saveBtn.setAttribute("disabled", "true");
-      }
-  
-      // Construct the UserProfile object
-      const userProfileData: UserProfile = {
-        id: formData.id || "",
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        city: formData.city,
-        state: formData.state,
-        education: formData.education,
-        workExperience: formData.workExperience,
-        skills: formData.skills,
-        gender: formData.gender,
-        race: formData.race,
-        ethnicity: formData.ethnicity,
-        disabilityStatus: formData.disabilityStatus,
-        veteranStatus: formData.veteranStatus,
-        linkedin: formData.linkedin,
-        github: formData.github,
-      };
-  
-      let response: ApiResponse<UserProfile> | null = null;
-  
-      if (hasProfile && userProfileData.id) {
-        response = await updateUserProfile(userProfileData.id, userProfileData);
-      } else {
-        response = await createUserProfile(userProfileData);
-      }
-  
-      if (response && response.data) {
-        const { data } = response;
-      
-        if (!hasProfile && data.id) {
-          setFormData((prev) => ({ ...prev, id: data.id }));
-          setHasProfile(true);
-        }
-      
-        alert("User profile saved successfully!");
-        setIsEditing(false);
-      } else {
-        throw new Error("Profile save failed");
-      }      
-    } catch (error) {
-      console.error("Error saving user profile:", error);
-      alert("Failed to save user profile. Please try again.");
-    } finally {
-      if (saveBtn) {
-        saveBtn.textContent = "Save Profile";
-        saveBtn.removeAttribute("disabled");
-      }
-    }
-  };
-  
-  
-  // Handle edit button click
-  const handleEdit = () => {
-    setIsEditing(true)
-  }
+    event.preventDefault()
+    const saveBtn = document.getElementById("saveButton") as HTMLButtonElement | null
 
-  // Handle cancel button click
-  const handleCancel = () => {
-    // If user has a saved profile, revert to it
-    if (hasProfile) {
-      const storedProfile = localStorage.getItem("userProfile")
-      if (storedProfile) {
-        setFormData(JSON.parse(storedProfile))
-      }
-      setIsEditing(false)
-    } else {
-      // If no saved profile, just keep editing
-      alert("Please save your profile first.")
+    // Disable the button during save
+    if (saveBtn) {
+      saveBtn.textContent = "Saving…"
+      saveBtn.disabled = true
     }
+
+    // Build payload
+    const payload = {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      phone: formData.phone,
+      location: formData.location,
+      linkedin: formData.linkedin,
+      github: formData.github,
+      race: formData.race,
+      ethnicity: formData.ethnicity,
+      gender: formData.gender,
+      disability_status: formData.disabilityStatus,
+      veteran_status: formData.veteranStatus,
+    }
+
+    try {
+      const updatedProfile = await updateCurrentUserProfile(payload)
+      if (!updatedProfile) {
+        throw new Error("Save failed")
+      }
+      setFormData(updatedProfile)
+      alert("Profile saved successfully!")
+    } catch (err: any) {
+      console.error("Error saving profile:", err)
+      alert(err.message || "Save failed. Please try again.")
+    }
+
   }
 
   if (isLoading) {
@@ -261,12 +147,9 @@ const EnhancedUserProfile = () => {
     <div className="user-profile-container">
       <div className="profile-header">
         <h1 className="profile-title">User Profile</h1>
-        <div className="profile-status">
-          {hasProfile && <span className="profile-badge">{isEditing ? "Editing Profile" : "Profile Saved"}</span>}
-        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className={isEditing ? "" : "view-mode"}>
+      <form onSubmit={handleSubmit}>
         <div className="form-section">
           <h2 className="section-title">Personal Information</h2>
           <div className="form-row">
@@ -278,9 +161,7 @@ const EnhancedUserProfile = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                disabled={!isEditing}
                 required
-                className={!isEditing ? "readonly-field" : ""}
               />
             </div>
 
@@ -292,9 +173,7 @@ const EnhancedUserProfile = () => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                disabled={!isEditing}
                 required
-                className={!isEditing ? "readonly-field" : ""}
               />
             </div>
           </div>
@@ -302,56 +181,23 @@ const EnhancedUserProfile = () => {
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={!isEditing}
-                required
-                className={!isEditing ? "readonly-field" : ""}
-              />
+              <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
             </div>
 
             <div className="form-group">
               <label htmlFor="phone">Phone Number</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={!isEditing ? "readonly-field" : ""}
-              />
+              <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} />
             </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="city">City</label>
+            <label htmlFor="location">Location</label>
             <input
-              type="text"
-              id="city"
-              name="City"
-              value={formData.city}
+              id="location"
+              name="location"
+              value={formData.location}
               onChange={handleChange}
-              placeholder="e.g. New York"
-              //disabled={!isEditing}
-              className={!isEditing ? "readonly-field" : ""}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="cityState">State</label>
-            <input
-              type="text"
-              id="state"
-              name="state"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="e.g. NY"
-              //disabled={!isEditing}
-              className={!isEditing ? "readonly-field" : ""}
+              placeholder="e.g. San Francisco, CA"
             />
           </div>
         </div>
@@ -359,14 +205,12 @@ const EnhancedUserProfile = () => {
         <div className="form-section">
           <div className="section-header">
             <h2 className="section-title">Education Experience</h2>
-            {isEditing && (
-              <button type="button" className="add-button" onClick={() => addField("education")}>
-                + Add Education
-              </button>
-            )}
+            <button type="button" className="add-button" onClick={() => addField("education")}>
+              + Add Education
+            </button>
           </div>
 
-          {formData.education.map((edu, index) => (
+          {(formData.education ?? []).map((edu, index) => (
             <div key={index} className="repeatable-section">
               {index > 0 && <div className="section-divider"></div>}
               <div className="form-row">
@@ -378,8 +222,6 @@ const EnhancedUserProfile = () => {
                     name="school"
                     value={edu.school}
                     onChange={(e) => handleChange(e, index, "education")}
-                    disabled={!isEditing}
-                    className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
 
@@ -391,8 +233,6 @@ const EnhancedUserProfile = () => {
                     name="degree"
                     value={edu.degree}
                     onChange={(e) => handleChange(e, index, "education")}
-                    disabled={!isEditing}
-                    className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
               </div>
@@ -406,12 +246,10 @@ const EnhancedUserProfile = () => {
                     name="year"
                     value={edu.year}
                     onChange={(e) => handleChange(e, index, "education")}
-                    disabled={!isEditing}
-                    className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
 
-                {isEditing && index > 0 && (
+                {index > 0 && (
                   <div className="form-group remove-group">
                     <button type="button" className="remove-button" onClick={() => removeField("education", index)}>
                       Remove
@@ -426,14 +264,12 @@ const EnhancedUserProfile = () => {
         <div className="form-section">
           <div className="section-header">
             <h2 className="section-title">Work Experience</h2>
-            {isEditing && (
-              <button type="button" className="add-button" onClick={() => addField("workExperience")}>
-                + Add Work Experience
-              </button>
-            )}
+            <button type="button" className="add-button" onClick={() => addField("workExperience")}>
+              + Add Work Experience
+            </button>
           </div>
 
-          {formData.workExperience.map((work, index) => (
+          {(formData.workExperience ?? []).map((work, index) => (
             <div key={index} className="repeatable-section">
               {index > 0 && <div className="section-divider"></div>}
               <div className="form-row">
@@ -445,8 +281,6 @@ const EnhancedUserProfile = () => {
                     name="company"
                     value={work.company}
                     onChange={(e) => handleChange(e, index, "workExperience")}
-                    disabled={!isEditing}
-                    className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
 
@@ -458,8 +292,6 @@ const EnhancedUserProfile = () => {
                     name="position"
                     value={work.position}
                     onChange={(e) => handleChange(e, index, "workExperience")}
-                    disabled={!isEditing}
-                    className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
               </div>
@@ -473,12 +305,10 @@ const EnhancedUserProfile = () => {
                     name="years"
                     value={work.years}
                     onChange={(e) => handleChange(e, index, "workExperience")}
-                    disabled={!isEditing}
-                    className={!isEditing ? "readonly-field" : ""}
                   />
                 </div>
 
-                {isEditing && index > 0 && (
+                {index > 0 && (
                   <div className="form-group remove-group">
                     <button
                       type="button"
@@ -495,21 +325,7 @@ const EnhancedUserProfile = () => {
         </div>
 
         <div className="form-section">
-          <h2 className="section-title">Skills & Professional Profiles</h2>
-          <div className="form-group">
-            <label htmlFor="skills">Skills</label>
-            <textarea
-              id="skills"
-              name="skills"
-              value={formData.skills}
-              onChange={handleChange}
-              placeholder="Enter your skills (separated by commas)"
-              rows={3}
-              disabled={!isEditing}
-              className={!isEditing ? "readonly-field" : ""}
-            />
-          </div>
-
+          <h2 className="section-title">Professional Profiles</h2>
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="linkedin">LinkedIn URL</label>
@@ -520,8 +336,6 @@ const EnhancedUserProfile = () => {
                 value={formData.linkedin}
                 onChange={handleChange}
                 placeholder="https://linkedin.com/in/username"
-                disabled={!isEditing}
-                className={!isEditing ? "readonly-field" : ""}
               />
             </div>
 
@@ -534,8 +348,6 @@ const EnhancedUserProfile = () => {
                 value={formData.github}
                 onChange={handleChange}
                 placeholder="https://github.com/username"
-                disabled={!isEditing}
-                className={!isEditing ? "readonly-field" : ""}
               />
             </div>
           </div>
@@ -550,14 +362,7 @@ const EnhancedUserProfile = () => {
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="gender">Gender</label>
-              <select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={!isEditing ? "readonly-field" : ""}
-              >
+              <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
                 <option value="">Select</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -568,14 +373,7 @@ const EnhancedUserProfile = () => {
 
             <div className="form-group">
               <label htmlFor="race">Race</label>
-              <select
-                id="race"
-                name="race"
-                value={formData.race}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={!isEditing ? "readonly-field" : ""}
-              >
+              <select id="race" name="race" value={formData.race} onChange={handleChange}>
                 <option value="">Select</option>
                 <option value="hispanic">Hispanic</option>
                 <option value="non-hispanic">Non-Hispanic</option>
@@ -591,8 +389,7 @@ const EnhancedUserProfile = () => {
                 name="ethnicity"
                 value={formData.ethnicity}
                 onChange={handleChange}
-                disabled={!isEditing || formData.race === "hispanic"}
-                className={!isEditing ? "readonly-field" : ""}
+                disabled={formData.race === "hispanic"}
               >
                 <option value="">Select</option>
                 <option value="asian">Asian</option>
@@ -609,8 +406,6 @@ const EnhancedUserProfile = () => {
                 name="disabilityStatus"
                 value={formData.disabilityStatus}
                 onChange={handleChange}
-                disabled={!isEditing}
-                className={!isEditing ? "readonly-field" : ""}
               >
                 <option value="">Select</option>
                 <option value="yes">Yes</option>
@@ -622,14 +417,7 @@ const EnhancedUserProfile = () => {
 
           <div className="form-group">
             <label htmlFor="veteranStatus">Veteran Status</label>
-            <select
-              id="veteranStatus"
-              name="veteranStatus"
-              value={formData.veteranStatus}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className={!isEditing ? "readonly-field" : ""}
-            >
+            <select id="veteranStatus" name="veteranStatus" value={formData.veteranStatus} onChange={handleChange}>
               <option value="">Select</option>
               <option value="no">Not a veteran</option>
               <option value="yes">Veteran</option>
@@ -640,20 +428,9 @@ const EnhancedUserProfile = () => {
         </div>
 
         <div className="form-actions">
-          {isEditing ? (
-            <>
-              <button type="button" className="cancel-button" onClick={handleCancel}>
-                Cancel
-              </button>
-              <button type="submit" className="submit-button" id="saveButton">
-                Save Profile
-              </button>
-            </>
-          ) : (
-            <button type="button" className="edit-button" onClick={handleEdit}>
-              Edit Profile
-            </button>
-          )}
+          <button type="submit" className="submit-button" id="saveButton">
+            Save Profile
+          </button>
         </div>
       </form>
     </div>
@@ -661,4 +438,3 @@ const EnhancedUserProfile = () => {
 }
 
 export default EnhancedUserProfile
-
