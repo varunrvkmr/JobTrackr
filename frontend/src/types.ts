@@ -21,6 +21,7 @@ export interface Job {
   }
 
   export interface ApiResponse<T = undefined> {
+    status?: string;
     error?: string;
     message?: string;
     data?: T | null; // ✅ Explicitly allow `null` or `undefined`

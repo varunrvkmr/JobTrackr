@@ -117,18 +117,10 @@ export const saveJob = async (jobData: Partial<Job>): Promise<ApiResponse> => {
 };
 
 export const deleteJob = async (jobId: string): Promise<ApiResponse> => {
-  try {
-    return await fetchWithAutoRefresh<ApiResponse>(
-      `${JOBS_URL}/deleteJob/${jobId}`,
-      {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-  } catch (error) {
-    console.error("Error deleting job:", error);
-    throw error;
-  }
+  return fetchWithAutoRefresh<ApiResponse>(
+    `${JOBS_URL}/deleteJob/${jobId}`,
+    { method: "DELETE" }
+  );
 };
 
 export const fetchJobDetails = async (jobId: string): Promise<ApiResponse> => {

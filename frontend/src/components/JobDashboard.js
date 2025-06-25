@@ -54,12 +54,21 @@ function JobDashboard() {
   };
 
   const handleDeleteJob = async (jobId) => {
+    if (!window.confirm("Really delete this job?")) return;
+
     try {
-      await deleteJob(jobId);
-      setJobs(jobs.filter((job) => job.id !== jobId));
-      setOriginalJobs(originalJobs.filter((job) => job.id !== jobId));
+      const { status, message } = await deleteJob(String(jobId));
+
+      if (status === "success") {
+        // remove it from local state
+        setJobs(prev => prev.filter(job => job.id !== jobId));
+      } else {
+        // show the server’s error message
+        alert(message || "Could not delete job.");
+      }
     } catch (err) {
-      alert(`Failed to delete job: ${err.message}`);
+      console.error("Delete error", err);
+      alert("An unexpected error occurred.");
     }
   };
 

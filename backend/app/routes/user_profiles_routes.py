@@ -4,7 +4,7 @@ from app import db
 from app.models.UserProfileDB import UserProfileDB 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-# Create Blueprint
+# Create Blueprint  
 user_profiles_routes_bp = Blueprint("user_profiles", __name__)
 
 # ✅ Get all user profiles
