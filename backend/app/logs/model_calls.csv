@@ -1,150 +1,127 @@
-timestamp,route,selector,label,placeholder,predicted,score
-2025-06-19T19:46:56.856102,/classify,#first-name,First name,,first_name,0.7782
-2025-06-19T19:46:56.856523,/classify,#last-name,Last name,,last_name,0.7844
-2025-06-19T19:46:56.856830,/classify,#email-field,,Enter your email address,email,0.4127
-2025-06-19T19:46:56.857133,/classify,#phone-field,Phone number,,phone,0.6913
-2025-06-19T19:47:06.846200,/fill,#first-name,first_name,0.7782,JOhn
-2025-06-19T19:47:06.846277,/fill,#last-name,last_name,0.7844,Doe
-2025-06-19T19:47:06.846290,/fill,#phone-field,phone,0.6913,1232343254325
-2025-06-20T09:43:06.812999,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(1),,,bio,0.3876
-2025-06-20T09:43:06.813453,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(2),,,bio,0.3876
-2025-06-20T09:43:06.813784,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(3),,,bio,0.3876
-2025-06-20T09:43:06.814111,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(4),,,bio,0.3876
-2025-06-20T09:43:06.814445,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(5),,,bio,0.3876
-2025-06-20T09:43:06.814772,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div:nth-of-type(1) > div > input:nth-of-type(6),,,bio,0.3876
-2025-06-20T09:43:06.815097,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(1) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.rFrNMe.k3kHxc.RdH0ib.yqQS1.zKHdkd > div.aCsJod.oJeWuf:nth-of-type(1) > div.aXBtI.Wic03c > div.Xb9hP:nth-of-type(1) > input.whsOnd.zHQkBf,,,bio,0.3876
-2025-06-20T09:43:06.815452,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(2) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.rFrNMe.k3kHxc.RdH0ib.yqQS1.zKHdkd > div.aCsJod.oJeWuf:nth-of-type(1) > div.aXBtI.Wic03c > div.Xb9hP:nth-of-type(1) > input.whsOnd.zHQkBf,,,bio,0.3876
-2025-06-20T09:43:06.815780,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(3) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.rFrNMe.k3kHxc.RdH0ib.yqQS1.Z02LAf.zKHdkd > div.aCsJod.oJeWuf:nth-of-type(1) > div.aXBtI.Wic03c > div.Xb9hP:nth-of-type(1) > input.whsOnd.zHQkBf,,,bio,0.3876
-2025-06-20T09:43:06.816120,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(4) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.edhGSc.zKHdkd.kRy7qc.RdH0ib.yqQS1 > div.RpC4Ne.oJeWuf:nth-of-type(1) > div.Pc9Gce.Wic03c:nth-of-type(2) > textarea.KHxj8b.tL9Q4c,Your answer,,location,0.3013
-2025-06-20T09:43:06.816462,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(5) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.rFrNMe.k3kHxc.RdH0ib.yqQS1.zKHdkd > div.aCsJod.oJeWuf:nth-of-type(1) > div.aXBtI.Wic03c > div.Xb9hP:nth-of-type(1) > input.whsOnd.zHQkBf,,,bio,0.3876
-2025-06-20T09:43:06.816801,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > div.o3Dpx:nth-of-type(2) > div.Qr7Oae:nth-of-type(6) > div > div.geS5n > div.AgroKb:nth-of-type(2) > div.edhGSc.zKHdkd.kRy7qc.RdH0ib.yqQS1 > div.RpC4Ne.oJeWuf:nth-of-type(1) > div.Pc9Gce.Wic03c:nth-of-type(2) > textarea.KHxj8b.tL9Q4c,Your answer,,location,0.3013
-2025-06-20T09:43:06.817128,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(1),,,bio,0.3876
-2025-06-20T09:43:06.817458,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(2),,,bio,0.3876
-2025-06-20T09:43:06.817782,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(3),,,bio,0.3876
-2025-06-20T09:43:06.818104,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(4),,,bio,0.3876
-2025-06-20T09:43:06.818434,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(5),,,bio,0.3876
-2025-06-20T09:43:06.818759,/classify,html.HB1eCd-UMrnmb.PHOcVb > body.D8bnZd > div.Uc2NEf > div.teQAzf:nth-of-type(3) > form > div.RH5hzf.RLS9Fe:nth-of-type(2) > div.lrKTG > input:nth-of-type(6),,,bio,0.3876
-2025-06-20T09:45:06.167267,/classify,#first_name,First Name*,,first_name,0.7782
-2025-06-20T09:45:06.167711,/classify,#last_name,Last Name*,,last_name,0.7844
-2025-06-20T09:45:06.168037,/classify,#email,Email*,,email,1.0
-2025-06-20T09:45:06.168367,/classify,#phone,Phone*,,phone,1.0
-2025-06-20T09:45:06.168690,/classify,#resume,Attach,,email,0.4777
-2025-06-20T09:45:06.169013,/classify,#question_8569686007,Current company,,location,0.293
-2025-06-20T09:45:06.169341,/classify,#question_8569687007,Current title,,location,0.3292
-2025-06-20T09:45:06.169674,/classify,#question_8569688007,LinkedIn Profile,,linkedin,0.8305
-2025-06-20T09:45:06.169997,/classify,#question_8569689007,X Profile,,ethnicity,0.2958
-2025-06-20T09:45:06.170327,/classify,#question_8569690007,GitHub Profile,,github,0.8283
-2025-06-20T09:45:06.170649,/classify,#question_8569691007,Google Scholar,,github,0.316
-2025-06-20T09:45:06.170974,/classify,#question_8742969007,What exceptional work have you done?*,,linkedin,0.1509
-2025-06-20T09:45:06.171305,/classify,#question_8831365007,"Will you now, or in the future, require sponsorship for employment visa status (e.g., H-1B visa) to legally work for X.AI LLC in the U.S.?*",,linkedin,0.1607
-2025-06-20T09:45:06.171630,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(8) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-20T09:45:06.171958,/classify,#gender,Gender,,gender,1.0
-2025-06-20T09:45:06.172287,/classify,#hispanic_ethnicity,Are you Hispanic/Latino?,,ethnicity,0.3461
-2025-06-20T09:45:06.172612,/classify,#veteran_status,Veteran Status,,ethnicity,0.2176
-2025-06-20T09:45:06.172936,/classify,#disability_status,Disability Status,,ethnicity,0.2731
-2025-06-20T09:45:06.173264,/classify,#g-recaptcha-response-100000,,,bio,0.3876
-2025-06-20T09:45:06.230290,/fill,#first_name,first_name,0.7782,JOhn
-2025-06-20T09:45:06.230315,/fill,#last_name,last_name,0.7844,Doe
-2025-06-20T09:45:06.230328,/fill,#email,email,1,johndoe@email.com
-2025-06-20T09:45:06.230366,/fill,#phone,phone,1,1232343254325
-2025-06-20T09:45:06.230380,/fill,#question_8569688007,linkedin,0.8305,
-2025-06-20T09:45:06.230389,/fill,#question_8569690007,github,0.8283,
-2025-06-20T09:45:06.230393,/fill,#gender,gender,1,
-2025-06-22T08:33:33.845575,/classify,html > body > div:nth-of-type(1) > div._container_ud4nd_29:nth-of-type(2) > div._content_ud4nd_71._details_14ib5_422:nth-of-type(2) > div.ashby-job-posting-right-pane:nth-of-type(2) > div > div._autofillPane_14ib5_453.ashby-application-form-autofill-pane._container_101oc_29:nth-of-type(1) > div._root_xd2v0_1.ashby-application-form-autofill-input-root > input,,,bio,0.3876
-2025-06-22T08:33:33.845947,/classify,#_systemfield_name,Name,Type here...,last_name,0.6421
-2025-06-22T08:33:33.846261,/classify,#_systemfield_email,Email,hello@example.com...,email,1.0
-2025-06-22T08:33:33.846566,/classify,#b2da4fb8-b653-4063-bf6e-031fdf54203a,Undergraduate University,Type here...,last_name,0.1999
-2025-06-22T08:33:33.846872,/classify,html > body > div:nth-of-type(1) > div._container_ud4nd_29:nth-of-type(2) > div._content_ud4nd_71._details_14ib5_422:nth-of-type(2) > div.ashby-job-posting-right-pane:nth-of-type(2) > div > div._jobPostingForm_14ib5_407.ashby-application-form-container._container_101oc_29:nth-of-type(2) > div._section_14ib5_95.ashby-application-form-section-container:nth-of-type(1) > div._fieldEntry_hkyf8_29.ashby-application-form-field-entry:nth-of-type(4) > div.react-datepicker-wrapper > div.react-datepicker__input-container > input._input_vhnr2_29._greedy_vhnr2_60,Pick date...,Pick date...,last_name,0.3562
-2025-06-22T08:33:33.847187,/classify,#currentCompany,Most recent company,Type here...,last_name,0.1999
-2025-06-22T08:33:33.847495,/classify,#phone,Phone,1-415-555-1234...,phone,1.0
-2025-06-22T08:33:33.847800,/classify,#_systemfield_resume,Resume,,last_name,0.3851
-2025-06-22T08:33:33.848109,/classify,#81f739ce-184d-4364-beb3-7ccb8ce83bcc,Transcript,,email,0.3296
-2025-06-22T08:33:33.848442,/classify,#9af12c6c-0a87-4f20-acfc-2f352004d08f,Please include your GPA (on a 4.0 scale),Type here...,github,0.1627
-2025-06-22T08:33:33.848776,/classify,#LinkedIn,LinkedIn,Type here...,linkedin,1.0
-2025-06-22T08:33:33.849172,/classify,#Twitter,Twitter,Type here...,email,0.3879
-2025-06-22T08:33:33.849507,/classify,#GitHub,GitHub,Type here...,github,1.0
-2025-06-22T08:33:33.849839,/classify,#Portfolio,Portfolio,Type here...,github,0.3342
-2025-06-22T08:33:33.850164,/classify,#additionalInformation,Additional information,Type here...,email,0.3123
-2025-06-22T08:33:33.850469,/classify,#2540624b-bb46-4d42-8543-1c5e854a0d1b_9b178344-e5f9-4a2b-8658-ff97cc2ffd91-labeled-radio-0,Yes,,first_name,0.2278
-2025-06-22T08:33:33.850776,/classify,#2540624b-bb46-4d42-8543-1c5e854a0d1b_9b178344-e5f9-4a2b-8658-ff97cc2ffd91-labeled-radio-1,No,,veteran_status,0.3175
-2025-06-22T08:33:33.851091,/classify,#g-recaptcha-response-100000,,,bio,0.3876
-2025-06-22T08:33:33.869750,/fill,#_systemfield_name,last_name,0.6421,Doe
-2025-06-22T08:33:33.869766,/fill,#_systemfield_email,email,1,johndoe@email.com
-2025-06-22T08:33:33.869776,/fill,#phone,phone,1,1232343254325
-2025-06-22T08:33:33.869779,/fill,#LinkedIn,linkedin,1,
-2025-06-22T08:33:33.869783,/fill,#GitHub,github,1,
-2025-06-24T07:15:40.031356,/classify,#first_name,First Name*,,first_name,0.7782
-2025-06-24T07:15:40.031599,/classify,#last_name,Last Name*,,last_name,0.7844
-2025-06-24T07:15:40.031811,/classify,#email,Email*,,email,1.0
-2025-06-24T07:15:40.032022,/classify,#phone,Phone*,,phone,1.0
-2025-06-24T07:15:40.032232,/classify,#resume,Attach,,email,0.4777
-2025-06-24T07:15:40.032441,/classify,#cover_letter,Attach,,email,0.4777
-2025-06-24T07:15:40.032659,/classify,#school--0,School*,,phone,0.3915
-2025-06-24T07:15:40.032869,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.education--container:nth-of-type(2) > div.education--form > div.select:nth-of-type(2) > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.033104,/classify,#degree--0,Degree*,,bio,0.3999
-2025-06-24T07:15:40.033345,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.education--container:nth-of-type(2) > div.education--form > div.select:nth-of-type(3) > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.033594,/classify,#discipline--0,Discipline*,,race,0.2833
-2025-06-24T07:15:40.033813,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.education--container:nth-of-type(2) > div.education--form > div.select:nth-of-type(4) > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.034030,/classify,#question_6529379005,Github,,github,1.0
-2025-06-24T07:15:40.034239,/classify,#question_6900019005,LinkedIn Profile,,linkedin,0.8305
-2025-06-24T07:15:40.034448,/classify,#question_6529383005,What is your GPA?*,,ethnicity,0.1324
-2025-06-24T07:15:40.034677,/classify,#question_6529384005,"Do you have any pending offers or deadlines we should know about? If so, what companies and dates?",,linkedin,0.1638
-2025-06-24T07:15:40.034891,/classify,#question_6857346005,What is your preferred programming language for interviews?*,,linkedin,0.1458
-2025-06-24T07:15:40.035104,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(5) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.035315,/classify,#question_6529380005,Will you need sponsorship to work in the U.S. now or anytime in the future?*,,race,0.0889
-2025-06-24T07:15:40.035530,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(6) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.035740,/classify,#question_6529381005[],How did you hear about us?*,,first_name,0.136
-2025-06-24T07:15:40.035949,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(7) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.036159,/classify,#question_6529382005,"If you chose ""search engine"", ""conference"", ""current employee"", or ""other"", please specify here:*",,location,0.1237
-2025-06-24T07:15:40.036369,/classify,#question_6898783005,Why Applied Intuition?*,,ethnicity,0.1487
-2025-06-24T07:15:40.036583,/classify,#question_6898785005,What's the hardest thing you've ever done (professionally or personally)?*,,gender,0.0368
-2025-06-24T07:15:40.036792,/classify,#question_6898784005,What activity have you spent the most amount of time on (academic or personal life)?*,,ethnicity,0.0894
-2025-06-24T07:15:40.037002,/classify,#question_6885993005,Have you ever been a Teaching Assistant or Course Assistant as an Undergraduate student?*,,linkedin,0.067
-2025-06-24T07:15:40.037211,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(12) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.037428,/classify,#question_6885994005,How many internships have you had?*,,linkedin,0.1373
-2025-06-24T07:15:40.037646,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(13) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.037860,/classify,#question_6900009005,Are you open to being in-office 5 days a week in Mountain View?*,,linkedin,0.105
-2025-06-24T07:15:40.038075,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(4) > form.application--form > div.application--questions:nth-of-type(3) > div:nth-of-type(14) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-24T07:15:40.038290,/classify,#gender,Gender,,gender,1.0
-2025-06-24T07:15:40.038512,/classify,#hispanic_ethnicity,Are you Hispanic/Latino?,,ethnicity,0.3461
-2025-06-24T07:15:40.038759,/classify,#veteran_status,Veteran Status,,ethnicity,0.2176
-2025-06-24T07:15:40.038998,/classify,#disability_status,Disability Status,,ethnicity,0.2731
-2025-06-24T07:15:40.039213,/classify,#g-recaptcha-response-100000,,,bio,0.3876
-2025-06-24T07:15:40.050607,/fill,#first_name,first_name,0.7782,John
-2025-06-24T07:15:40.050615,/fill,#last_name,last_name,0.7844,Doer
-2025-06-24T07:15:40.050619,/fill,#email,email,1,johndoe@gmail.com
-2025-06-24T07:15:40.050624,/fill,#phone,phone,1,1234567891
-2025-06-24T07:15:40.050626,/fill,#question_6529379005,github,1,
-2025-06-24T07:15:40.050628,/fill,#question_6900019005,linkedin,0.8305,
-2025-06-24T07:15:40.050630,/fill,#gender,gender,1,
-2025-06-25T07:33:43.328243,/classify,#first_name,First Name*,,first_name,0.7782
-2025-06-25T07:33:43.328499,/classify,#last_name,Last Name*,,last_name,0.7844
-2025-06-25T07:33:43.328711,/classify,#email,Email*,,email,1.0
-2025-06-25T07:33:43.328921,/classify,#phone,Phone,,phone,1.0
-2025-06-25T07:33:43.329138,/classify,#resume,Attach,,email,0.4777
-2025-06-25T07:33:43.329347,/classify,#cover_letter,Attach,,email,0.4777
-2025-06-25T07:33:43.329557,/classify,#question_51543502,LinkedIn Profile,,linkedin,0.8305
-2025-06-25T07:33:43.329766,/classify,#question_51543503,Website,,location,0.5172
-2025-06-25T07:33:43.329976,/classify,#question_54987976,How did you hear about this job?*,,last_name,0.0241
-2025-06-25T07:33:43.330204,/classify,#question_54987977,Are you authorized to be employed in the US?*,,github,0.0676
-2025-06-25T07:33:43.330419,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(4) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-25T07:33:43.330633,/classify,#question_54987978,Do you need visa sponsorship now or in the future?*,,linkedin,0.1474
-2025-06-25T07:33:43.330843,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(5) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-25T07:33:43.331068,/classify,#question_54987979,What is your state/province of residence?*,,location,0.1955
-2025-06-25T07:33:43.331314,/classify,#question_54987980,Do you currently live within 50 miles/80km of the San Francisco hub? *,,ethnicity,0.0769
-2025-06-25T07:33:43.331546,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(7) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-25T07:33:43.331756,/classify,#question_54987981,"If you don't currently live within 50 miles/80 km of the San Francisco hub, are you willing to relocate? *",,location,0.153
-2025-06-25T07:33:43.331966,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(8) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-25T07:33:43.332185,/classify,#question_54987982,How many years of professional experience do you have as a Software Engineer?*,,linkedin,0.1721
-2025-06-25T07:33:43.332432,/classify,html > body > main.main.font-secondary.job-post > div > div.application--container:nth-of-type(3) > form.application--form > div.application--questions:nth-of-type(2) > div:nth-of-type(9) > div.select > div.select__container > div.select-shell.remix-css-b62m3t-container > input.remix-css-1a0ro4n-requiredInput,,,bio,0.3876
-2025-06-25T07:33:43.332674,/classify,#gender,Gender,,gender,1.0
-2025-06-25T07:33:43.332888,/classify,#hispanic_ethnicity,Are you Hispanic/Latino?,,ethnicity,0.3461
-2025-06-25T07:33:43.333101,/classify,#veteran_status,Veteran Status,,ethnicity,0.2176
-2025-06-25T07:33:43.333321,/classify,#disability_status,Disability Status,,ethnicity,0.2731
-2025-06-25T07:33:43.333530,/classify,#g-recaptcha-response-100000,,,bio,0.3876
-2025-06-25T07:33:43.361478,/fill,#first_name,first_name,0.7782,JOhn
-2025-06-25T07:33:43.361503,/fill,#last_name,last_name,0.7844,Doe
-2025-06-25T07:33:43.361507,/fill,#email,email,1,johndoe@email.com
-2025-06-25T07:33:43.361520,/fill,#phone,phone,1,3413134412
-2025-06-25T07:33:43.361523,/fill,#question_51543502,linkedin,0.8305,linkedin.com/johndoe
-2025-06-25T07:33:43.361526,/fill,#gender,gender,1,male
+timestamp,route,selector,label,placeholder,field_type,required,predicted,score,threshold_used,confidence_signals,decision
+2025-06-26T02:23:31.953251,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > input:nth-of-type(1),,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.953497,/classify,#job_applicant_job_applicant_attribution_attributes_referring_url,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.953764,/classify,#job_applicant_first_name,First name,,text,False,first_name,0.7782,0.5,"pattern_match,pattern_canonical_match",accept
+2025-06-26T02:23:31.954036,/classify,#job_applicant_middle_name,Middle name,,text,False,last_name,0.5239,0.5,"pattern_match,pattern_canonical_match",accept
+2025-06-26T02:23:31.954268,/classify,#job_applicant_last_name,Last name,,text,False,last_name,0.7844,0.5,"pattern_match,pattern_canonical_match",accept
+2025-06-26T02:23:31.954489,/classify,#job_applicant_email,Email,,text,False,email,1.0,0.5,"pattern_match,pattern_canonical_match",accept
+2025-06-26T02:23:31.954711,/classify,#job_applicant_phone,Phone (optional),,text,False,phone,0.6151,0.5,"pattern_match,pattern_canonical_match",accept
+2025-06-26T02:23:31.954941,/classify,#job_applicant_additional_information,Additional information (optional),,text,False,bio,0.1407,0.78,"ambiguous_label,generic_terms",reject
+2025-06-26T02:23:31.955176,/classify,#job_applicant_resume,"Upload your resume
+
+PDF, up to 10MB",,text,False,email,0.167,0.6,,reject
+2025-06-26T02:23:31.955400,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_0_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.955623,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_0_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.955863,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_0_text,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.956092,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.956308,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.956538,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > div.space-y-8.divide-y.divide-gray-200 > div:nth-of-type(4) > div.mt-6.grid.grid-cols-1.gap-y-8.gap-x-4.sm:grid-cols-6:nth-of-type(4) > div.sm:col-span-6 > div.mt-1 > input:nth-of-type(1),,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.956762,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_selected_option_uuids_cc451309-eaf2-42e9-8902-5f7a6cef25e1,Yes,,text,False,first_name,0.2278,0.65,short_label,reject
+2025-06-26T02:23:31.957004,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_selected_option_uuids_111b1919-d028-4438-8f51-33f3430269fa,No,,text,False,veteran_status,0.3175,0.83,"ambiguous_label,short_label,generic_terms",reject
+2025-06-26T02:23:31.957233,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_text,Add note (optional),Add note (optional),text,False,last_name,0.1543,0.6,,reject
+2025-06-26T02:23:31.957453,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.957665,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.957926,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > div.space-y-8.divide-y.divide-gray-200 > div:nth-of-type(4) > div.mt-6.grid.grid-cols-1.gap-y-8.gap-x-4.sm:grid-cols-6:nth-of-type(5) > div.sm:col-span-6 > div.mt-1 > input:nth-of-type(1),,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.958154,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_selected_option_uuids_800f3589-3ee0-4eb6-9739-06172208dd8b,Yes,,text,False,first_name,0.2278,0.65,short_label,reject
+2025-06-26T02:23:31.958369,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_selected_option_uuids_cd12d292-6c78-40e2-91ae-f567f56e8c4b,No,,text,False,veteran_status,0.3175,0.83,"ambiguous_label,short_label,generic_terms",reject
+2025-06-26T02:23:31.958601,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_text,Add note (optional),Add note (optional),text,False,last_name,0.1543,0.6,,reject
+2025-06-26T02:23:31.958840,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.959089,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.959304,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > div.space-y-8.divide-y.divide-gray-200 > div:nth-of-type(4) > div.mt-6.grid.grid-cols-1.gap-y-8.gap-x-4.sm:grid-cols-6:nth-of-type(7) > div.sm:col-span-6 > div.mt-1 > input:nth-of-type(1),,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.959542,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_selected_option_uuids_a045ba82-c4f8-4043-a7b3-d0cadc157440,"Yes, already live near Berkeley",,text,False,linkedin,0.1169,0.6,,reject
+2025-06-26T02:23:31.959793,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_selected_option_uuids_5d5b32c4-d6e9-496b-9e91-0cb227787354,"Yes, I am willing to relocate",,text,False,location,0.1283,0.6,,reject
+2025-06-26T02:23:31.960045,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_selected_option_uuids_3705e3b9-a562-4403-8ad4-f6570d8e8bf5,No,,text,False,veteran_status,0.3175,0.83,"ambiguous_label,short_label,generic_terms",reject
+2025-06-26T02:23:31.960283,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_text,Add note (required),Add note (required),text,False,github,0.1687,0.6,,reject
+2025-06-26T02:23:31.960518,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_4_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.960761,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_4_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.961000,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_4_text,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.961218,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_5_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.961437,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_5_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.961659,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_5_text,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.961900,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_6_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.962281,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_6_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.962547,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_6_text,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.962960,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_7_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.963234,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_7_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.963496,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_7_text,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.963768,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_8_question_uuid,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.964043,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_8_question_type,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.964321,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_8_text,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.964583,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > div.space-y-8.divide-y.divide-gray-200 > div.pt-5:nth-of-type(5) > div.flex.justify-center > input.inline-flex.items-center.px-6.py-3.border.border-transparent.text-base.font-medium.rounded-md.shadow-sm.text-white.bg-indigo-600.hover:bg-indigo-700.focus:outline-none.focus:ring-2.focus:ring-offset-2.focus:ring-indigo-500,,,text,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-26T02:23:31.964869,/classify,#ot-group-id-C0002,Performance Cookies,,text,False,race,0.2355,0.6,,reject
+2025-06-26T02:23:31.965154,/classify,#ot-group-id-C0004,Targeting Cookies,,text,False,github,0.2434,0.6,,reject
+2025-06-26T02:23:31.965437,/classify,#vendor-search-handler,Cookie list search,Search…,text,False,last_name,0.1905,0.6,,reject
+2025-06-26T02:23:31.965709,/classify,#chkbox-id,checkbox label,,text,False,ethnicity,0.1654,0.6,,reject
+2025-06-26T02:23:31.965995,/classify,#select-all-hosts-groups-handler,checkbox label,,text,False,ethnicity,0.1654,0.6,,reject
+2025-06-26T02:23:31.966262,/classify,#select-all-vendor-groups-handler,checkbox label,,text,False,ethnicity,0.1654,0.6,,reject
+2025-06-26T02:23:31.966515,/classify,#select-all-vendor-leg-handler,checkbox label,,text,False,ethnicity,0.1654,0.6,,reject
+2025-06-26T02:23:31.977310,/fill,#job_applicant_first_name,first_name,,,,first_name,0.7782,0.5,"pattern_match,pattern_canonical_match",filled
+2025-06-26T02:23:31.977324,/fill,#job_applicant_middle_name,last_name,,,,last_name,0.5239,0.5,"pattern_match,pattern_canonical_match",filled
+2025-06-26T02:23:31.977329,/fill,#job_applicant_last_name,last_name,,,,last_name,0.7844,0.5,"pattern_match,pattern_canonical_match",filled
+2025-06-26T02:23:31.977332,/fill,#job_applicant_email,email,,,,email,1,0.5,"pattern_match,pattern_canonical_match",filled
+2025-06-26T02:23:31.977337,/fill,#job_applicant_phone,phone,,,,phone,0.6151,0.5,"pattern_match,pattern_canonical_match",filled
+2025-06-26T02:55:21.226074,/classify,html.theme.theme--mercado.app-loader--default.artdeco.osx > body.render-mode-BIGPIPE.nav-v2.ember-application.payment-failure-global-alert-lix-enabled-class.icons-loaded.boot-complete > div.application-outlet:nth-of-type(5) > header.global-nav.global-alert-offset-top.global-nav--visible > div.global-nav__content > div.global-nav__search > div.search-global-typeahead.search-global-typeahead--semantic-rounded-search-box.global-nav__search-typeahead > div.search-global-typeahead__typeahead:nth-of-type(1) > input.basic-input.search-global-typeahead__input.search-global-typeahead__input--nile-background.search-global-typeahead__input--ellipsis,Search,Search,text,False,email,0.387,0.6,,reject
+2025-06-26T02:55:21.226348,/classify,#adToggle_ember43,Set alert,,checkbox,False,first_name,0.2025,0.8,,reject
+2025-06-26T02:55:21.226591,/classify,#globalfooter-select_language,Select Language,,select-one,False,email,0.2956,0.6,,reject
+2025-06-26T02:55:21.226857,/classify,#g-recaptcha-response-100000,,,textarea,False,disability_status,0.4254,0.65,,reject
+2025-06-26T02:55:48.518898,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > input:nth-of-type(1),,,hidden,False,disability_status,0.4006,0.9,pattern_match,reject
+2025-06-26T02:55:48.519189,/classify,#job_applicant_job_applicant_attribution_attributes_referring_url,,,hidden,False,disability_status,0.4378,0.9,pattern_match,reject
+2025-06-26T02:55:48.519434,/classify,#job_applicant_first_name,First name,,text,True,first_name,0.7782,0.45,"pattern_match,pattern_canonical_match,required_field",accept
+2025-06-26T02:55:48.519676,/classify,#job_applicant_middle_name,Middle name,,text,False,last_name,0.5239,0.5,"pattern_match,pattern_canonical_match",accept
+2025-06-26T02:55:48.519909,/classify,#job_applicant_last_name,Last name,,text,True,last_name,0.7844,0.45,"pattern_match,pattern_canonical_match,required_field",accept
+2025-06-26T02:55:48.520150,/classify,#job_applicant_email,Email,,text,True,email,1.0,0.45,"pattern_match,pattern_canonical_match,required_field",accept
+2025-06-26T02:55:48.520384,/classify,#job_applicant_phone,Phone (optional),,text,False,phone,0.6151,0.5,"pattern_match,pattern_canonical_match",accept
+2025-06-26T02:55:48.520779,/classify,#job_applicant_additional_information,Additional information (optional),,textarea,False,bio,0.1407,0.83,"ambiguous_label,generic_terms",reject
+2025-06-26T02:55:48.521054,/classify,#job_applicant_resume,"Upload your resume
+
+PDF, up to 10MB",,file,True,email,0.167,0.55,required_field,reject
+2025-06-26T02:55:48.521326,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_0_question_uuid,,,hidden,False,disability_status,0.3978,0.95,,reject
+2025-06-26T02:55:48.521625,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_0_question_type,,,hidden,False,veteran_status,0.5554,0.95,,reject
+2025-06-26T02:55:48.521887,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_0_text,,,text,True,disability_status,0.4242,0.55,required_field,reject
+2025-06-26T02:55:48.522175,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_question_uuid,,,hidden,False,disability_status,0.2795,0.95,,reject
+2025-06-26T02:55:48.522441,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_question_type,,,hidden,False,disability_status,0.5244,0.95,,reject
+2025-06-26T02:55:48.522689,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > div.space-y-8.divide-y.divide-gray-200 > div:nth-of-type(4) > div.mt-6.grid.grid-cols-1.gap-y-8.gap-x-4.sm:grid-cols-6:nth-of-type(4) > div.sm:col-span-6 > div.mt-1 > input:nth-of-type(1),,,hidden,False,veteran_status,0.5922,0.95,,reject
+2025-06-26T02:55:48.523028,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_selected_option_uuids_cc451309-eaf2-42e9-8902-5f7a6cef25e1,Yes,,radio,True,first_name,0.2278,0.8,"required_field,short_label",reject
+2025-06-26T02:55:48.523315,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_selected_option_uuids_111b1919-d028-4438-8f51-33f3430269fa,No,,radio,True,veteran_status,0.3175,0.95,"required_field,ambiguous_label,short_label,generic_terms",reject
+2025-06-26T02:55:48.523589,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_1_text,Add note (optional),Add note (optional),text,False,last_name,0.1543,0.6,,reject
+2025-06-26T02:55:48.523855,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_question_uuid,,,hidden,False,veteran_status,0.5106,0.95,,reject
+2025-06-26T02:55:48.524127,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_question_type,,,hidden,False,veteran_status,0.471,0.95,,reject
+2025-06-26T02:55:48.524372,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > div.space-y-8.divide-y.divide-gray-200 > div:nth-of-type(4) > div.mt-6.grid.grid-cols-1.gap-y-8.gap-x-4.sm:grid-cols-6:nth-of-type(5) > div.sm:col-span-6 > div.mt-1 > input:nth-of-type(1),,,hidden,False,disability_status,0.5095,0.95,,reject
+2025-06-26T02:55:48.524658,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_selected_option_uuids_800f3589-3ee0-4eb6-9739-06172208dd8b,Yes,,radio,True,first_name,0.2278,0.8,"required_field,short_label",reject
+2025-06-26T02:55:48.524950,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_selected_option_uuids_cd12d292-6c78-40e2-91ae-f567f56e8c4b,No,,radio,True,veteran_status,0.3175,0.95,"required_field,ambiguous_label,short_label,generic_terms",reject
+2025-06-26T02:55:48.525245,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_2_text,Add note (optional),Add note (optional),text,False,last_name,0.1543,0.6,,reject
+2025-06-26T02:55:48.525508,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_question_uuid,,,hidden,False,disability_status,0.4665,0.95,,reject
+2025-06-26T02:55:48.525773,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_question_type,,,hidden,False,veteran_status,0.4945,0.95,,reject
+2025-06-26T02:55:48.526027,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > div.space-y-8.divide-y.divide-gray-200 > div:nth-of-type(4) > div.mt-6.grid.grid-cols-1.gap-y-8.gap-x-4.sm:grid-cols-6:nth-of-type(7) > div.sm:col-span-6 > div.mt-1 > input:nth-of-type(1),,,hidden,False,disability_status,0.3677,0.95,,reject
+2025-06-26T02:55:48.526338,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_selected_option_uuids_a045ba82-c4f8-4043-a7b3-d0cadc157440,"Yes, already live near Berkeley",,radio,True,linkedin,0.1169,0.75,required_field,reject
+2025-06-26T02:55:48.526627,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_selected_option_uuids_5d5b32c4-d6e9-496b-9e91-0cb227787354,"Yes, I am willing to relocate",,radio,True,location,0.1283,0.75,required_field,reject
+2025-06-26T02:55:48.526926,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_selected_option_uuids_3705e3b9-a562-4403-8ad4-f6570d8e8bf5,No,,radio,True,veteran_status,0.3175,0.95,"required_field,ambiguous_label,short_label,generic_terms",reject
+2025-06-26T02:55:48.527211,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_3_text,Add note (required),Add note (required),text,True,github,0.1687,0.55,required_field,reject
+2025-06-26T02:55:48.527485,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_4_question_uuid,,,hidden,False,veteran_status,0.5413,0.95,,reject
+2025-06-26T02:55:48.527761,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_4_question_type,,,hidden,False,disability_status,0.4952,0.95,,reject
+2025-06-26T02:55:48.528044,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_4_text,,,text,True,disability_status,0.4707,0.55,required_field,reject
+2025-06-26T02:55:48.528309,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_5_question_uuid,,,hidden,False,veteran_status,0.5512,0.95,,reject
+2025-06-26T02:55:48.528577,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_5_question_type,,,hidden,False,disability_status,0.4671,0.95,,reject
+2025-06-26T02:55:48.528855,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_5_text,,,text,True,veteran_status,0.4802,0.55,required_field,reject
+2025-06-26T02:55:48.529133,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_6_question_uuid,,,hidden,False,veteran_status,0.4586,0.95,,reject
+2025-06-26T02:55:48.529413,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_6_question_type,,,hidden,False,veteran_status,0.526,0.95,,reject
+2025-06-26T02:55:48.529678,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_6_text,,,text,True,disability_status,0.4746,0.55,required_field,reject
+2025-06-26T02:55:48.529978,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_7_question_uuid,,,hidden,False,veteran_status,0.5178,0.95,,reject
+2025-06-26T02:55:48.530456,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_7_question_type,,,hidden,False,veteran_status,0.4812,0.95,,reject
+2025-06-26T02:55:48.530715,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_7_text,,,text,True,disability_status,0.4632,0.55,required_field,reject
+2025-06-26T02:55:48.530994,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_8_question_uuid,,,hidden,False,disability_status,0.4927,0.95,,reject
+2025-06-26T02:55:48.531278,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_8_question_type,,,hidden,False,disability_status,0.4197,0.95,,reject
+2025-06-26T02:55:48.531558,/classify,#job_applicant_custom_form_response_attributes_answers_attributes_8_text,,,text,True,veteran_status,0.5133,0.55,required_field,reject
+2025-06-26T02:55:48.531775,/classify,html > body.bg-gray-100 > div.max-w-6xl.mx-auto.lg:px-8.lg:py-12.px-6.py-6:nth-of-type(1) > form.space-y-8 > div.space-y-8.divide-y.divide-gray-200 > div.pt-5:nth-of-type(5) > div.flex.justify-center > input.inline-flex.items-center.px-6.py-3.border.border-transparent.text-base.font-medium.rounded-md.shadow-sm.text-white.bg-indigo-600.hover:bg-indigo-700.focus:outline-none.focus:ring-2.focus:ring-offset-2.focus:ring-indigo-500,,,submit,False,github,0.3903,0.6,,reject
+2025-06-26T02:55:48.532014,/classify,#ot-group-id-C0002,Performance Cookies,,checkbox,False,race,0.2355,0.8,,reject
+2025-06-26T02:55:48.532263,/classify,#ot-group-id-C0004,Targeting Cookies,,checkbox,False,github,0.2434,0.8,,reject
+2025-06-26T02:55:48.532525,/classify,#vendor-search-handler,Cookie list search,Search…,text,False,last_name,0.1905,0.55,pattern_match,reject
+2025-06-26T02:55:48.532749,/classify,#chkbox-id,checkbox label,,checkbox,False,ethnicity,0.1654,0.8,,reject
+2025-06-26T02:55:48.532999,/classify,#select-all-hosts-groups-handler,checkbox label,,checkbox,False,ethnicity,0.1654,0.8,,reject
+2025-06-26T02:55:48.533236,/classify,#select-all-vendor-groups-handler,checkbox label,,checkbox,False,ethnicity,0.1654,0.75,pattern_match,reject
+2025-06-26T02:55:48.533487,/classify,#select-all-vendor-leg-handler,checkbox label,,checkbox,False,ethnicity,0.1654,0.75,pattern_match,reject
+2025-06-26T02:55:48.544044,/fill,#job_applicant_first_name,first_name,,,,first_name,0.7782,0.45,"pattern_match,pattern_canonical_match,required_field",filled
+2025-06-26T02:55:48.544051,/fill,#job_applicant_middle_name,last_name,,,,last_name,0.5239,0.5,"pattern_match,pattern_canonical_match",filled
+2025-06-26T02:55:48.544055,/fill,#job_applicant_last_name,last_name,,,,last_name,0.7844,0.45,"pattern_match,pattern_canonical_match,required_field",filled
+2025-06-26T02:55:48.544058,/fill,#job_applicant_email,email,,,,email,1,0.45,"pattern_match,pattern_canonical_match,required_field",filled
+2025-06-26T02:55:48.544061,/fill,#job_applicant_phone,phone,,,,phone,0.6151,0.5,"pattern_match,pattern_canonical_match",filled
