@@ -87,7 +87,7 @@ export const fetchJobs = async (): Promise<Job[]> => {
 export const updateJobStatus = async (jobId: string, newStatus: string): Promise<ApiResponse> => {
   try {
     return await fetchWithAutoRefresh<ApiResponse>(
-      `${BASE_URL}/updateJobStatus/${jobId}`,
+      `${JOBS_URL}/updateJobStatus/${jobId}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

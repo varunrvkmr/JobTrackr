@@ -272,6 +272,7 @@
     if (hostname.includes('linkedin')) platform = 'LinkedIn';
     else if (hostname.includes('otta') || hostname.includes('welcometothejungle')) platform = 'Otta';
     else if (hostname.includes('jobright')) platform = 'Jobright';
+    else if (hostname.includes('wellfound')) platform = 'Wellfound';
 
     console.log('Detected Platform:', platform);
 
@@ -325,6 +326,11 @@
       responsibilities: 'section.index_sectionContent__zTR73 div.ant-space span.ant-typography.index_listText__ENCyh.css-19pqdq5',
       required: 'div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5',
       preferred: 'div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5'
+    },
+    Wellfound: {
+      title: 'h1.styles-module_component__3ZI84.styles_header__ZlR7s',
+      company: 'a.text-neutral-1000.hover\\:underline span.font-semibold',
+      location: 'dd div.styles_component__Jnlux span'
     }
   };
 
@@ -349,15 +355,25 @@ const jobData = {
     })(),
     
     job_title: (() => {
-    if (platform === 'Otta') {
-      const titleElement = document.querySelector(selectors.title);
+      if (platform === 'Otta') {
+        const titleElement = document.querySelector(selectors.title);
+          if (titleElement) {
+            // Extract just the text content before the company link
+            const titleText = titleElement.childNodes[0]?.textContent?.trim();
+            // Remove trailing comma if it exists
+            return titleText?.replace(/,\s*$/, '') || 'Unknown Position';
+          }
+        return 'Unknown Position';
+      }
+      if (platform === 'Wellfound') {
+        const titleElement = document.querySelector(selectors.title);
         if (titleElement) {
-          // Extract just the text content before the company link
-          const titleText = titleElement.childNodes[0]?.textContent?.trim();
-          // Remove trailing comma if it exists
-          return titleText?.replace(/,\s*$/, '') || 'Unknown Position';
+          // Extract only the job title part, before "at <company>"
+          const fullText = titleElement.innerText.trim();
+          const atIndex = fullText.indexOf(' at ');
+          return atIndex > -1 ? fullText.substring(0, atIndex).trim() : fullText;
         }
-      return 'Unknown Position';
+        return 'Unknown Position';
       }
       return document.querySelector(selectors.title)?.innerText.trim() || 'Unknown Position';
     })(),

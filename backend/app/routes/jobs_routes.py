@@ -132,3 +132,50 @@ def get_job(job_id):
     }
 
     return jsonify({'status': 'success', 'data': job_data}), 200
+
+@job_bp.route('/updateJobStatus/<int:job_id>', methods=['PUT'])
+@jwt_required()
+def update_job_status(job_id):
+    try:
+        # get the current user from the JWT (cast it to int)
+        raw_identity     = get_jwt_identity()
+        try:
+            current_user_id = int(raw_identity)
+        except (TypeError, ValueError):
+            return jsonify({'status': 'error', 'message': 'Invalid token identity'}), 400
+
+        # fetch the job and verify it exists
+        job = JobPosting.query.get(job_id)
+        if not job:
+            return jsonify({'status': 'error', 'message': 'Job not found'}), 404
+
+        # verify this job belongs to the current user
+        if job.user_auth_id != current_user_id:
+            # debug log—optional, remove in prod
+            print(f"Forbidden: token user {current_user_id} ≠ job owner {job.user_auth_id}")
+            return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+
+        # parse the desired new status from the request body
+        data       = request.get_json() or {}
+        new_status = data.get('status')
+        if not new_status:
+            return jsonify({'status': 'error', 'message': 'Missing “status” field'}), 400
+
+        # perform the update
+        job.posting_status = new_status
+        db.session.commit()
+
+        # return the updated status
+        return jsonify({
+            'status': 'success',
+            'message': 'Job status updated successfully',
+            'posting_status': job.posting_status
+        }), 200
+
+    except Exception as e:
+        # log the exception for debugging
+        print(f"Error updating job status: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred while updating the job status'
+        }), 500

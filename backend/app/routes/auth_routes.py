@@ -116,10 +116,17 @@ def login():
     access_token = create_access_token(identity=str(user.id), expires_delta=timedelta(minutes=15))
     refresh_token = create_refresh_token(identity=str(user.id), expires_delta=timedelta(days=30))
 
-    response = make_response(jsonify({
+    profile = UserProfileDB.query.filter_by(user_auth_id=user.id).first()
+    profile_id = profile.id if profile else None
+
+    # Build response payload
+    payload = {
         "message": "Login successful",
-        "id": user.id
-    }))
+        "authId":    user.id,
+        "profileId": profile_id
+    }
+
+    response = make_response(jsonify(payload), 200)
 
     # ✅ Set access token cookie (short-lived)
     response.set_cookie(
