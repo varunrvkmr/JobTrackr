@@ -318,23 +318,23 @@
       company: 'h1[data-testid="job-title"] a',
       location: 'div[data-testid="job-locations"] div[data-testid="job-location-tag"]',
     },
-      Jobright: {
-        title: 'h1.ant-typography.index_job-title__sStdA.css-19pqdq5',
-        company: 'h2.ant-typography.index_company-row__vOzgg.css-19pqdq5 strong',
-        location: 'div.index_job-metadata-item__Wv_Xh span',
-        responsibilities: 'section.index_sectionContent__zTR73 div.ant-space span.ant-typography.index_listText__ENCyh.css-19pqdq5',
-        required: 'div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5',
-        preferred: 'div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5'
-      }
-    };
+    Jobright: {
+      title: 'h1.ant-typography.index_job-title__sStdA.css-bq1qwd',
+      company: 'h2.ant-typography.index_company-row__vOzgg.css-bq1qwd strong',
+      location: 'div.index_job-metadata-item__Wv_Xh span',
+      responsibilities: 'section.index_sectionContent__zTR73 div.ant-space span.ant-typography.index_listText__ENCyh.css-19pqdq5',
+      required: 'div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5',
+      preferred: 'div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5'
+    }
+  };
 
-    const selectors = config[platform] || {};
+  const selectors = config[platform] || {};
 
-    const extractAndMerge = (selector) => {
-      return Array.from(document.querySelectorAll(selector))
-        .map((el) => el.innerText.trim())
-        .join('\n');
-    };
+  const extractAndMerge = (selector) => {
+  return Array.from(document.querySelectorAll(selector))
+    .map((el) => el.innerText.trim())
+      .join('\n');
+  };
 
     
 
