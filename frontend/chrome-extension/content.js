@@ -270,7 +270,7 @@
     let platform = 'unknown';
 
     if (hostname.includes('linkedin')) platform = 'LinkedIn';
-    else if (hostname.includes('otta')) platform = 'Otta';
+    else if (hostname.includes('otta') || hostname.includes('welcometothejungle')) platform = 'Otta';
     else if (hostname.includes('jobright')) platform = 'Jobright';
 
     console.log('Detected Platform:', platform);
@@ -312,14 +312,12 @@
         location: 'div.job-details-jobs-unified-top-card__primary-description-container div span.tvm__text',
         job_description: 'h2.text-heading-large + div.mt4 p'
       },
+      
       Otta: {
-        title: 'h1.sc-f48b4843-0.kSSTOp',
-        company: 'h1.sc-f48b4843-0.kSSTOp a',
-        location: null,
-        responsibilities: 'div.sc-ac6b1503-0.eckgeU ul li[data-testid="job-involves-bullet"]',
-        required: 'div.sc-ac6b1503-0.eckgeU ul li[data-testid="job-requirement-bullet"]',
-        preferred: 'div.sc-ac6b1503-0.eckgeU ul li[data-testid="job-requirement-bullet"]'
-      },
+      title: 'h1[data-testid="job-title"]',
+      company: 'h1[data-testid="job-title"] a',
+      location: 'div[data-testid="job-locations"] div[data-testid="job-location-tag"]',
+    },
       Jobright: {
         title: 'h1.ant-typography.index_job-title__sStdA.css-19pqdq5',
         company: 'h2.ant-typography.index_company-row__vOzgg.css-19pqdq5 strong',
@@ -338,33 +336,62 @@
         .join('\n');
     };
 
-    const jobData = {
-      company: platform === 'Otta'
-        ? document.querySelector(selectors.company)?.innerText.trim().split(', ')[1] || 'No company'
-        : document.querySelector(selectors.company)?.innerText.trim() || 'No company',
-      job_title: platform === 'Otta'
-        ? document.querySelector(selectors.title)?.innerText.trim().split(', ')[0] || 'Unknown Position'
-        : document.querySelector(selectors.title)?.innerText.trim() || 'Unknown Position',
-      location: platform === 'Otta'
-        ? 'Not provided'
-        : document.querySelector(selectors.location)?.innerText.trim() || 'No location',
-      country: 'Not specified',
-      job_link: platform === 'LinkedIn'
-        ? getLinkedInApplyUrl() || window.location.href
-        : window.location.href,
-      job_description:
-        (platform === 'Otta' || platform === 'Jobright'
-          ? [
-              extractAndMerge(selectors.responsibilities),
-              extractAndMerge(selectors.required),
-              extractAndMerge(selectors.preferred)
-            ].join('\n\n')
-          : document.querySelector(selectors.job_description)?.innerText.trim()) || 'No job description available',
-      posting_status: 'Saved'
-    };
-    console.log('Extracted Job Data:', jobData);
-    return jobData;
-  }
+    
+
+// Updated job data extraction logic
+const jobData = {
+    company: (() => {
+      if (platform === 'Otta') {
+        const companyElement = document.querySelector(selectors.company);
+        return companyElement?.innerText.trim() || 'No company';
+      }
+      return document.querySelector(selectors.company)?.innerText.trim() || 'No company';
+    })(),
+    
+    job_title: (() => {
+    if (platform === 'Otta') {
+      const titleElement = document.querySelector(selectors.title);
+        if (titleElement) {
+          // Extract just the text content before the company link
+          const titleText = titleElement.childNodes[0]?.textContent?.trim();
+          // Remove trailing comma if it exists
+          return titleText?.replace(/,\s*$/, '') || 'Unknown Position';
+        }
+      return 'Unknown Position';
+      }
+      return document.querySelector(selectors.title)?.innerText.trim() || 'Unknown Position';
+    })(),
+    
+    location: (() => {
+      if (platform === 'Otta') {
+        const locationElements = document.querySelectorAll(selectors.location);
+        if (locationElements.length > 0) {
+          return Array.from(locationElements)
+            .map(el => el.innerText.trim())
+            .join(', ');
+        }
+        return 'No location';
+      }
+      return document.querySelector(selectors.location)?.innerText.trim() || 'No location';
+    })(),
+    
+    country: 'Not specified',
+    job_link: platform === 'LinkedIn'
+      ? getLinkedInApplyUrl() || window.location.href
+      : window.location.href,
+    job_description:
+      (platform === 'Otta' || platform === 'Jobright'
+        ? [
+            extractAndMerge(selectors.responsibilities),
+            extractAndMerge(selectors.required),
+            extractAndMerge(selectors.preferred)
+          ].join('\n\n')
+        : document.querySelector(selectors.job_description)?.innerText.trim()) || 'No job description available',
+    posting_status: 'Saved'
+  };
+      console.log('Extracted Job Data:', jobData);
+      return jobData;
+    }
 
   // Message handlers
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {

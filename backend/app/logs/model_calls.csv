@@ -125,3 +125,22 @@ PDF, up to 10MB",,file,True,email,0.167,0.55,required_field,reject
 2025-06-26T02:55:48.544055,/fill,#job_applicant_last_name,last_name,,,,last_name,0.7844,0.45,"pattern_match,pattern_canonical_match,required_field",filled
 2025-06-26T02:55:48.544058,/fill,#job_applicant_email,email,,,,email,1,0.45,"pattern_match,pattern_canonical_match,required_field",filled
 2025-06-26T02:55:48.544061,/fill,#job_applicant_phone,phone,,,,phone,0.6151,0.5,"pattern_match,pattern_canonical_match",filled
+2025-06-27T08:16:57.747621,/classify,#form-input--name,Full Name*,Jane Doe,text,False,last_name,0.5894,0.5,"pattern_match,pattern_canonical_match",accept
+2025-06-27T08:16:57.747874,/classify,#form-input--email,Email*,mail@website.com,email,False,email,1.0,0.6,"pattern_match,pattern_canonical_match,multiple_patterns",accept
+2025-06-27T08:16:57.748130,/classify,#form-input--password,"Set a Password*
+Create a password to protect and access your account",min 8 characters,password,False,race,0.0227,0.95,,reject
+2025-06-27T08:16:57.748382,/classify,#form-input--passwordConfirmation,Confirm Password*,repeat password,password,False,email,0.293,0.95,,reject
+2025-06-27T08:16:57.748619,/classify,#downshift-0-input,e.g. San Francisco,e.g. San Francisco,text,False,veteran_status,0.2381,0.6,,reject
+2025-06-27T08:16:57.748854,/classify,#form-input--remote--true,I'm open to work remotely,,checkbox,False,github,0.1298,0.75,pattern_match,reject
+2025-06-27T08:16:57.749085,/classify,#react-select-form-input--yearsOfExperience-input,,,text,False,disability_status,0.4913,0.6,,reject
+2025-06-27T08:16:57.749309,/classify,html.Modal__open > body.route--CompanyProfileJobDetailLegacyInternal.Modal__open > div.ReactModalPortal:nth-of-type(8) > div.ReactModal__Overlay.ReactModal__Overlay--after-open.styles_overlay__eGk_F > div.ReactModal__Content.ReactModal__Content--after-open.styles_component__EYg1W.w-full.!max-w-[1200px] > div.styles_motionContainer__0bu1f > div.flex.flex-col-reverse.items-stretch.lg:flex-row > div.flex.flex-1.flex-col.p-6.px-12.py-6.text-md:nth-of-type(2) > form.mb-4 > div.mt-3.grid.grid-cols-2.gap-6:nth-of-type(6) > div:nth-of-type(1) > label.block.mb-6.!mb-0 > div.styles_component__nLxRq.!h-[50px].css-2b097c-container:nth-of-type(2) > input,,,hidden,False,veteran_status,0.5421,0.95,,reject
+2025-06-27T08:16:57.749558,/classify,#form-input--desiredSalary,Desired Salary*,enter amount in null,number,False,email,0.2585,0.73,"pattern_match,generic_terms",reject
+2025-06-27T08:16:57.749788,/classify,#form-input--usAuthorized--true,Yes,,radio,False,first_name,0.2278,0.85,short_label,reject
+2025-06-27T08:16:57.750018,/classify,#form-input--usAuthorized--false,No,,radio,False,veteran_status,0.3175,0.95,"ambiguous_label,short_label,generic_terms",reject
+2025-06-27T08:16:57.750252,/classify,#form-input--requireSponsorship--true,Yes,,radio,False,first_name,0.2278,0.85,short_label,reject
+2025-06-27T08:16:57.750505,/classify,#form-input--requireSponsorship--false,No,,radio,False,veteran_status,0.3175,0.95,"ambiguous_label,short_label,generic_terms",reject
+2025-06-27T08:16:57.750779,/classify,#form-input--userNote,"Your hiring contact is Adrian Russo
+Let them know why you are a good fit.",Write a note to Adrian Russo at Swish Analytics,textarea,False,linkedin,0.2078,0.65,,reject
+2025-06-27T08:16:57.750997,/classify,html.Modal__open > body.route--CompanyProfileJobDetailLegacyInternal.Modal__open > div.ReactModalPortal:nth-of-type(8) > div.ReactModal__Overlay.ReactModal__Overlay--after-open.styles_overlay__eGk_F > div.ReactModal__Content.ReactModal__Content--after-open.styles_component__EYg1W.w-full.!max-w-[1200px] > div.styles_motionContainer__0bu1f > div.flex.flex-col-reverse.items-stretch.lg:flex-row > div.flex.flex-1.flex-col.p-6.px-12.py-6.text-md:nth-of-type(2) > form.mb-4 > div.styles_component__7SKhr.mb-6.styles_dropzoneChrome__fFDu4:nth-of-type(9) > input,,,file,False,bio,0.3876,0.75,"ambiguous_label,short_label",reject
+2025-06-27T08:16:57.759266,/fill,#form-input--name,last_name,,,,last_name,0.5894,0.5,"pattern_match,pattern_canonical_match",filled
+2025-06-27T08:16:57.759276,/fill,#form-input--email,email,,,,email,1,0.6,"pattern_match,pattern_canonical_match,multiple_patterns",filled
