@@ -13,6 +13,7 @@ from app.routes.embed_routes import embed_bp
 from app.routes.autofill_routes import autofill_bp
 from dotenv import load_dotenv
 import os
+import json
 
 jwt = JWTManager()
 
@@ -61,9 +62,12 @@ def create_app():
 
     # Ensure tables are created in dev
     with app.app_context():
-        from app.models import JobDB  # add others if needed
         db.create_all()
         print("Database tables created successfully")
+
+    thresholds_path = os.path.join(app.root_path, 'config', 'thresholds.json')
+    with open(thresholds_path) as f:
+        app.config['FIELD_TYPE_THRESHOLDS'] = json.load(f)
 
     # Register blueprints
     app.register_blueprint(job_bp, url_prefix="/api/jobs")

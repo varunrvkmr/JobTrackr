@@ -1,24 +1,22 @@
 // content.js - Updated to use background script for embeddings
-(async () => {
-  console.log('🔹 content.js loaded');
+;(async () => {
+  console.log("🔹 content.js loaded")
+
+  // Declare chrome variable
+  const chrome = window.chrome
 
   function proxyFetch(url, init) {
     return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        { type: 'CORS_FETCH', url, init },
-        response => {
-          if (!response) {
-            return reject(new Error('No response from background'));
-          }
-          if (!response.ok) {
-            return reject(new Error(
-              response.error || `Server returned ${response.status}`
-            ));
-          }
-          resolve(response.data);
+      chrome.runtime.sendMessage({ type: "CORS_FETCH", url, init }, (response) => {
+        if (!response) {
+          return reject(new Error("No response from background"))
         }
-      );
-    });
+        if (!response.ok) {
+          return reject(new Error(response.error || `Server returned ${response.status}`))
+        }
+        resolve(response.data)
+      })
+    })
   }
 
   /**
@@ -26,26 +24,26 @@
    * For best results, include a dedicated selector-generator library.
    */
   function uniqueCssSelector(el) {
-    if (el.id) return `#${el.id}`;
-    const path = [];
+    if (el.id) return `#${el.id}`
+    const path = []
     while (el && el.nodeType === Node.ELEMENT_NODE) {
-      let selector = el.nodeName.toLowerCase();
+      let selector = el.nodeName.toLowerCase()
       if (el.className) {
-        const classes = el.className.trim().split(/\s+/).join('.');
-        selector += `.${classes}`;
+        const classes = el.className.trim().split(/\s+/).join(".")
+        selector += `.${classes}`
       }
-      const parent = el.parentNode;
+      const parent = el.parentNode
       if (parent) {
-        const siblings = Array.from(parent.children).filter(c => c.nodeName === el.nodeName);
+        const siblings = Array.from(parent.children).filter((c) => c.nodeName === el.nodeName)
         if (siblings.length > 1) {
-          const idx = siblings.indexOf(el) + 1;
-          selector += `:nth-of-type(${idx})`;
+          const idx = siblings.indexOf(el) + 1
+          selector += `:nth-of-type(${idx})`
         }
       }
-      path.unshift(selector);
-      el = parent;
+      path.unshift(selector)
+      el = parent
     }
-    return path.join(' > ');
+    return path.join(" > ")
   }
 
   /**
@@ -53,14 +51,14 @@
    */
   function getNearestLabelText(el) {
     if (el.id) {
-      const lab = document.querySelector(`label[for="${el.id}"]`);
-      if (lab) return lab.innerText.trim();
+      const lab = document.querySelector(`label[for="${el.id}"]`)
+      if (lab) return lab.innerText.trim()
     }
-    if (el.getAttribute('aria-label')) return el.getAttribute('aria-label').trim();
-    if (el.placeholder) return el.placeholder.trim();
-    const prev = el.previousElementSibling;
-    if (prev && prev.tagName === 'LABEL') return prev.innerText.trim();
-    return '';
+    if (el.getAttribute("aria-label")) return el.getAttribute("aria-label").trim()
+    if (el.placeholder) return el.placeholder.trim()
+    const prev = el.previousElementSibling
+    if (prev && prev.tagName === "LABEL") return prev.innerText.trim()
+    return ""
   }
 
   /**
@@ -69,183 +67,325 @@
    * Returns: [{ selector, label, placeholder, type, required, name, id, pattern, maxlength }]
    */
   function extractFields() {
-    return Array.from(document.querySelectorAll('input,textarea,select')).map(el => {
+    return Array.from(document.querySelectorAll("input,textarea,select")).map((el) => {
       const fieldData = {
         selector: uniqueCssSelector(el),
         label: getNearestLabelText(el),
-        placeholder: el.placeholder || '',
-        type: el.type || 'text',
+        placeholder: el.placeholder || "",
+        type: el.type || "text",
         required: el.required || false,
-        name: el.name || '',
-        id: el.id || ''
-      };
+        name: el.name || "",
+        id: el.id || "",
+      }
 
       // Add pattern if it exists (for input validation)
       if (el.pattern) {
-        fieldData.pattern = el.pattern;
+        fieldData.pattern = el.pattern
       }
 
       // Add maxlength if it exists
       if (el.maxLength && el.maxLength !== -1) {
-        fieldData.maxlength = el.maxLength;
+        fieldData.maxlength = el.maxLength
       }
 
       // For select elements, capture options info
-      if (el.tagName === 'SELECT') {
-        fieldData.options = Array.from(el.options).map(opt => ({
+      if (el.tagName === "SELECT") {
+        fieldData.options = Array.from(el.options).map((opt) => ({
           value: opt.value,
-          text: opt.textContent.trim()
-        }));
+          text: opt.textContent.trim(),
+        }))
       }
 
-      return fieldData;
-    });
+      return fieldData
+    })
   }
 
   function notifyPage(msg, isError = false) {
-    const div = document.createElement('div');
-    div.textContent = msg;
+    const div = document.createElement("div")
+    div.textContent = msg
     Object.assign(div.style, {
-      position: 'fixed',
-      top: '10px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      padding: '8px 12px',
-      background: isError ? 'crimson' : 'seagreen',
-      color: 'white',
+      position: "fixed",
+      top: "10px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      padding: "8px 12px",
+      background: isError ? "crimson" : "seagreen",
+      color: "white",
       zIndex: 99999,
-      borderRadius: '4px'
-    });
-    document.body.appendChild(div);
-    setTimeout(() => div.remove(), 3000);
+      borderRadius: "4px",
+    })
+    document.body.appendChild(div)
+    setTimeout(() => div.remove(), 3000)
   }
- 
+
+  /**
+   * Add thumbs up/down feedback buttons next to autofilled fields
+   */
+  function addFeedbackButtons(fills) {
+    fills.forEach((fill) => {
+      const el = document.querySelector(fill.selector)
+      if (!el) return
+
+      // Check if feedback buttons already exist to avoid duplicates
+      const existingButtons = el.parentNode.querySelectorAll(".jah-feedback-btn")
+      if (existingButtons.length > 0) {
+        existingButtons.forEach((btn) => btn.remove())
+      }
+
+      // Create feedback buttons
+      const up = document.createElement("button")
+      up.textContent = "👍"
+      up.className = "jah-feedback-btn jah-feedback-up"
+      Object.assign(up.style, {
+        marginLeft: "4px",
+        padding: "2px 6px",
+        border: "none",
+        borderRadius: "4px",
+        background: "#f0f0f0",
+        cursor: "pointer",
+        fontSize: "14px",
+        transition: "all 0.2s ease",
+      })
+
+      const down = document.createElement("button")
+      down.textContent = "👎"
+      down.className = "jah-feedback-btn jah-feedback-down"
+      Object.assign(down.style, {
+        marginLeft: "2px",
+        padding: "2px 6px",
+        border: "none",
+        borderRadius: "4px",
+        background: "#f0f0f0",
+        cursor: "pointer",
+        fontSize: "14px",
+        transition: "all 0.2s ease",
+      })
+
+      // Add hover effects
+      ;[up, down].forEach((btn) => {
+        btn.addEventListener("mouseenter", () => {
+          btn.style.transform = "scale(1.1)"
+          btn.style.background = btn === up ? "#e8f5e8" : "#fef2f2"
+        })
+        btn.addEventListener("mouseleave", () => {
+          btn.style.transform = "scale(1)"
+          if (!btn.disabled) {
+            btn.style.background = "#f0f0f0"
+          }
+        })
+      })
+
+      // Handle feedback clicks
+      ;[
+        [up, "correct"],
+        [down, "incorrect"],
+      ].forEach(([btn, feedback]) => {
+        btn.onclick = async () => {
+          console.log(`🔹 Feedback: ${feedback} for field:`, fill.selector)
+
+          // Visual feedback
+          btn.style.background = feedback === "correct" ? "#16a34a" : "#dc2626"
+          btn.style.color = "white"
+          btn.style.transform = "scale(1.2)"
+
+          // Prepare feedback data
+          const feedbackData = {
+            selector: fill.selector,
+            canonical: fill.canonical || "unknown",
+            feedback: feedback,
+            value: fill.value,
+            url: window.location.href,
+            timestamp: Date.now(),
+          }
+
+          try {
+            // Send to API endpoint (replace with your actual endpoint)
+            await proxyFetch("http://localhost:5050/api/autofill/feedback", {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(feedbackData),
+            })
+            console.log("✅ Feedback sent via background proxy");
+          } catch (error) {
+            console.warn("⚠️ Proxy‐fetch feedback failed:", error)
+          }
+
+          // Always store locally as backup
+          try {
+            const result = await chrome.storage.local.get(["feedbackData"])
+            const existingFeedback = result.feedbackData || {}
+            const feedbackKey = `${fill.selector}_${Date.now()}`
+            existingFeedback[feedbackKey] = feedbackData
+            await chrome.storage.local.set({ feedbackData: existingFeedback })
+            console.log("✅ Feedback stored locally")
+          } catch (error) {
+            console.warn("⚠️ Failed to store feedback locally:", error)
+          }
+
+          // Disable both buttons
+          up.disabled = down.disabled = true
+          up.style.opacity = down.style.opacity = "0.6"
+          up.style.cursor = down.style.cursor = "not-allowed"
+
+          // Show success message
+          const successMsg = document.createElement("span")
+          successMsg.textContent = " ✓"
+          successMsg.style.color = "#16a34a"
+          successMsg.style.fontWeight = "bold"
+          btn.parentNode.insertBefore(successMsg, btn.nextSibling)
+
+          // Remove buttons after 3 seconds
+          setTimeout(() => {
+            ;[up, down, successMsg].forEach((element) => {
+              if (element && element.parentNode) {
+                element.parentNode.removeChild(element)
+              }
+            })
+          }, 3000)
+        }
+      })
+
+      // Insert buttons after the field
+      try {
+        if (el.nextSibling) {
+          el.parentNode.insertBefore(up, el.nextSibling)
+          el.parentNode.insertBefore(down, up.nextSibling)
+        } else {
+          el.parentNode.appendChild(up)
+          el.parentNode.appendChild(down)
+        }
+      } catch (error) {
+        console.warn("⚠️ Could not insert feedback buttons for:", fill.selector, error)
+      }
+    })
+  }
+
   /**
    * Main autofill flow: classify fields, fetch fills, inject.
    * Enhanced to handle confidence levels and improved error handling.
    */
   async function runAutofillFlow() {
-    console.log('🔹 runAutofillFlow start');
-    const fields = extractFields();
-    console.log(`🔹 extractFields → found ${fields.length} fields`);
+    console.log("🔹 runAutofillFlow start")
+    const fields = extractFields()
+    console.log(`🔹 extractFields → found ${fields.length} fields`)
 
     if (fields.length === 0) {
-      console.warn('⚠️ No fields found—aborting');
-      notifyPage('No inputs to classify', true);
-      return;
+      console.warn("⚠️ No fields found—aborting")
+      notifyPage("No inputs to classify", true)
+      return
     }
 
     try {
       // 1) Classify with enhanced field data
-      console.log('🔹 proxyFetch classify…', fields);
-      const classifyPayload = await proxyFetch(
-        'http://localhost:5050/api/autofill/classify',
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields })
-        }
-      );
-      
-      const matches = classifyPayload.matches || [];
-      console.log(`🔹 classifyPayload → matches:`, matches);
-      
+      console.log("🔹 proxyFetch classify…", fields)
+      const classifyPayload = await proxyFetch("http://localhost:5050/api/autofill/classify", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fields }),
+      })
+
+      const matches = classifyPayload.matches || []
+      console.log(`🔹 classifyPayload → matches:`, matches)
+
       if (!matches.length) {
-        notifyPage('⚠️ No fields matched.', true);
-        return { filled: 0, total: 0 };
+        notifyPage("⚠️ No fields matched.", true)
+        return { filled: 0, total: 0 }
       }
 
       // 2) Fill with enhanced match data
-      console.log('🔹 proxyFetch fill…', matches);
-      const fillPayload = await proxyFetch(
-        'http://localhost:5050/api/autofill/fill',
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ matches })
-        }
-      );
-      
-      const fills = fillPayload.fills || [];
-      console.log(`🔹 fillPayload → fills:`, fills);
+      console.log("🔹 proxyFetch fill…", matches)
+      const fillPayload = await proxyFetch("http://localhost:5050/api/autofill/fill", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matches }),
+      })
+
+      const fills = fillPayload.fills || []
+      console.log(`🔹 fillPayload → fills:`, fills)
 
       // 3) Inject into page with confidence-based handling
-      console.log('🔹 injectValues…');
-      let count = 0;
-      let highConfidenceCount = 0;
-      let warningCount = 0;
-      
+      console.log("🔹 injectValues…")
+      let count = 0
+      let highConfidenceCount = 0
+      let warningCount = 0
+
       for (const fill of fills) {
-        const { selector, value, confidence, warning } = fill;
-        const el = document.querySelector(selector);
+        const { selector, value, confidence, warning } = fill
+        const el = document.querySelector(selector)
         if (!el) {
-          console.warn(`⚠️ Element not found for selector: ${selector}`);
-          continue;
+          console.warn(`⚠️ Element not found for selector: ${selector}`)
+          continue
         }
 
         // Handle warnings (e.g., conflicts)
         if (warning) {
-          warningCount++;
-          console.warn(`⚠️ ${warning} for selector: ${selector}`);
-          el.style.outline = '2px solid #FF9800';
-          el.title = warning;
-        } else if (confidence === 'high') {
+          warningCount++
+          console.warn(`⚠️ ${warning} for selector: ${selector}`)
+          el.style.outline = "2px solid #FF9800"
+          el.title = warning
+        } else if (confidence === "high") {
           // Visual indication for high confidence fields
-          highConfidenceCount++;
-          el.style.outline = '2px solid #4CAF50';
-        } else if (confidence === 'medium') {
-          el.style.outline = '1px solid #2196F3';
+          highConfidenceCount++
+          el.style.outline = "2px solid #4CAF50"
+        } else if (confidence === "medium") {
+          el.style.outline = "1px solid #2196F3"
         }
 
         // Remove outline after delay
         setTimeout(() => {
-          el.style.outline = '';
-          if (el.title === warning) el.title = '';
-        }, 3000);
+          el.style.outline = ""
+          if (el.title === warning) el.title = ""
+        }, 3000)
 
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.focus();
+        el.scrollIntoView({ behavior: "smooth", block: "center" })
+        el.focus()
 
-        if (el.type === 'checkbox' || el.type === 'radio') {
-          el.checked = Boolean(value);
+        if (el.type === "checkbox" || el.type === "radio") {
+          el.checked = Boolean(value)
         } else if (el.isContentEditable) {
-          el.textContent = value;
-        } else if (el.tagName === 'SELECT') {
+          el.textContent = value
+        } else if (el.tagName === "SELECT") {
           // Enhanced select handling
-          const opt = [...el.options].find(o => 
-            o.textContent.trim() === value || 
-            o.value === value ||
-            o.textContent.trim().toLowerCase() === value.toLowerCase()
-          );
+          const opt = [...el.options].find(
+            (o) =>
+              o.textContent.trim() === value ||
+              o.value === value ||
+              o.textContent.trim().toLowerCase() === value.toLowerCase(),
+          )
           if (opt) {
-            opt.selected = true;
+            opt.selected = true
           } else {
-            console.warn(`⚠️ Option not found for select: ${value}`);
+            console.warn(`⚠️ Option not found for select: ${value}`)
           }
         } else {
-          el.value = value;
+          el.value = value
         }
 
         // Trigger events to ensure form validation and frameworks detect changes
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-        el.dispatchEvent(new Event('blur', { bubbles: true }));
-        count++;
+        el.dispatchEvent(new Event("input", { bubbles: true }))
+        el.dispatchEvent(new Event("change", { bubbles: true }))
+        el.dispatchEvent(new Event("blur", { bubbles: true }))
+        count++
       }
 
-      const message = `✅ Autofilled ${count}/${fills.length} fields` + 
-                     (highConfidenceCount > 0 ? ` (${highConfidenceCount} high confidence)` : '') +
-                     (warningCount > 0 ? ` (${warningCount} warnings)` : '');
-      notifyPage(message);
-      
-      return { filled: count, total: fills.length, highConfidence: highConfidenceCount, warnings: warningCount };
+      // 4) Add feedback buttons after autofill
+      console.log("🔹 Adding feedback buttons...")
+      addFeedbackButtons(fills)
 
+      const message =
+        `✅ Autofilled ${count}/${fills.length} fields` +
+        (highConfidenceCount > 0 ? ` (${highConfidenceCount} high confidence)` : "") +
+        (warningCount > 0 ? ` (${warningCount} warnings)` : "")
+      notifyPage(message)
+
+      return { filled: count, total: fills.length, highConfidence: highConfidenceCount, warnings: warningCount }
     } catch (error) {
-      console.error('❌ Autofill error:', error);
-      notifyPage(`❌ Autofill failed: ${error.message}`, true);
-      throw error;
+      console.error("❌ Autofill error:", error)
+      notifyPage(`❌ Autofill failed: ${error.message}`, true)
+      throw error
     }
   }
 
@@ -266,195 +406,191 @@
    */
   function buildJobData() {
     // Platform Detection
-    const hostname = window.location.hostname;
-    let platform = 'unknown';
+    const hostname = window.location.hostname
+    let platform = "unknown"
 
-    if (hostname.includes('linkedin')) platform = 'LinkedIn';
-    else if (hostname.includes('otta') || hostname.includes('welcometothejungle')) platform = 'Otta';
-    else if (hostname.includes('jobright')) platform = 'Jobright';
-    else if (hostname.includes('wellfound')) platform = 'Wellfound';
+    if (hostname.includes("linkedin")) platform = "LinkedIn"
+    else if (hostname.includes("otta") || hostname.includes("welcometothejungle")) platform = "Otta"
+    else if (hostname.includes("jobright")) platform = "Jobright"
+    else if (hostname.includes("wellfound")) platform = "Wellfound"
 
-    console.log('Detected Platform:', platform);
+    console.log("Detected Platform:", platform)
 
     const formatDate = () => {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    };
+      const now = new Date()
+      const year = now.getFullYear()
+      const month = String(now.getMonth() + 1).padStart(2, "0")
+      const day = String(now.getDate()).padStart(2, "0")
+      return `${year}-${month}-${day}`
+    }
 
     const getLinkedInApplyUrl = () => {
       try {
-        const codeBlocks = document.querySelectorAll('code[style*="display: none"]');
+        const codeBlocks = document.querySelectorAll('code[style*="display: none"]')
         for (const codeBlock of codeBlocks) {
-          const jsonText = codeBlock.innerText.trim();
+          const jsonText = codeBlock.innerText.trim()
           try {
-            const jsonData = JSON.parse(jsonText);
-            const companyApplyUrl = jsonData?.data?.applyMethod?.companyApplyUrl;
+            const jsonData = JSON.parse(jsonText)
+            const companyApplyUrl = jsonData?.data?.applyMethod?.companyApplyUrl
             if (companyApplyUrl) {
-              console.log('✅ Found company application URL:', companyApplyUrl);
-              return companyApplyUrl;
+              console.log("✅ Found company application URL:", companyApplyUrl)
+              return companyApplyUrl
             }
           } catch {}
         }
-        console.warn('⚠️ No company application URL found.');
-        return null;
+        console.warn("⚠️ No company application URL found.")
+        return null
       } catch (error) {
-        console.error('❌ Error extracting company application URL:', error);
-        return null;
+        console.error("❌ Error extracting company application URL:", error)
+        return null
       }
-    };
+    }
 
     const config = {
       LinkedIn: {
-        title: 'h1.t-24.t-bold.inline',
-        company: 'div.job-details-jobs-unified-top-card__company-name a',
-        location: 'div.job-details-jobs-unified-top-card__primary-description-container div span.tvm__text',
-        job_description: 'h2.text-heading-large + div.mt4 p'
+        title: "h1.t-24.t-bold.inline",
+        company: "div.job-details-jobs-unified-top-card__company-name a",
+        location: "div.job-details-jobs-unified-top-card__primary-description-container div span.tvm__text",
+        job_description: "h2.text-heading-large + div.mt4 p",
       },
-      
+
       Otta: {
-      title: 'h1[data-testid="job-title"]',
-      company: 'h1[data-testid="job-title"] a',
-      location: 'div[data-testid="job-locations"] div[data-testid="job-location-tag"]',
-    },
-    Jobright: {
-      title: 'h1.ant-typography.index_job-title__sStdA.css-bq1qwd',
-      company: 'h2.ant-typography.index_company-row__vOzgg.css-bq1qwd strong',
-      location: 'div.index_job-metadata-item__Wv_Xh span',
-      responsibilities: 'section.index_sectionContent__zTR73 div.ant-space span.ant-typography.index_listText__ENCyh.css-19pqdq5',
-      required: 'div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5',
-      preferred: 'div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5'
-    },
-    Wellfound: {
-      title: 'h1.styles-module_component__3ZI84.styles_header__ZlR7s',
-      company: 'a.text-neutral-1000.hover\\:underline span.font-semibold',
-      location: 'dd div.styles_component__Jnlux span'
+        title: 'h1[data-testid="job-title"]',
+        company: 'h1[data-testid="job-title"] a',
+        location: 'div[data-testid="job-locations"] div[data-testid="job-location-tag"]',
+      },
+      Jobright: {
+        title: "h1.ant-typography.index_job-title__sStdA.css-bq1qwd",
+        company: "h2.ant-typography.index_company-row__vOzgg.css-bq1qwd strong",
+        location: "div.index_job-metadata-item__Wv_Xh span",
+        responsibilities:
+          "section.index_sectionContent__zTR73 div.ant-space span.ant-typography.index_listText__ENCyh.css-19pqdq5",
+        required:
+          "div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5",
+        preferred:
+          "div.index_flex-col__Y_QL8 h4.index_qualifications-sub-title__IA6rq + div span.ant-typography.index_listText__ENCyh.css-19pqdq5",
+      },
+      Wellfound: {
+        title: "h1.styles-module_component__3ZI84.styles_header__ZlR7s",
+        company: "a.text-neutral-1000.hover\\:underline span.font-semibold",
+        location: "dd div.styles_component__Jnlux span",
+      },
     }
-  };
 
-  const selectors = config[platform] || {};
+    const selectors = config[platform] || {}
 
-  const extractAndMerge = (selector) => {
-  return Array.from(document.querySelectorAll(selector))
-    .map((el) => el.innerText.trim())
-      .join('\n');
-  };
+    const extractAndMerge = (selector) => {
+      return Array.from(document.querySelectorAll(selector))
+        .map((el) => el.innerText.trim())
+        .join("\n")
+    }
 
-    
+    // Updated job data extraction logic
+    const jobData = {
+      company: (() => {
+        if (platform === "Otta") {
+          const companyElement = document.querySelector(selectors.company)
+          return companyElement?.innerText.trim() || "No company"
+        }
+        return document.querySelector(selectors.company)?.innerText.trim() || "No company"
+      })(),
 
-// Updated job data extraction logic
-const jobData = {
-    company: (() => {
-      if (platform === 'Otta') {
-        const companyElement = document.querySelector(selectors.company);
-        return companyElement?.innerText.trim() || 'No company';
-      }
-      return document.querySelector(selectors.company)?.innerText.trim() || 'No company';
-    })(),
-    
-    job_title: (() => {
-      if (platform === 'Otta') {
-        const titleElement = document.querySelector(selectors.title);
+      job_title: (() => {
+        if (platform === "Otta") {
+          const titleElement = document.querySelector(selectors.title)
           if (titleElement) {
             // Extract just the text content before the company link
-            const titleText = titleElement.childNodes[0]?.textContent?.trim();
+            const titleText = titleElement.childNodes[0]?.textContent?.trim()
             // Remove trailing comma if it exists
-            return titleText?.replace(/,\s*$/, '') || 'Unknown Position';
+            return titleText?.replace(/,\s*$/, "") || "Unknown Position"
           }
-        return 'Unknown Position';
-      }
-      if (platform === 'Wellfound') {
-        const titleElement = document.querySelector(selectors.title);
-        if (titleElement) {
-          // Extract only the job title part, before "at <company>"
-          const fullText = titleElement.innerText.trim();
-          const atIndex = fullText.indexOf(' at ');
-          return atIndex > -1 ? fullText.substring(0, atIndex).trim() : fullText;
+          return "Unknown Position"
         }
-        return 'Unknown Position';
-      }
-      return document.querySelector(selectors.title)?.innerText.trim() || 'Unknown Position';
-    })(),
-    
-    location: (() => {
-      if (platform === 'Otta') {
-        const locationElements = document.querySelectorAll(selectors.location);
-        if (locationElements.length > 0) {
-          return Array.from(locationElements)
-            .map(el => el.innerText.trim())
-            .join(', ');
+        if (platform === "Wellfound") {
+          const titleElement = document.querySelector(selectors.title)
+          if (titleElement) {
+            // Extract only the job title part, before "at <company>"
+            const fullText = titleElement.innerText.trim()
+            const atIndex = fullText.indexOf(" at ")
+            return atIndex > -1 ? fullText.substring(0, atIndex).trim() : fullText
+          }
+          return "Unknown Position"
         }
-        return 'No location';
-      }
-      return document.querySelector(selectors.location)?.innerText.trim() || 'No location';
-    })(),
-    
-    country: 'Not specified',
-    job_link: platform === 'LinkedIn'
-      ? getLinkedInApplyUrl() || window.location.href
-      : window.location.href,
-    job_description:
-      (platform === 'Otta' || platform === 'Jobright'
-        ? [
-            extractAndMerge(selectors.responsibilities),
-            extractAndMerge(selectors.required),
-            extractAndMerge(selectors.preferred)
-          ].join('\n\n')
-        : document.querySelector(selectors.job_description)?.innerText.trim()) || 'No job description available',
-    posting_status: 'Saved'
-  };
-      console.log('Extracted Job Data:', jobData);
-      return jobData;
+        return document.querySelector(selectors.title)?.innerText.trim() || "Unknown Position"
+      })(),
+
+      location: (() => {
+        if (platform === "Otta") {
+          const locationElements = document.querySelectorAll(selectors.location)
+          if (locationElements.length > 0) {
+            return Array.from(locationElements)
+              .map((el) => el.innerText.trim())
+              .join(", ")
+          }
+          return "No location"
+        }
+        return document.querySelector(selectors.location)?.innerText.trim() || "No location"
+      })(),
+
+      country: "Not specified",
+      job_link: platform === "LinkedIn" ? getLinkedInApplyUrl() || window.location.href : window.location.href,
+      job_description:
+        (platform === "Otta" || platform === "Jobright"
+          ? [
+              extractAndMerge(selectors.responsibilities),
+              extractAndMerge(selectors.required),
+              extractAndMerge(selectors.preferred),
+            ].join("\n\n")
+          : document.querySelector(selectors.job_description)?.innerText.trim()) || "No job description available",
+      posting_status: "Saved",
     }
+    console.log("Extracted Job Data:", jobData)
+    return jobData
+  }
 
   // Message handlers
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    console.log("📥 [content] incoming message:", msg);
+    console.log("📥 [content] incoming message:", msg)
     if (!msg || !msg.type) {
       // skip anything that isn't a well-formed SAVE_JOB or RUN_AUTOFILL
-      return;
+      return
     }
 
     // --- SAVE JOB ---
-    if (msg.type === 'SAVE_JOB') {
-      console.log('📥 [content] SAVE_JOB');
-      let jobData;
+    if (msg.type === "SAVE_JOB") {
+      console.log("📥 [content] SAVE_JOB")
+      let jobData
       try {
-        jobData = buildJobData();
+        jobData = buildJobData()
       } catch (err) {
-        sendResponse({ success: false, error: err.message });
-        return true;
+        sendResponse({ success: false, error: err.message })
+        return true
       }
 
       // forward to background.js (or wherever you're persisting)
-      chrome.runtime.sendMessage(
-        { type: 'SAVE_JOB', jobData },
-        (backgroundResponse) => {
-          // bubble the result back to the popup
-          if (chrome.runtime.lastError) {
-            sendResponse({ success: false, error: chrome.runtime.lastError.message });
-          } else {
-            sendResponse(backgroundResponse);
-          }
+      chrome.runtime.sendMessage({ type: "SAVE_JOB", jobData }, (backgroundResponse) => {
+        // bubble the result back to the popup
+        if (chrome.runtime.lastError) {
+          sendResponse({ success: false, error: chrome.runtime.lastError.message })
+        } else {
+          sendResponse(backgroundResponse)
         }
-      );
+      })
 
       // indicate we'll call sendResponse asynchronously
-      return true;
+      return true
     }
 
     // --- AUTOFILL APPLICATION ---
-    if (msg.type === 'RUN_AUTOFILL') {
-      console.log('📥 [content] RUN_AUTOFILL');
+    if (msg.type === "RUN_AUTOFILL") {
+      console.log("📥 [content] RUN_AUTOFILL")
       runAutofillFlow()
-        .then((result) => sendResponse({ status: 'ok', result }))
-        .catch(err => sendResponse({ status: 'error', error: err.message }));
+        .then((result) => sendResponse({ status: "ok", result }))
+        .catch((err) => sendResponse({ status: "error", error: err.message }))
 
-      return true;  // because we'll sendResponse later
+      return true // because we'll sendResponse later
     }
-  });
+  })
 
-  console.log('✅ content.js ready');
-})();
+  console.log("✅ content.js ready")
+})()

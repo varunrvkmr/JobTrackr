@@ -46,22 +46,6 @@ with open(data_path, 'r') as f:
 # —————— DYNAMIC THRESHOLD CONFIGURATION ——————
 BASE_THRESHOLD = 0.6
 
-# Field type specific thresholds
-FIELD_TYPE_THRESHOLDS = {
-    'email': 0.8,
-    'password': 0.95,
-    'hidden': 0.95,
-    'tel': 0.75,
-    'url': 0.8,
-    'number': 0.7,
-    'date': 0.75,
-    'text': 0.6,
-    'textarea': 0.65,
-    'select': 0.7,
-    'checkbox': 0.8,
-    'radio': 0.8
-}
-
 # Pattern-based confidence detection
 CONFIDENCE_PATTERNS = {
     'email': r'email|e-?mail|mail(?!ing)',
@@ -155,8 +139,9 @@ def calculate_dynamic_threshold(field: Dict[str, Any], canonical_field: str) -> 
     """Calculate dynamic threshold for a specific field."""
     context = extract_field_context(field)
     
+    thresholds = current_app.config.get('FIELD_TYPE_THRESHOLDS', {})
     # Start with field-type specific threshold
-    threshold = FIELD_TYPE_THRESHOLDS.get(context['field_type'], BASE_THRESHOLD)
+    threshold = thresholds.get(context['field_type'], BASE_THRESHOLD)
     
     confidence_signals = []
     
@@ -402,7 +387,7 @@ def fill_fields():
     _log_file.flush()
     return jsonify(fills=fills), 200
 
-# —————— UTILITY ENDPOINTS FOR DEBUGGING ——————
+# —————— UTILITY ENDPOINT FOR DEBUGGING ——————
 
 @autofill_bp.route('/debug/threshold', methods=['POST'])
 @jwt_required()
@@ -418,14 +403,19 @@ def debug_threshold():
     if not field:
         return jsonify(error="Must supply a 'field' object"), 400
     
+    # calculate the dynamic threshold
     threshold, signals = calculate_dynamic_threshold(field, canonical)
     context = extract_field_context(field)
+
+    # pull the base thresholds loaded in create_app()
+    thresholds = current_app.config.get('FIELD_TYPE_THRESHOLDS', {})
+    base_threshold = thresholds.get(context['field_type'], BASE_THRESHOLD)
     
     return jsonify({
         'field': field,
         'canonical': canonical,
         'threshold': round(threshold, 4),
-        'base_threshold': FIELD_TYPE_THRESHOLDS.get(context['field_type'], BASE_THRESHOLD),
+        'base_threshold': base_threshold,
         'confidence_signals': signals,
         'context': {
             'field_type': context['field_type'],
@@ -435,3 +425,21 @@ def debug_threshold():
             'required': context['required']
         }
     }), 200
+
+@autofill_bp.route('/feedback', methods=['POST'])
+@jwt_required()
+def feedback():
+    data = request.get_json(force=True) or {}
+    selector = data.get("selector")
+    canonical = data.get("canonical")
+    feedback = data.get("feedback")  # "correct" or "incorrect"
+    if not (selector and canonical and feedback):
+        return jsonify(error="selector, canonical, and feedback required"), 400
+
+    _csv_writer.writerow([
+      datetime.utcnow().isoformat(),
+      "/feedback",
+      selector, "", "", "", "", canonical, "", "", "", feedback
+    ])
+    _log_file.flush()
+    return jsonify(status="ok"), 200

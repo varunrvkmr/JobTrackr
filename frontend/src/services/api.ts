@@ -1,7 +1,7 @@
 // Replace 'http://your-ec2-public-dns:8081' with your EC2 instance's address.
 // If the frontend is served from the same origin, you can use a relative path (e.g., '/api').
 //const BASE_URL = "https://jobtrackr.hopto.org/api/";
-import { Job, ApiResponse, UserProfile, AuthUser, FieldInput, Match, Fill } from "@/types";
+import { Job, ApiResponse, UserProfile, AuthUser, FieldInput, Match, Fill, EducationRequest, WorkRequest } from "@/types";
 
 //const BASE_URL = window.location.protocol + "//jobtrackr.hopto.org/api/";
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5050/api";
@@ -11,6 +11,43 @@ const JOBS_URL = `${BASE_URL}/jobs`;
 const LETTER_GENERATOR_URL = `${BASE_URL}/letter-generator`;
 const USER_PROFILE_URL = `${BASE_URL}/user-profile`;
 const AUTH_USER_URL = `${BASE_URL}/auth/user`;
+
+interface RawUserProfile {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  location?: string;
+  state?: string;
+  bio?: string;
+  linkedin?: string;
+  github?: string;
+  race?: string;
+  ethnicity?: string;
+  gender?: string;
+  disability_status?: string;
+  veteran_status?: string;
+
+  education_history: Array<{
+    id: number;
+    school_name: string;
+    degree?: string;
+    field_of_study?: string;
+    is_current: boolean;
+    start_date?: string;
+    end_date?: string;
+  }>;
+  work_history: Array<{
+    id: number;
+    company: string;
+    position?: string;
+    description?: string;
+    is_current: boolean;
+    start_date?: string;
+    end_date?: string;
+  }>;
+}
 
 export async function fetchWithAutoRefresh<T>(
   input: RequestInfo,
@@ -366,7 +403,6 @@ const normalize = (api: any): UserProfile => ({
   email:             api.email,
   phone:             api.phone    ?? "",
   location:          api.location ?? "",
-  state:             api.state    ?? "",
   bio:               api.bio      ?? "",
   linkedin:          api.linkedin ?? "",
   github:            api.github   ?? "",
@@ -375,39 +411,128 @@ const normalize = (api: any): UserProfile => ({
   gender:            api.gender   ?? "",
   disabilityStatus:  api.disability_status ?? "",
   veteranStatus:     api.veteran_status    ?? "",
-  // if you’ve re-added these to UserProfile:
-  education:         api.education        ?? [],
-  workExperience:    api.work_experience  ?? [],
+
+  education: (api.education_history ?? []).map((e: any) => ({
+    id:        String(e.id),
+    school:    e.school_name,
+    degree:    e.degree          ?? "",
+    focus:     e.field_of_study  ?? "",
+    isCurrent: e.is_current,
+    startDate: e.start_date      ?? "",
+    endDate:   e.end_date        ?? "",
+  })),
+
+  workExperience: (api.work_history ?? []).map((w: any) => ({
+    id:          String(w.id),
+    company:     w.company,
+    position:    w.position      ?? "",
+    description: w.description   ?? "",
+    isCurrent:   w.is_current,
+    startDate:   w.start_date    ?? "",
+    endDate:     w.end_date      ?? "",
+  })),
 });
 
+
 export const fetchCurrentUserProfile = async (): Promise<UserProfile> => {
-  // calls GET /api/user/me and returns the raw JSON object
-  const api = await fetchWithAutoRefresh<UserProfile>(
+  // 1) Tell TS we expect the ApiResponse wrapper, with RawUserProfile inside .data
+  const resp = await fetchWithAutoRefresh<ApiResponse<RawUserProfile>>(
     `${USER_PROFILE_URL}/me`,
     { method: "GET" }
   );
-  // if your fetchWithAutoRefresh wraps in { data } strip that off:
-  // const api = (await fetchWithAutoRefresh<{ profile: any }>(…)).profile;
-
-  return normalize(api);
+  
+  // 2) Extract the raw snake_case payload
+  //const api = resp.data!;   // type is RawUserProfile
+  // 3) Normalize into your camelCase UserProfile
+  return normalize(resp);
 };
 
 export const updateCurrentUserProfile = async (
   payload: Record<string, any>
 ): Promise<UserProfile> => {
-  // calls PUT /api/user/me, sending snake_case, returns raw JSON
-  const api = await fetchWithAutoRefresh<UserProfile>(
+  // 1) Same pattern for PUT: ApiResponse<RawUserProfile>
+  const resp = await fetchWithAutoRefresh<ApiResponse<RawUserProfile>>(
     `${USER_PROFILE_URL}/me`,
+    {
+      method:  "PUT",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify(payload),
+    }
+  );
+
+  // 2) Unwrap
+  //const api = resp.data!;
+
+  // 3) Normalize
+  return normalize(resp);
+};
+
+// EDUCATION CRUD
+export async function addEducation(payload: EducationRequest) {
+  const res = await fetchWithAutoRefresh<ApiResponse<{ education_entry: any }>>(
+    `${USER_PROFILE_URL}/education`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  return res.data?.education_entry;
+}
+
+
+export async function updateEducation(id: string, payload: EducationRequest) {
+  const res = await fetchWithAutoRefresh<ApiResponse<{ education_entry: any }>>(
+    `${USER_PROFILE_URL}/education/${id}`,
     {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     }
   );
-  // again, if wrapped in { profile }, do .profile here.
+  return res.data?.education_entry;
+}
 
-  return normalize(api);
-};
+export async function deleteEducation(id: string) {
+  const res = await fetchWithAutoRefresh<ApiResponse>(
+    `${USER_PROFILE_URL}/education/${id}`,
+    { method: "DELETE" }
+  );
+  return res;
+}
+
+// WORK CRUD
+export async function addWork(payload: WorkRequest) {
+  const res = await fetchWithAutoRefresh<ApiResponse<{ work_entry: any }>>(
+    `${USER_PROFILE_URL}/work`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  return res.data?.work_entry;
+}
+
+export async function updateWork(id: string, payload: WorkRequest) {
+  const res = await fetchWithAutoRefresh<ApiResponse<{ work_entry: any }>>(
+    `${USER_PROFILE_URL}/work/${id}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  return res.data?.work_entry;
+}
+
+export async function deleteWork(id: string) {
+  const res = await fetchWithAutoRefresh<ApiResponse>(
+    `${USER_PROFILE_URL}/work/${id}`,
+    { method: "DELETE" }
+  );
+  return res;
+}
 //USER PROFILES FUNCTIONALITY - END
 
 //PASSWORD AUTHENTICATION FUNCTIONS - BEGIN

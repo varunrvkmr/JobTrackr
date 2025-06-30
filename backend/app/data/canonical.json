@@ -89,5 +89,58 @@
     "veteran",
     "military veteran",
     "protected veteran status"
+  ],
+   "education_school": [
+    "school",
+    "university",
+    "college",
+    "institution",
+    "alma mater"
+  ],
+  "education_degree": [
+    "degree",
+    "qualification",
+    "major",
+    "course of study",
+    "diploma"
+  ],
+  "education_start_date": [
+    "start date",
+    "from",
+    "enrollment date",
+    "begin date"
+  ],
+  "education_end_date": [
+    "end date",
+    "to",
+    "graduation date",
+    "completion date"
+  ],
+
+  "work_company": [
+    "company",
+    "employer",
+    "organization",
+    "business",
+    "current employer"
+  ],
+  "work_title": [
+    "job title",
+    "position",
+    "role",
+    "your role",
+    "designation"
+  ],
+  "work_start_date": [
+    "start date",
+    "from",
+    "joined date",
+    "begin date"
+  ],
+  "work_end_date": [
+    "end date",
+    "to",
+    "left date",
+    "departure date"
   ]
 }

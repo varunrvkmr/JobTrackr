@@ -28,35 +28,64 @@ export interface Job {
   }
 
   export interface Education {
+    id?: string;
     school: string;
-    degree: string;
-    year: string;
+    degree?: string;
+    focus?: string;
+    isCurrent: boolean;
+    startDate?: string;
+    endDate?: string;
   }
-  
+
   export interface WorkExperience {
+    id?: string;
     company: string;
-    position: string;
-    years: string;
+    position?: string;
+    description?:string;
+    isCurrent: boolean;
+    startDate?: string;
+    endDate?: string;
   }
+
+  /** what the API actually expects when you create/update an education row */
+  export interface EducationRequest {
+    school_name:   string;
+    degree?:       string;
+    field_of_study?:string;
+    is_current:    boolean;
+    start_date?:   string; // "YYYY-MM-DD"
+    end_date?:     string;
+  }
+
+  /** what the API expects for work entries */
+  export interface WorkRequest {
+    company:       string;
+    position?:     string;
+    description?:  string;
+    is_current:    boolean;
+    start_date?:   string;
+    end_date?:     string;
+  }
+
   
   export interface UserProfile {
-    id:              string; // or number if you prefer
-    firstName:       string;
-    lastName:        string;
-    email:           string;
-    phone?:          string;
-    location?:       string;  // formerly “city”
-    state?:          string;
-    bio?:            string;
-    linkedin?:       string;
-    github?:         string;
-    race?:           string;
-    ethnicity?:      string;
-    gender?:         string;
+    id: string; // or number if you prefer
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    location?: string;  // formerly “city”
+    state?: string;
+    bio?: string;
+    linkedin?: string;
+    github?: string;
+    race?: string;
+    ethnicity?: string;
+    gender?: string;
     disabilityStatus?: string;
-    veteranStatus?:    string;
-    education?:       Education[]
-    workExperience?:  WorkExperience[]
+    veteranStatus?: string;
+    education: Education[]
+    workExperience: WorkExperience[]
   }
 
   /** The payload we send to PUT /api/user/me — snake_case */
@@ -64,8 +93,7 @@ export interface Job {
     first_name?:       string;
     last_name?:        string;
     phone?:            string;
-    location?:         string;
-    state?:            string;
+    location?:         string;    
     bio?:              string;
     linkedin?:         string;
     github?:           string;

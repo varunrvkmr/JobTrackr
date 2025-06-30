@@ -23,3 +23,4 @@ flask-jwt-extended
 langchain-openai
 tensorflow
 tensorflow-hub
+pandas
