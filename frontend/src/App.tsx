@@ -7,11 +7,11 @@ import JobDashboard from "./components/JobDashboard"
 import LetterGenerator from "./components/LetterGenerator"
 import JobDetails from "./components/JobDetails"
 import UserProfile from "./components/UserProfile";
-import "./App.css"
+import ResumeBuilder from "./components/ResumeBuilder"
+import './App.css';
 import Login from "./components/Login"
 //import Register from "./components/Register"
 import PrivateRoute from "./components/PrivateRoute"
-import { isAuthenticated } from "src/components/auth"
 
 // Import the enhanced Sidebar
 import EnhancedSidebar from "./components/Sidebar"
@@ -29,6 +29,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     if (path.startsWith("/files")) return "files"
     if (path.startsWith("/user-profile")) return "user-profile"
     if (path.startsWith("/letter-generator")) return "letter-generator"
+    if (path.startsWith("/resume-builder")) return "resume-builder"
   
     return "jobs" // default to jobs if no match
   }
@@ -96,6 +97,17 @@ function App() {
             <PrivateRoute>
               <AppLayout>
                 <JobDetails />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/resume-builder"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <ResumeBuilder />
               </AppLayout>
             </PrivateRoute>
           }

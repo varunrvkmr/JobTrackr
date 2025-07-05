@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { fetchJobs, deleteJob, updateJobStatus, saveJob} from '../services/api';
+import { fetchJobs, deleteJob, updateJobStatus, saveJob, fetchJobDetails} from '../services/api';
 import { FaTrash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'
 
 function JobDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -11,6 +12,7 @@ function JobDashboard() {
   const [originalJobs, setOriginalJobs] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
   const [newJob, setNewJob] = useState({
     company: '',
     job_title: '',
@@ -36,6 +38,24 @@ function JobDashboard() {
     };
     loadJobs();
   }, []);
+
+  const handleRowClick = async (jobId) => {
+    try {
+      const { data, error } = await fetchJobDetails(String(jobId));
+      if (error) {
+        console.error('❌ Failed to load job details:', error);
+        // → you could show a toast/dialog here
+        return;
+      }
+
+      // → optionally stash `data` in context or state if needed
+      // now navigate to your letter-generator page
+      navigate(`/letter-generator/${jobId}`);
+    } catch (err) {
+      console.error('⚠️ Unexpected error in handleRowClick:', err);
+    }
+  };
+
 
   const handleSearchChange = (e) => {
     const query = e.target.value.toLowerCase();
@@ -210,22 +230,22 @@ function JobDashboard() {
     <div>
       <h2>Dashboard</h2>
       {renderStatusSummary()}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '20px 0', gap: '20px' }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", margin: "20px 0", gap: "20px" }}>
         <input
           type="text"
           placeholder="Search jobs..."
           value={searchQuery}
           onChange={handleSearchChange}
           style={{
-            padding: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '8px',
-            width: '30%',
-            fontSize: '16px',
+            padding: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            width: "30%",
+            fontSize: "16px",
           }}
         />
         <div>
-          <label htmlFor="sortBy" style={{ marginRight: '10px', fontWeight: 'bold' }}>
+          <label htmlFor="sortBy" style={{ marginRight: "10px", fontWeight: "bold" }}>
             Sort By:
           </label>
           <select
@@ -233,13 +253,13 @@ function JobDashboard() {
             value={sortBy}
             onChange={handleSortChange}
             style={{
-              padding: '8px 12px',
-              borderRadius: '8px',
-              border: '1px solid #007BFF',
-              backgroundColor: '#f9f9f9',
-              color: '#333',
-              fontSize: '16px',
-              cursor: 'pointer',
+              padding: "8px 12px",
+              borderRadius: "8px",
+              border: "1px solid #007BFF",
+              backgroundColor: "#f9f9f9",
+              color: "#333",
+              fontSize: "16px",
+              cursor: "pointer",
             }}
           >
             <option value="posting_status">Status</option>
@@ -250,12 +270,12 @@ function JobDashboard() {
         <button
           onClick={() => setShowDialog(true)}
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#007BFF',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
+            padding: "10px 20px",
+            backgroundColor: "#007BFF",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
           }}
         >
           Add Job
@@ -264,36 +284,49 @@ function JobDashboard() {
       {filteredJobs.length === 0 ? (
         <p>No jobs found. Add a new job below!</p>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
           <thead>
             <tr>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Title</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Company</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Location</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Status</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Link</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px' }}>Actions</th>
+              <th style={{ border: "1px solid #ccc", padding: "10px" }}>Title</th>
+              <th style={{ border: "1px solid #ccc", padding: "10px" }}>Company</th>
+              <th style={{ border: "1px solid #ccc", padding: "10px" }}>Location</th>
+              <th style={{ border: "1px solid #ccc", padding: "10px" }}>Status</th>
+              <th style={{ border: "1px solid #ccc", padding: "10px" }}>Link</th>
+              <th style={{ border: "1px solid #ccc", padding: "10px" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredJobs.map((job) => (
-              <tr key={job.id}>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.job_title}</td>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.company}</td>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>{job.location}</td>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>
+              <tr
+                key={job.id}
+                onClick={() => handleRowClick(job.id)}
+                style={{
+                  cursor: "pointer",
+                  transition: "background-color 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f5f5f5"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent"
+                }}
+              >
+                <td style={{ border: "1px solid #ccc", padding: "10px" }}>{job.job_title}</td>
+                <td style={{ border: "1px solid #ccc", padding: "10px" }}>{job.company}</td>
+                <td style={{ border: "1px solid #ccc", padding: "10px" }}>{job.location}</td>
+                <td style={{ border: "1px solid #ccc", padding: "10px" }}>
                   <select
                     value={job.posting_status}
-                    onChange={(e) => handleStatusChange(job.id, e.target.value)}
+                    onChange={(e) => handleStatusChange(job.id, e.target.value, e)}
                     style={{
-                      padding: '8px 12px',
-                      borderRadius: '8px',
-                      border: '1px solid #007BFF',
-                      backgroundColor: '#f9f9f9',
-                      color: '#333',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      width: '100%',
+                      padding: "8px 12px",
+                      borderRadius: "8px",
+                      border: "1px solid #007BFF",
+                      backgroundColor: "#f9f9f9",
+                      color: "#333",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      width: "100%",
                     }}
                   >
                     <option value="Saved">Saved</option>
@@ -303,16 +336,18 @@ function JobDashboard() {
                     <option value="Rejected">Rejected</option>
                   </select>
                 </td>
-                <td style={{ border: '1px solid #ccc', padding: '10px' }}>
-                  <a href={job.job_link} target="_blank" rel="noopener noreferrer">
+                <td style={{ border: "1px solid #ccc", padding: "10px" }}>
+                  <a
+                    href={job.job_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()} // Prevent row click when clicking link
+                  >
                     View Job
                   </a>
                 </td>
-                <td style={{ border: '1px solid #ccc', padding: '10px', textAlign: 'center' }}>
-                  <FaTrash
-                    onClick={() => handleDeleteJob(job.id)}
-                    style={{ cursor: 'pointer', color: 'red' }}
-                  />
+                <td style={{ border: "1px solid #ccc", padding: "10px", textAlign: "center" }}>
+                  <FaTrash onClick={(e) => handleDeleteJob(job.id, e)} style={{ cursor: "pointer", color: "red" }} />
                 </td>
               </tr>
             ))}
@@ -320,168 +355,422 @@ function JobDashboard() {
         </table>
       )}
       {showDialog && (
-      <div>
         <div
           style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            padding: '40px',
-            backgroundColor: '#fff',
-            borderRadius: '10px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-            zIndex: 1001,
-            width: '500px',
-          }}
-        >
-          <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>Add New Job</h3>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Company</label>
-            <input
-              type="text"
-              name="company"
-              value={newJob.company}
-              onChange={handleInputChange}
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Job Title</label>
-            <input
-              type="text"
-              name="job_title"
-              value={newJob.job_title}
-              onChange={handleInputChange}
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Location</label>
-            <input
-              type="text"
-              name="location"
-              value={newJob.location}
-              onChange={handleInputChange}
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Description</label>
-            <textarea
-              name="job_description"
-              value={newJob.job_description}
-              onChange={handleInputChange}
-              rows={5}
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-                resize: 'vertical', // Allow resizing vertically
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-              Status <span style={{ color: 'red' }}>*</span>
-            </label>
-            <select
-              name="status"
-              value={newJob.posting_status}
-              onChange={handleInputChange}
-              required
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-              }}
-            >
-              <option value="">Select Status</option>
-              <option value="Saved">Saved</option>
-              <option value="Applied">Applied</option>
-              <option value="Interviewing">Interviewing</option>
-              <option value="Accepted">Accepted</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Link</label>
-            <input
-              type="url"
-              name="job_link"
-              value={newJob.job_link}
-              onChange={handleInputChange}
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-              }}
-            />
-          </div>
-          <div style={{ textAlign: 'right' }}>
-              <button
-              onClick={handleCloseDialog}
-              style={{
-                marginRight: '10px',
-                padding: '10px 15px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-                backgroundColor: '#f5f5f5',
-                cursor: 'pointer',
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleAddJob}
-              style={{
-                padding: '10px 15px',
-                borderRadius: '5px',
-                border: 'none',
-                backgroundColor: '#007BFF',
-                color: '#fff',
-                cursor: 'pointer',
-              }}
-            >
-              Save
-            </button>
-          </div>
-        </div>
-        <div
-          style={{
-            position: 'fixed',
+            position: "fixed",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            right: 0,
+            bottom: 0,
             zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
           }}
-          onClick={() => setShowDialog(false)}
-        />
-      </div>
-    )}
+        >
+          {/* Backdrop */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              backdropFilter: "blur(4px)",
+            }}
+            onClick={handleCloseDialog}
+          />
 
+          {/* Modal */}
+          <div
+            style={{
+              position: "relative",
+              backgroundColor: "white",
+              borderRadius: "12px",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+              width: "100%",
+              maxWidth: "672px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
+          >
+            {/* Header */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "24px",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "600",
+                  color: "#111827",
+                  margin: 0,
+                }}
+              >
+                Add New Job
+              </h2>
+              <button
+                onClick={handleCloseDialog}
+                style={{
+                  padding: "8px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  transition: "background-color 0.2s",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onMouseEnter={(e) => (e.target.style.backgroundColor = "#f3f4f6")}
+                onMouseLeave={(e) => (e.target.style.backgroundColor = "transparent")}
+              >
+                <svg
+                  style={{ width: "20px", height: "20px", color: "#6b7280" }}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Form Content */}
+            <div style={{ padding: "24px" }}>
+              {/* Company & Job Title Row */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                  gap: "16px",
+                  marginBottom: "24px",
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Company <span style={{ color: "#ef4444" }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="company"
+                    value={newJob.company}
+                    onChange={handleInputChange}
+                    placeholder="Enter company name"
+                    style={{
+                      width: "100%",
+                      padding: "8px 12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      transition: "border-color 0.2s, box-shadow 0.2s",
+                      outline: "none",
+                      boxSizing: "border-box",
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#3b82f6"
+                      e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)"
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#d1d5db"
+                      e.target.style.boxShadow = "none"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Job Title <span style={{ color: "#ef4444" }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="job_title"
+                    value={newJob.job_title}
+                    onChange={handleInputChange}
+                    placeholder="Enter job title"
+                    style={{
+                      width: "100%",
+                      padding: "8px 12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      transition: "border-color 0.2s, box-shadow 0.2s",
+                      outline: "none",
+                      boxSizing: "border-box",
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#3b82f6"
+                      e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)"
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#d1d5db"
+                      e.target.style.boxShadow = "none"
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Location & Status Row */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                  gap: "16px",
+                  marginBottom: "24px",
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={newJob.location}
+                    onChange={handleInputChange}
+                    placeholder="Enter location"
+                    style={{
+                      width: "100%",
+                      padding: "8px 12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      transition: "border-color 0.2s, box-shadow 0.2s",
+                      outline: "none",
+                      boxSizing: "border-box",
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#3b82f6"
+                      e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)"
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#d1d5db"
+                      e.target.style.boxShadow = "none"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Status <span style={{ color: "#ef4444" }}>*</span>
+                  </label>
+                  <select
+                    name="posting_status"
+                    value={newJob.posting_status}
+                    onChange={handleInputChange}
+                    style={{
+                      width: "100%",
+                      padding: "8px 12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      backgroundColor: "white",
+                      transition: "border-color 0.2s, box-shadow 0.2s",
+                      outline: "none",
+                      boxSizing: "border-box",
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#3b82f6"
+                      e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)"
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#d1d5db"
+                      e.target.style.boxShadow = "none"
+                    }}
+                  >
+                    <option value="Saved">Saved</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Interviewing">Interviewing</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Job Link */}
+              <div style={{ marginBottom: "24px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Job Link
+                </label>
+                <input
+                  type="url"
+                  name="job_link"
+                  value={newJob.job_link}
+                  onChange={handleInputChange}
+                  placeholder="https://example.com/job-posting"
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    transition: "border-color 0.2s, box-shadow 0.2s",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6"
+                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)"
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db"
+                    e.target.style.boxShadow = "none"
+                  }}
+                />
+              </div>
+
+              {/* Job Description */}
+              <div style={{ marginBottom: "24px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Job Description
+                </label>
+                <textarea
+                  name="job_description"
+                  value={newJob.job_description}
+                  onChange={handleInputChange}
+                  rows={4}
+                  placeholder="Paste the job description here..."
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    transition: "border-color 0.2s, box-shadow 0.2s",
+                    outline: "none",
+                    resize: "vertical",
+                    fontFamily: "inherit",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6"
+                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)"
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db"
+                    e.target.style.boxShadow = "none"
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                gap: "12px",
+                padding: "24px",
+                borderTop: "1px solid #e5e7eb",
+                backgroundColor: "#f9fafb",
+                borderBottomLeftRadius: "12px",
+                borderBottomRightRadius: "12px",
+              }}
+            >
+              <button
+                onClick={handleCloseDialog}
+                style={{
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#374151",
+                  backgroundColor: "white",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  transition: "background-color 0.2s, border-color 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#f9fafb"
+                  e.target.style.borderColor = "#9ca3af"
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "white"
+                  e.target.style.borderColor = "#d1d5db"
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddJob}
+                style={{
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "white",
+                  backgroundColor: "#2563eb",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  transition: "background-color 0.2s",
+                }}
+                onMouseEnter={(e) => (e.target.style.backgroundColor = "#1d4ed8")}
+                onMouseLeave={(e) => (e.target.style.backgroundColor = "#2563eb")}
+              >
+                Add Job
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
-export default JobDashboard;
+export default JobDashboard

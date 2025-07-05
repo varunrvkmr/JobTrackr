@@ -96,9 +96,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         <ul className="nav-list">
           {[
             { path: "/", label: "Home", icon: "🏠" },
-            { path: "/jobs", label: "Job Dashboard", icon: "📋" },
+            { path: "/jobs", label: "Job Dashboard", icon: "" },
             { path: "/user-profile", label: "User Profile", icon: "👤" },
-            { path: "/letter-generator", label: "Generate Letters", icon: "📝" },
+            { path: "/letter-generator", label: "Generate Letters", icon: "✏️" },
+            { path: "/resume-builder", label: "Resume Builder", icon: "📋" },
           ].map(({ path, label, icon }) => (
             <li key={path} className="nav-item">
               <NavLink

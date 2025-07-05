@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* Reset some basic elements */
 * {
   margin: 0;
@@ -16,7 +18,9 @@ body {
 /* App container - works with the sidebar */
 .app-container {
   display: flex;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Main content area - adjusted to work with the sidebar */
